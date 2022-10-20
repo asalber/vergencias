@@ -1,0 +1,18 @@
+project:
+  title: "vergencias"
+  type: website
+  output-dir: "docs"
+
+website:
+  favicon: "img/logos/favicon.ico"
+  reader-mode: true
+  sidebar: 
+    style: floating
+    logo: img/logos/aprendeconalf.png
+
+format:
+  html:
+    theme: default
+
+
+

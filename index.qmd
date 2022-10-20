@@ -1,0 +1,29 @@
+---
+lang: es
+---
+
+```{r libraries}
+#| echo: false
+#| output: false
+library(tidyverse)
+library(knitr)
+```
+
+# Vergencias
+
+## Resumen
+Estudio sobre las vergencias oculares.
+
+## Objetivos
+
+
+## Variables
+
+```{r variables}
+#| echo: false
+#| message : false
+df <- read_csv("data/variables.csv")
+df %>% kable()
+```
+
+ 
