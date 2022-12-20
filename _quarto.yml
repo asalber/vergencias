@@ -1,18 +1,50 @@
 project:
-  title: "vergencias"
+  title: "Vergencias"
   type: website
   output-dir: "docs"
+  preview:
+    port: 1313
 
 website:
   favicon: "img/logos/favicon.ico"
   reader-mode: true
-  sidebar: 
-    style: floating
-    logo: img/logos/aprendeconalf.png
+  # sidebar: 
+  #   style: floating
+  #   logo: img/logos/aprendeconalf.png
+  navbar:
+    background: primary
+    search: true
+    left:
+      - index.qmd
+      - descriptiva.qmd
+      - correlacion.qmd
 
 format:
   html:
-    theme: default
+    theme:
+      dark: darkly
+      light: flatly
+    df-print: paged
+    toc: true
+
+knitr:
+  opts_chunk: 
+    collapse: true
+    echo: false
+    # cache: true
+    # prompt: false
+    # tidy: true
+    # comment: "#>"
+    message: false
+    warning: false
+    # dev: "png"
+    # dev.args: list(type="cairo")
+    # dpi: 300
+
+execute:
+  cache: true
+  # freeze: auto
+  
 
 
 

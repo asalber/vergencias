@@ -1,0 +1,130 @@
+---
+title: Estudio de correlación
+lang: es
+---
+
+```{r libraries}
+#| results: hide
+# Carga de paquetes
+.packages <- c("knitr", "tidyverse", "GGally", "Hmisc", "DT", "kableExtra")
+.installed <- .packages %in% installed.packages()
+if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
+lapply(.packages, library, character.only=T)
+```
+
+```{r funciones}
+plot.corr <- function(var){
+  plot <- df %>% select(where(is.numeric)) %>%
+  select(FLL:FVC, get(var)) %>%
+  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  ggtitle(paste0("Matriz de correlaciones ", var )) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson"))
+  return(plot)
+}
+```
+
+<!-- Carga de datos -->
+```{r carga datos}
+df <- read_csv("data/datos.csv")
+```
+
+
+## Aumento miopía
+
+
+### Correlaciones OD
+
+```{r}
+df1 <- df %>% select(where(is.numeric)) %>%
+  select(FLL:FVC, `AUMENTO MIO D`)
+
+rcorr(as.matrix(df1))
+```
+
+
+```{r}
+df %>% select(where(is.numeric)) %>%
+  select(FLL:FVC, `AUMENTO MIO D`) %>%
+  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  ggtitle("Matriz de correlaciones AUMENTO MIO D") +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```
+
+```{r}
+df %>% select(where(is.numeric)) %>%
+  select(FLL:FVC, `AUMENTO MIO D RANGO`) %>%
+  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  ggtitle("Matriz de correlaciones AUMENTO MIO D RANGO") +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```
+
+### Comparación de medias OD
+
+```{r}
+df %>% select(where(is.numeric)) %>% 
+  select(FLL:FVC, `AUMENTO MIO D CATEGORÍA`) %>%
+  mutate(`AUMENTO MIO D CATEGORÍA` = recode(`AUMENTO MIO D CATEGORÍA`, `1` = "NO", `2` = "SI")) %>% 
+  mutate(`AUMENTO MIO D CATEGORÍA` = factor(`AUMENTO MIO D CATEGORÍA`)) %>% 
+  pivot_longer(-`AUMENTO MIO D CATEGORÍA`, names_to = "Variable", values_to = "Valor") %>%
+  group_by(`AUMENTO MIO D CATEGORÍA`, Variable) %>% 
+  summarise(Valor = list(Valor)) %>% 
+  pivot_wider(names_from = `AUMENTO MIO D CATEGORÍA`, values_from = Valor) %>% 
+  group_by(Variable) %>% 
+  mutate(`Media SI` = mean(unlist(SI), na.rm=T),
+         `Media NO` = mean(unlist(SI), na.rm=T),
+         `Estadístico T` = t.test(unlist(SI), unlist(NO))$statistic,
+         `P-valor` = t.test(unlist(SI), unlist(NO))$p.value
+         ) %>% 
+  select(-c(SI, NO)) %>% 
+  kable(caption = paste0("Contraste de comparación de medias según ", "AUMENTO MIO D CATEGORÍA")) %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+```
+
+### Correlaciones OI
+
+```{r}
+df1 <- df %>% select(where(is.numeric)) %>%
+  select(FLL:FVC, `AUMENTO MIO I`)
+
+rcorr(as.matrix(df1))
+```
+
+```{r}
+df %>% select(where(is.numeric)) %>%
+  select(FLL:FVC, `AUMENTO MIO I`) %>%
+  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  ggtitle("Matriz de correlaciones AUMENTO MIO I") +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```
+
+```{r}
+df %>% select(where(is.numeric)) %>%
+  select(FLL:FVC, `AUMENTO MIO I RANGO`) %>%
+  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  ggtitle("Matriz de correlaciones AUMENTO MIO I RANGO") +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```
+
+### Comparación de medias OI
+
+```{r}
+df %>% select(where(is.numeric)) %>% 
+  select(FLL:FVC, `AUMENTO MIO I CATEGORÍA`) %>%
+  mutate(`AUMENTO MIO I CATEGORÍA` = recode(`AUMENTO MIO I CATEGORÍA`, `1` = "NO", `2` = "SI")) %>% 
+  mutate(`AUMENTO MIO I CATEGORÍA` = factor(`AUMENTO MIO I CATEGORÍA`)) %>% 
+  pivot_longer(-`AUMENTO MIO I CATEGORÍA`, names_to = "Variable", values_to = "Valor") %>%
+  group_by(`AUMENTO MIO I CATEGORÍA`, Variable) %>% 
+  summarise(Valor = list(Valor)) %>% 
+  pivot_wider(names_from = `AUMENTO MIO I CATEGORÍA`, values_from = Valor) %>% 
+  group_by(Variable) %>% 
+  mutate(`Media SI` = mean(unlist(SI), na.rm=T),
+         `Media NO` = mean(unlist(SI), na.rm=T),
+         `Estadístico T` = t.test(unlist(SI), unlist(NO))$statistic,
+         `P-valor` = t.test(unlist(SI), unlist(NO))$p.value
+         ) %>% 
+  select(-c(SI, NO)) %>% 
+  kable(caption = paste0("Contraste de comparación de medias según ", "AUMENTO MIO I CATEGORÍA")) %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+```
+
+

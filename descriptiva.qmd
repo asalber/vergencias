@@ -1,0 +1,175 @@
+---
+title: Estadística Descriptiva
+lang: es
+---
+
+```{r libraries}
+#| results: hide
+# Carga de paquetes
+.packages <- c("knitr", "tidyverse", "DT", "kableExtra")
+.installed <- .packages %in% installed.packages()
+if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
+lapply(.packages, library, character.only=T)
+```
+
+```{r colors}
+azul <- "#00BFC4"
+```
+
+```{r funciones}
+tabla.freq <- function(var){
+  tabla <- df %>% 
+  count(get(var)) %>%
+  kable(caption = paste0("Distribución según ", var, ".")) %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+  return(tabla)
+}
+
+resumen.des <- function(var){
+  resumen <- df %>% 
+  summarise(Media = mean(get(var), na.rm = TRUE), "Desviación Típica" = sd(get(var), na.rm = TRUE), Mínimo = min(get(var), na.rm = TRUE), Máximo = max(get(var), na.rm = TRUE)) %>%
+  kable(caption = paste0("Estadísticos descriptivos de ", var, ".")) %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+  return(resumen)
+}
+
+dist.hist <- function(var){
+  plot <- df %>% 
+  ggplot(aes_string(var)) +
+  geom_histogram(binwidth = 1, col = "white", fill = azul) +
+  ylab("Número de pacientes")
+  return(plot)
+}
+```
+
+<!-- Carga de datos -->
+```{r carga datos}
+df <- read_csv("data/datos.csv")
+```
+
+# Distribución por sexo
+
+```{r frecuencias-sexo}
+tabla.freq("SEXO")
+```
+
+```{r distribucion-sexo}
+#| fig-cap: "Distribución de pacientes según sexo."
+df %>% 
+  ggplot(aes(SEXO, fill = SEXO)) +
+  geom_bar() +
+  ylab("Número de pacientes")
+```
+
+## Distribución por Edad
+
+```{r frecuencias-edad}
+resumen.des("EDAD")
+```
+
+```{r distribucion-edad, fig.cap=""}
+#| fig-cap: "Distribución de la edad."
+df %>%
+  ggplot(aes(x = EDAD, fill = SEXO)) + 
+  geom_histogram(breaks = seq(0, 100, by = 10), alpha=0.8, col = "white") +
+  scale_x_continuous(breaks = seq(0, 100, by = 10)) +
+  ylab("Número de pacientes")
+```
+
+## Distribución por ojo dominante
+
+```{r frecuencias-ojo-dominante}
+df %>% 
+  count(`OJO DOMINANTE`) %>%
+  kable(caption = "Distribución según ojo dominante.") %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+```
+
+```{r distribucion-ojo-dominante}
+#| fig-cap: "Distribución de pacientes según ojo dominante."
+df %>% 
+  ggplot(aes(`OJO DOMINANTE`, fill = `OJO DOMINANTE`)) +
+  geom_bar() +
+  ylab("Número de pacientes")
+```
+
+## Distribución por mano dominante
+
+```{r frecuencias-mano-dominante}
+df %>% 
+  count(`MANO DOMINANTE`) %>%
+  kable(caption = "Distribución según mano dominante.") %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+```
+
+```{r distribucion-mano-dominante}
+#| fig-cap: "Distribución de pacientes según mano dominante."
+df %>% 
+  ggplot(aes(`MANO DOMINANTE`, fill = `MANO DOMINANTE`)) +
+  geom_bar() +
+  ylab("Número de pacientes")
+```
+
+## Distribución por concordancia mano-ojo dominante
+
+```{r frecuencias-mano-ojo-dominante}
+df %>% 
+  count(`DOMINANCIA OJO-MANO`) %>%
+  kable(caption = "Distribución según concordancia ojo-mano dominante.") %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+```
+
+```{r distribucion-mano-ojo-dominante}
+#| fig-cap: "Distribución de pacientes según concordancia mano-ojo dominante."
+df %>% 
+  ggplot(aes(`DOMINANCIA OJO-MANO`, fill = `DOMINANCIA OJO-MANO`)) +
+  geom_bar() +
+  ylab("Número de pacientes")
+```
+
+## Distribución por FLL
+
+```{r frecuencias-fll}
+df %>% 
+  count(`FLL RANGO`) %>%
+  kable(caption = "Distribución según FLL.") %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+```
+
+```{r distribucion-fll}
+#| fig-cap: "Distribución de pacientes según FLL."
+dist.hist("FLL")
+```
+
+```{r distribucion-fll-2}
+#| fig-cap: "Distribución de pacientes según FLL."
+df %>% 
+  ggplot(aes(FLL)) +
+  geom_histogram(breaks = c(-9,-6.25, -3.25, -0.75, 0, 2.75, 3.25, 5.75, 8.75, 20), col = "white", fill = azul) +
+  ylab("Número de pacientes")
+```
+
+## Estadísticos descriptivos
+
+```{r}
+df %>% 
+  select(where(is.numeric)) %>%
+  pivot_longer(FLL:`AUMENTO PRE I RANGO`, names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  summarise(Media = mean(Valor, na.rm = TRUE), "Desviación Típica" = sd(Valor, na.rm = TRUE), Mínimo = min(Valor, na.rm = TRUE), Máximo = max(Valor, na.rm = TRUE)) %>%
+  kable(caption = paste0("Estadísticos descriptivos.")) %>% 
+  kable_styling(bootstrap_options = "hover", full_width = F)
+```
+
+
+```{r}
+df %>% 
+  select(where(is.numeric)) %>%
+  pivot_longer(FLL:`AUMENTO PRE I RANGO`, names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  ggplot(aes(Valor)) +
+  geom_histogram(col = "white", fill = azul) +
+  ylab("Número de pacientes")
+```
+
+

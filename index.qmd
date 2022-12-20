@@ -1,29 +1,42 @@
 ---
+title: Introducción
 lang: es
 ---
 
 ```{r libraries}
-#| echo: false
-#| output: false
-library(tidyverse)
-library(knitr)
+#| results: hide
+# Carga de paquetes
+.packages <- c("knitr", "tidyverse", "DT", "kableExtra")
+.installed <- .packages %in% installed.packages()
+if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
+lapply(.packages, library, character.only=T)
 ```
 
-# Vergencias
+<!-- Carga de datos -->
+```{r carga datos}
+var <- read_csv("data/variables.csv")
+df <- read_csv("data/datos.csv")
+```
 
 ## Resumen
 Estudio sobre las vergencias oculares.
 
 ## Objetivos
 
+Determinar el mecanismo por el que ciertos factores pueden afectar al aumento del valor dióptrico de la miopía en las diferentes pruebas de un examen optométrico, para poder actuar contra ellos. Con este objetivo, vamos a revisar las variantes de las vergencias y la acomodación durante los diferentes exámenes optométricos que se han hecho a un grupo de pacientes durante varios años.
 
 ## Variables
 
 ```{r variables}
-#| echo: false
-#| message : false
-df <- read_csv("data/variables.csv")
-df %>% kable()
+datatable(var, rownames = F, escape=F, class = 'display', options = list(pageLength = 10, dom="ltip", language = list(url = 'http://cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')))
 ```
 
+## Tamaño muestral
+
+### Número de pacientes: `r length(unique(df$ID))`
+
+### Número total de mediciones: `r nrow(df)`
+
+
+ 
  
