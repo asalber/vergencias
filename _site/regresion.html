@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Vergencias - Regresión</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./img/logos/favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar"
+  }
+}</script>
+
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Vergencias</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html">
+ <span class="menu-text">Introducción</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./descriptiva.html">
+ <span class="menu-text">Estadística Descriptiva</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./correlacion.html">
+ <span class="menu-text">Correlación</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./regresion.html" aria-current="page">
+ <span class="menu-text">Regresión</span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#regresiones-de-las-variables-clínicas" id="toc-regresiones-de-las-variables-clínicas" class="nav-link active" data-scroll-target="#regresiones-de-las-variables-clínicas">Regresiones de las variables clínicas</a>
+  <ul class="collapse">
+  <li><a href="#miopía" id="toc-miopía" class="nav-link" data-scroll-target="#miopía">Miopía</a></li>
+  <li><a href="#astigmatismo" id="toc-astigmatismo" class="nav-link" data-scroll-target="#astigmatismo">Astigmatismo</a></li>
+  <li><a href="#presbicia" id="toc-presbicia" class="nav-link" data-scroll-target="#presbicia">Presbicia</a></li>
+  <li><a href="#hipermetropía" id="toc-hipermetropía" class="nav-link" data-scroll-target="#hipermetropía">Hipermetropía</a></li>
+  </ul></li>
+  <li><a href="#regresiones-de-las-evoluciones-de-las-variables-clínicas" id="toc-regresiones-de-las-evoluciones-de-las-variables-clínicas" class="nav-link" data-scroll-target="#regresiones-de-las-evoluciones-de-las-variables-clínicas">Regresiones de las evoluciones de las variables clínicas</a>
+  <ul class="collapse">
+  <li><a href="#evolución-miopía" id="toc-evolución-miopía" class="nav-link" data-scroll-target="#evolución-miopía">Evolución miopía</a></li>
+  <li><a href="#astigmatismo-1" id="toc-astigmatismo-1" class="nav-link" data-scroll-target="#astigmatismo-1">Astigmatismo</a></li>
+  <li><a href="#presbicia-1" id="toc-presbicia-1" class="nav-link" data-scroll-target="#presbicia-1">Presbicia</a></li>
+  <li><a href="#hipermetropía-1" id="toc-hipermetropía-1" class="nav-link" data-scroll-target="#hipermetropía-1">Hipermetropía</a></li>
+  </ul></li>
+  <li><a href="#regresiones-de-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas" id="toc-regresiones-de-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas" class="nav-link" data-scroll-target="#regresiones-de-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas">Regresiones de las evoluciones de las variables clínicas (sin medidas repetidas)</a>
+  <ul class="collapse">
+  <li><a href="#evolución-miopía-1" id="toc-evolución-miopía-1" class="nav-link" data-scroll-target="#evolución-miopía-1">Evolución miopía</a></li>
+  <li><a href="#astigmatismo-2" id="toc-astigmatismo-2" class="nav-link" data-scroll-target="#astigmatismo-2">Astigmatismo</a></li>
+  <li><a href="#presbicia-2" id="toc-presbicia-2" class="nav-link" data-scroll-target="#presbicia-2">Presbicia</a></li>
+  <li><a href="#hipermetropía-2" id="toc-hipermetropía-2" class="nav-link" data-scroll-target="#hipermetropía-2">Hipermetropía</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Regresión</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-hash="regresion_cache/html/libraries_1056ae8c0ca0057afaff70e0d340485b">
+
+</div>
+<div class="cell" data-hash="regresion_cache/html/colores_08622edee070a7962fceaf5a28258047">
+
+</div>
+<div class="cell" data-hash="regresion_cache/html/carga datos_fe7dd03f6177d4aee040de72c7a7c924">
+
+</div>
+<div class="cell" data-hash="regresion_cache/html/conjuntos-variables_a26afe3a1ce62eb2cd3dee0ee77687c1">
+
+</div>
+<div class="cell" data-hash="regresion_cache/html/funciones_742a105b9ec4dc3b1d7e1f3b45390c2e">
+
+</div>
+<section id="regresiones-de-las-variables-clínicas" class="level2">
+<h2 class="anchored" data-anchor-id="regresiones-de-las-variables-clínicas">Regresiones de las variables clínicas</h2>
+<section id="miopía" class="level3">
+<h3 class="anchored" data-anchor-id="miopía">Miopía</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-miopia_dae9e0dfb1bc69a84fd48ae6af8cddee">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-miopia-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la miopía.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="astigmatismo" class="level3">
+<h3 class="anchored" data-anchor-id="astigmatismo">Astigmatismo</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-astismatigmo_1d12c4e519d27366ad28794c0cdd7634">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-astismatigmo-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para el astigmatismo.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="presbicia" class="level3">
+<h3 class="anchored" data-anchor-id="presbicia">Presbicia</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-presbicia_b78e4129d095a160125ff0f133ec9076">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-presbicia-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la presbicia.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="hipermetropía" class="level3">
+<h3 class="anchored" data-anchor-id="hipermetropía">Hipermetropía</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-hipermetropia_945edfc6625416d42f0d79ccd87b1f90">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-hipermetropia-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la hipermetropía.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="regresiones-de-las-evoluciones-de-las-variables-clínicas" class="level2">
+<h2 class="anchored" data-anchor-id="regresiones-de-las-evoluciones-de-las-variables-clínicas">Regresiones de las evoluciones de las variables clínicas</h2>
+<section id="evolución-miopía" class="level3">
+<h3 class="anchored" data-anchor-id="evolución-miopía">Evolución miopía</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-miopia-evol_df657c7f26103f7c820ea06492e3df06">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-miopia-evol-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la miopía.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="astigmatismo-1" class="level3">
+<h3 class="anchored" data-anchor-id="astigmatismo-1">Astigmatismo</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-astismatigmo-evol_2bc7db0e61ae994ec7b4ff4463ddc376">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-astismatigmo-evol-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución del astigmatismo.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="presbicia-1" class="level3">
+<h3 class="anchored" data-anchor-id="presbicia-1">Presbicia</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-presbicia-evol_42be27ce561854e96ecd12a7ecd865fe">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-presbicia-evol-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la presbicia.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="hipermetropía-1" class="level3">
+<h3 class="anchored" data-anchor-id="hipermetropía-1">Hipermetropía</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-hipermetropia-evol_39b2194af46f3144746a36ea325ef76f">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-hipermetropia-evol-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la hipermetropía.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="regresiones-de-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas" class="level2">
+<h2 class="anchored" data-anchor-id="regresiones-de-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas">Regresiones de las evoluciones de las variables clínicas (sin medidas repetidas)</h2>
+<section id="evolución-miopía-1" class="level3">
+<h3 class="anchored" data-anchor-id="evolución-miopía-1">Evolución miopía</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-miopia-evol-no-rep_4fd3d1a49b95292696f79ae310a87af0">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-miopia-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la miopía.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="astigmatismo-2" class="level3">
+<h3 class="anchored" data-anchor-id="astigmatismo-2">Astigmatismo</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-astismatigmo-evol-no-rep_beee2dbca6b2df27680d60d86e760b0c">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-astismatigmo-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución del astigmatismo.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="presbicia-2" class="level3">
+<h3 class="anchored" data-anchor-id="presbicia-2">Presbicia</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-presbicia-evol-no-rep_f0aee843f6bfb6bdbf50f91dde839706">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-presbicia-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la presbicia.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="hipermetropía-2" class="level3">
+<h3 class="anchored" data-anchor-id="hipermetropía-2">Hipermetropía</h3>
+<div class="cell" data-hash="regresion_cache/html/regresion-hipermetropia-evol-no-rep_22147897550b03b8520d96ee0e819e3b">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="regresion_files/figure-html/regresion-hipermetropia-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la hipermetropía.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'alternate';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

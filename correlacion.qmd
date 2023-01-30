@@ -1,5 +1,5 @@
 ---
-title: Estudio de correlación
+title: Correlación
 lang: es
 ---
 
@@ -10,6 +10,37 @@ lang: es
 .installed <- .packages %in% installed.packages()
 if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
 lapply(.packages, library, character.only=T)
+```
+
+```{r colores}
+color1 <- "#00BFC4"
+color2 <- "#F8766D"
+color3 <- "#7CAE00"
+color4 <- "#C77CFF"
+```
+
+```{r carga datos}
+# Carga de datos preprocesados (con medidas repetidas)
+df <- read_csv("data/datos.preprocesados.csv") %>%
+  mutate(ID = as.factor(ID)) 
+# Carga de datos sin medidas repetidas
+df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") %>% 
+  mutate(ID = as.factor(ID)) 
+# Pacientes con 3 o más revisones
+ids <- df %>% 
+  filter(REVISION == 3) %>% 
+  pull(ID)
+```
+
+```{r conjuntos-variables}
+vars.vergencias <- c("VHL.BT1", "VHL.BT2", "VHL.BN1", "VHL.BN2", "VHC.BT1", "VHC.BT2", "VHC.BT3", "VHC.BN1", "VHC.BN2", "VHC.BN3")
+vars.forias <- c("FVL", "FVC", "FLC")
+vars.dep <- c("HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
+vars.ind <- c(vars.vergencias, vars.forias)
+vars.ind.evol <- paste0(vars.ind, ".EVOL")
+vars.dep.evol <- paste0(vars.dep, ".EVOL")
+vars <- c(vars.ind, vars.dep)
+vars.evol <- c(vars.ind.evol, vars.dep.evol)
 ```
 
 ```{r funciones}
@@ -23,108 +54,105 @@ plot.corr <- function(var){
 }
 ```
 
-<!-- Carga de datos -->
-```{r carga datos}
-df <- read_csv("data/datos.csv")
-```
+## Correlaciones entre variables clínicas 
 
-
-## Aumento miopía
-
-
-### Correlaciones OD
-
-```{r}
-df1 <- df %>% select(where(is.numeric)) %>%
-  select(FLL:FVC, `AUMENTO MIO D`)
-
-rcorr(as.matrix(df1))
-```
-
-
-```{r}
-df %>% select(where(is.numeric)) %>%
-  select(FLL:FVC, `AUMENTO MIO D`) %>%
-  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
-  ggtitle("Matriz de correlaciones AUMENTO MIO D") +
+```{r matriz-correlaciones-pearson}
+#| fig-cap: "Matriz de correlaciones de Pearson."
+#| fig-width: 10
+#| fig-height: 8
+df %>% select(vars) %>%
+  ggcorr(hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1))  +
   guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
 ```
 
-```{r}
-df %>% select(where(is.numeric)) %>%
-  select(FLL:FVC, `AUMENTO MIO D RANGO`) %>%
-  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
-  ggtitle("Matriz de correlaciones AUMENTO MIO D RANGO") +
+```{r  matriz-correlaciones-spearman}
+#| fig-cap: "Matriz de correlaciones de Spearman."
+#| fig-width: 10
+#| fig-height: 8
+df %>% select(vars) %>%
+  ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
+```
+
+
+```{r  matriz-correlaciones-kendall}
+#| fig-cap: "Matriz de correlaciones de Kendall"
+#| fig-width: 10
+#| fig-height: 8
+df %>% select(vars) %>%
+  ggcorr(method = c("pairwise", "kendall"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
+```
+
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la miopía son VHC.BN2 y VHC.BN3. Las variables más correlacionadas con la presbicia son VHC.BT3, FLC y VHC.BN3.  
+
+## Correlaciones entre las evoluciones de las variables clínicas
+
+```{r matriz-correlaciones-pearson-evol}
+#| fig-cap: "Matriz de correlaciones de Pearson."
+#| fig-width: 10
+#| fig-height: 8
+df %>% select(vars.evol) %>%
+  ggcorr(hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1))  +
   guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
 ```
 
-### Comparación de medias OD
-
-```{r}
-df %>% select(where(is.numeric)) %>% 
-  select(FLL:FVC, `AUMENTO MIO D CATEGORÍA`) %>%
-  mutate(`AUMENTO MIO D CATEGORÍA` = recode(`AUMENTO MIO D CATEGORÍA`, `1` = "NO", `2` = "SI")) %>% 
-  mutate(`AUMENTO MIO D CATEGORÍA` = factor(`AUMENTO MIO D CATEGORÍA`)) %>% 
-  pivot_longer(-`AUMENTO MIO D CATEGORÍA`, names_to = "Variable", values_to = "Valor") %>%
-  group_by(`AUMENTO MIO D CATEGORÍA`, Variable) %>% 
-  summarise(Valor = list(Valor)) %>% 
-  pivot_wider(names_from = `AUMENTO MIO D CATEGORÍA`, values_from = Valor) %>% 
-  group_by(Variable) %>% 
-  mutate(`Media SI` = mean(unlist(SI), na.rm=T),
-         `Media NO` = mean(unlist(SI), na.rm=T),
-         `Estadístico T` = t.test(unlist(SI), unlist(NO))$statistic,
-         `P-valor` = t.test(unlist(SI), unlist(NO))$p.value
-         ) %>% 
-  select(-c(SI, NO)) %>% 
-  kable(caption = paste0("Contraste de comparación de medias según ", "AUMENTO MIO D CATEGORÍA")) %>% 
-  kable_styling(bootstrap_options = "hover", full_width = F)
+```{r  matriz-correlaciones-spearman-evol}
+#| fig-cap: "Matriz de correlaciones de Spearman."
+#| fig-width: 10
+#| fig-height: 8
+df %>% select(vars.evol) %>%
+  ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
 ```
 
-### Correlaciones OI
 
-```{r}
-df1 <- df %>% select(where(is.numeric)) %>%
-  select(FLL:FVC, `AUMENTO MIO I`)
-
-rcorr(as.matrix(df1))
+```{r  matriz-correlaciones-kendall-evol}
+#| fig-cap: "Matriz de correlaciones de Kendall"
+#| fig-width: 10
+#| fig-height: 8
+df %>% select(vars.evol) %>%
+  ggcorr(method = c("pairwise", "kendall"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
 ```
 
-```{r}
-df %>% select(where(is.numeric)) %>%
-  select(FLL:FVC, `AUMENTO MIO I`) %>%
-  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
-  ggtitle("Matriz de correlaciones AUMENTO MIO I") +
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. 
+
+## Correlaciones entre las evoluciones de las variables clínicas (sin medidas repetidas)
+
+```{r matriz-correlaciones-pearson-evol-no-rep}
+#| fig-cap: "Matriz de correlaciones de Pearson."
+#| fig-width: 10
+#| fig-height: 8
+df2 %>% select(vars.evol) %>%
+  ggcorr(hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1))  +
   guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
 ```
 
-```{r}
-df %>% select(where(is.numeric)) %>%
-  select(FLL:FVC, `AUMENTO MIO I RANGO`) %>%
-  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
-  ggtitle("Matriz de correlaciones AUMENTO MIO I RANGO") +
-  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```{r  matriz-correlaciones-spearman-evol-no-rep}
+#| fig-cap: "Matriz de correlaciones de Spearman."
+#| fig-width: 10
+#| fig-height: 8
+df2 %>% select(vars.evol) %>%
+  ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
 ```
 
-### Comparación de medias OI
 
-```{r}
-df %>% select(where(is.numeric)) %>% 
-  select(FLL:FVC, `AUMENTO MIO I CATEGORÍA`) %>%
-  mutate(`AUMENTO MIO I CATEGORÍA` = recode(`AUMENTO MIO I CATEGORÍA`, `1` = "NO", `2` = "SI")) %>% 
-  mutate(`AUMENTO MIO I CATEGORÍA` = factor(`AUMENTO MIO I CATEGORÍA`)) %>% 
-  pivot_longer(-`AUMENTO MIO I CATEGORÍA`, names_to = "Variable", values_to = "Valor") %>%
-  group_by(`AUMENTO MIO I CATEGORÍA`, Variable) %>% 
-  summarise(Valor = list(Valor)) %>% 
-  pivot_wider(names_from = `AUMENTO MIO I CATEGORÍA`, values_from = Valor) %>% 
-  group_by(Variable) %>% 
-  mutate(`Media SI` = mean(unlist(SI), na.rm=T),
-         `Media NO` = mean(unlist(SI), na.rm=T),
-         `Estadístico T` = t.test(unlist(SI), unlist(NO))$statistic,
-         `P-valor` = t.test(unlist(SI), unlist(NO))$p.value
-         ) %>% 
-  select(-c(SI, NO)) %>% 
-  kable(caption = paste0("Contraste de comparación de medias según ", "AUMENTO MIO I CATEGORÍA")) %>% 
-  kable_styling(bootstrap_options = "hover", full_width = F)
+```{r  matriz-correlaciones-kendall-evol-no-rep}
+#| fig-cap: "Matriz de correlaciones de Kendall"
+#| fig-width: 10
+#| fig-height: 8
+df2 %>% select(vars.evol) %>%
+  ggcorr(method = c("pairwise", "kendall"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
 ```
 
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la evolución de la miopía son VHC.BT1.EVOL y VHC.BN1.EVOL. Las variables más correlacionadas con el astigmatismo son FLC.EVOL, VHL.BN1.EVOL y VHC.BN2.EVOL. Las variables más correlacionadas con la presbicia son VHL.BT1.EVOL (única significativa), FVC.EVOL, VHL.BN2.EVOL y VHL.BT2.EVOL. 
+
+<!-- ```{r} -->
+<!-- df.tmp <- select(df2, vars.evol) -->
+
+<!-- rcorr(as.matrix(df.tmp), type = "spearman") -->
+<!-- ``` -->
 

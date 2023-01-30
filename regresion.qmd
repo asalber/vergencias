@@ -1,0 +1,185 @@
+---
+title: Regresión
+lang: es
+---
+
+```{r libraries}
+#| results: hide
+# Carga de paquetes
+.packages <- c("knitr", "tidyverse", "DT", "kableExtra", "plotly",  "Hmisc", "GGally")
+.installed <- .packages %in% installed.packages()
+if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
+lapply(.packages, library, character.only=T)
+```
+
+```{r colores}
+color1 <- "#00BFC4"
+color2 <- "#F8766D"
+color3 <- "#7CAE00"
+color4 <- "#C77CFF"
+```
+
+```{r carga datos}
+# Carga de datos preprocesados (con medidas repetidas)
+df <- read_csv("data/datos.preprocesados.csv") %>%
+  mutate(ID = as.factor(ID)) 
+# Carga de datos sin medidas repetidas
+df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") %>% 
+  mutate(ID = as.factor(ID)) 
+# Pacientes con 3 o más revisones
+ids <- df %>% 
+  filter(REVISION == 3) %>% 
+  pull(ID)
+```
+
+```{r conjuntos-variables}
+vars.vergencias <- c("VHL.BT1", "VHL.BT2", "VHL.BN1", "VHL.BN2", "VHC.BT1", "VHC.BT2", "VHC.BT3", "VHC.BN1", "VHC.BN2", "VHC.BN3")
+vars.forias <- c("FVL", "FVC", "FLC")
+vars.dep <- c("HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
+vars.ind <- c(vars.vergencias, vars.forias)
+vars.ind.evol <- paste0(vars.ind, ".EVOL")
+vars.dep.evol <- paste0(vars.dep, ".EVOL")
+vars <- c(vars.ind, vars.dep)
+vars.evol <- c(vars.ind.evol, vars.dep.evol)
+```
+
+```{r funciones}
+regresion <- function(df, var.dep) {
+  df %>% 
+    select(c(all_of(vars.ind), var.dep)) %>% 
+    pivot_longer(-var.dep, names_to = "Variable") %>% 
+    ggplot(aes(x = value, y = get(var.dep))) +
+    geom_point(col = color1) +
+    geom_smooth(method = "lm", col = color2) +
+    xlab("") +
+    ylab(var.dep) +
+    facet_wrap(vars(Variable), scales = "free")
+}
+
+regresion.evol <- function(df, var.dep) {
+  df %>% 
+    select(c(all_of(vars.ind.evol), var.dep)) %>% 
+    pivot_longer(-var.dep, names_to = "Variable") %>% 
+    ggplot(aes(x = value, y = get(var.dep))) +
+    geom_point(col = color1) +
+    geom_smooth(method = "lm", col = color2) +
+    xlab("") +
+    ylab(var.dep) +
+    facet_wrap(vars(Variable), scales = "free")
+}
+```
+
+
+## Regresiones de las variables clínicas
+
+### Miopía
+
+```{r regresion-miopia}
+#| fig-cap: "Rectas de regresión para la miopía."
+#| fig-width: 10
+#| fig-height: 8
+regresion(df, "MIO.D")
+```
+
+### Astigmatismo
+
+```{r regresion-astismatigmo}
+#| fig-cap: "Rectas de regresión para el astigmatismo."
+#| fig-width: 10
+#| fig-height: 8
+regresion(df, "AST.D")
+```
+
+### Presbicia
+
+```{r regresion-presbicia}
+#| fig-cap: "Rectas de regresión para la presbicia."
+#| fig-width: 10
+#| fig-height: 8
+regresion(df, "PRE.D")
+```
+
+### Hipermetropía
+
+```{r regresion-hipermetropia}
+#| fig-cap: "Rectas de regresión para la hipermetropía."
+#| fig-width: 10
+#| fig-height: 8
+regresion(df, "HIP.D")
+```
+
+## Regresiones de las evoluciones de las variables clínicas
+
+### Evolución miopía
+
+```{r regresion-miopia-evol}
+#| fig-cap: "Rectas de regresión para la evolución de la miopía."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df, "MIO.D.EVOL")
+```
+
+### Astigmatismo
+
+```{r regresion-astismatigmo-evol}
+#| fig-cap: "Rectas de regresión para la evolución del astigmatismo."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df, "AST.D")
+```
+
+### Presbicia
+
+```{r regresion-presbicia-evol}
+#| fig-cap: "Rectas de regresión para la evolución de la presbicia."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df, "PRE.D")
+```
+
+### Hipermetropía
+
+```{r regresion-hipermetropia-evol}
+#| fig-cap: "Rectas de regresión para la evolución de la hipermetropía."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df, "HIP.D")
+```
+
+## Regresiones de las evoluciones de las variables clínicas (sin medidas repetidas)
+
+### Evolución miopía
+
+```{r regresion-miopia-evol-no-rep}
+#| fig-cap: "Rectas de regresión para la evolución de la miopía."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df2, "MIO.D.EVOL")
+```
+
+### Astigmatismo
+
+```{r regresion-astismatigmo-evol-no-rep}
+#| fig-cap: "Rectas de regresión para la evolución del astigmatismo."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df2, "AST.D")
+```
+
+### Presbicia
+
+```{r regresion-presbicia-evol-no-rep}
+#| fig-cap: "Rectas de regresión para la evolución de la presbicia."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df2, "PRE.D")
+```
+
+### Hipermetropía
+
+```{r regresion-hipermetropia-evol-no-rep}
+#| fig-cap: "Rectas de regresión para la evolución de la hipermetropía."
+#| fig-width: 10
+#| fig-height: 8
+regresion.evol(df2, "HIP.D")
+```

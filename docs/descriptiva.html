@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.313">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -95,6 +95,14 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Estadística Descriptiva</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="./evoluciones.html">
+ <span class="menu-text">Análisis de las evoluciones</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./correlacion-simple.html">
+ <span class="menu-text">Análisis de correlación simple</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="./correlacion.html">
  <span class="menu-text">Estudio de correlación</span></a>
   </li>  
@@ -121,7 +129,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">En esta página</h2>
    
   <ul>
-  <li><a href="#distribución-por-sexo" id="toc-distribución-por-sexo" class="nav-link active" data-scroll-target="#distribución-por-sexo">Distribución por sexo</a>
+  <li><a href="#distribución-del-número-de-revisiones" id="toc-distribución-del-número-de-revisiones" class="nav-link active" data-scroll-target="#distribución-del-número-de-revisiones">Distribución del número de revisiones</a></li>
+  <li><a href="#distribución-por-sexo" id="toc-distribución-por-sexo" class="nav-link" data-scroll-target="#distribución-por-sexo">Distribución por sexo</a>
   <ul class="collapse">
   <li><a href="#distribución-por-edad" id="toc-distribución-por-edad" class="nav-link" data-scroll-target="#distribución-por-edad">Distribución por Edad</a></li>
   <li><a href="#distribución-por-ojo-dominante" id="toc-distribución-por-ojo-dominante" class="nav-link" data-scroll-target="#distribución-por-ojo-dominante">Distribución por ojo dominante</a></li>
@@ -153,7 +162,7 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<div class="cell" data-hash="descriptiva_cache/html/libraries_90478ff08ecd4ece8c2a9c38dd326a7c">
+<div class="cell" data-hash="descriptiva_cache/html/libraries_24192c9fe9fc5ebea93f2479cb4b8bda">
 
 </div>
 <div class="cell" data-hash="descriptiva_cache/html/colors_e633da20d2865a0ec1658868af66ba7a">
@@ -163,37 +172,126 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 <!-- Carga de datos -->
-<div class="cell" data-hash="descriptiva_cache/html/carga datos_ac9e6e09c8ce24744eb2dd485d5a2e4c">
+<div class="cell" data-hash="descriptiva_cache/html/carga datos_b3c81be486d05bd60421fdad0059173d">
 
 </div>
-<section id="distribución-por-sexo" class="level1">
-<h1>Distribución por sexo</h1>
-<div class="cell" data-hash="descriptiva_cache/html/frecuencias-sexo_bec0dc245301878dcc34d59bc733ca75">
+<section id="distribución-del-número-de-revisiones" class="level1">
+<h1>Distribución del número de revisiones</h1>
+<div class="cell" data-hash="descriptiva_cache/html/frecuencias-revisiones_9bf8932e50c2e5313537f51bbc9fbf43">
 <div class="cell-output-display">
 
 <table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>Distribución según SEXO.</caption>
+<caption>Distribución según número de revisiones.</caption>
  <thead>
   <tr>
-   <th style="text-align:left;"> get(var) </th>
+   <th style="text-align:right;"> REVISION </th>
    <th style="text-align:right;"> n </th>
   </tr>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> H </td>
-   <td style="text-align:right;"> 106 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 67 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> M </td>
-   <td style="text-align:right;"> 180 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 42 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 34 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 27 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 21 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 15 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 14 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 13 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 1 </td>
   </tr>
 </tbody>
 </table>
 
 </div>
 </div>
-<div class="cell" data-hash="descriptiva_cache/html/distribucion-sexo_88d77729ab5185b5a50699ef9ea63d72">
+<p>Número de pacientes con más de una revisión: 44.</p>
+</section>
+<section id="distribución-por-sexo" class="level1">
+<h1>Distribución por sexo</h1>
+<div class="cell" data-hash="descriptiva_cache/html/frecuencias-sexo_0e00ca5deeddfe0891e9ac246beb2ae7">
+<div class="cell-output-display">
+
+<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>Distribución según sexo.</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> SEXO </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> H </td>
+   <td style="text-align:right;"> 28 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> M </td>
+   <td style="text-align:right;"> 39 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell" data-hash="descriptiva_cache/html/distribucion-sexo_3462aafafe49d700347198bdded78feb">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -243,36 +341,36 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="distribución-por-ojo-dominante" class="level2">
 <h2 class="anchored" data-anchor-id="distribución-por-ojo-dominante">Distribución por ojo dominante</h2>
-<div class="cell" data-hash="descriptiva_cache/html/frecuencias-ojo-dominante_6202c7a1307594174470e1dfaecf359e">
+<div class="cell" data-hash="descriptiva_cache/html/frecuencias-ojo-dominante_d54b73dc07252a0f21edeb37031e2d80">
 <div class="cell-output-display">
 
 <table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>Distribución según ojo dominante.</caption>
  <thead>
   <tr>
-   <th style="text-align:left;"> OJO DOMINANTE </th>
+   <th style="text-align:left;"> OJO.DOMINANTE </th>
    <th style="text-align:right;"> n </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> D </td>
-   <td style="text-align:right;"> 115 </td>
+   <td style="text-align:right;"> 30 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> I </td>
-   <td style="text-align:right;"> 166 </td>
+   <td style="text-align:right;"> 34 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
 </table>
 
 </div>
 </div>
-<div class="cell" data-hash="descriptiva_cache/html/distribucion-ojo-dominante_9e2e20a094d375211502fa16747e9165">
+<div class="cell" data-hash="descriptiva_cache/html/distribucion-ojo-dominante_d07a03dd9b6a95d9fbc7f6df0df7c552">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -285,36 +383,36 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="distribución-por-mano-dominante" class="level2">
 <h2 class="anchored" data-anchor-id="distribución-por-mano-dominante">Distribución por mano dominante</h2>
-<div class="cell" data-hash="descriptiva_cache/html/frecuencias-mano-dominante_44fe71052c25c4fe012ff0c3ac872493">
+<div class="cell" data-hash="descriptiva_cache/html/frecuencias-mano-dominante_348511635cbb2adcf3cecb47c6bd4512">
 <div class="cell-output-display">
 
 <table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>Distribución según mano dominante.</caption>
  <thead>
   <tr>
-   <th style="text-align:left;"> MANO DOMINANTE </th>
+   <th style="text-align:left;"> MANO.DOMINANTE </th>
    <th style="text-align:right;"> n </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> D </td>
-   <td style="text-align:right;"> 274 </td>
+   <td style="text-align:right;"> 60 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> I </td>
-   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 4 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
 </table>
 
 </div>
 </div>
-<div class="cell" data-hash="descriptiva_cache/html/distribucion-mano-dominante_83efcefb3b15bcaf5ce4540e4a32d7c1">
+<div class="cell" data-hash="descriptiva_cache/html/distribucion-mano-dominante_d2eb9c4471a83f0526e7f21502f71065">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -327,36 +425,36 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="distribución-por-concordancia-mano-ojo-dominante" class="level2">
 <h2 class="anchored" data-anchor-id="distribución-por-concordancia-mano-ojo-dominante">Distribución por concordancia mano-ojo dominante</h2>
-<div class="cell" data-hash="descriptiva_cache/html/frecuencias-mano-ojo-dominante_6ed92c9fb7e403b275f556065148a31f">
+<div class="cell" data-hash="descriptiva_cache/html/frecuencias-mano-ojo-dominante_40ab37be03eafe37adaf8bb749409cf5">
 <div class="cell-output-display">
 
 <table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>Distribución según concordancia ojo-mano dominante.</caption>
  <thead>
   <tr>
-   <th style="text-align:left;"> DOMINANCIA OJO-MANO </th>
+   <th style="text-align:left;"> DOMINANCIA.OJO.MANO </th>
    <th style="text-align:right;"> n </th>
   </tr>
  </thead>
 <tbody>
   <tr>
    <td style="text-align:left;"> CONTRARIA </td>
-   <td style="text-align:right;"> 171 </td>
+   <td style="text-align:right;"> 36 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> MISMA </td>
-   <td style="text-align:right;"> 110 </td>
+   <td style="text-align:right;"> 28 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> NA </td>
-   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 3 </td>
   </tr>
 </tbody>
 </table>
 
 </div>
 </div>
-<div class="cell" data-hash="descriptiva_cache/html/distribucion-mano-ojo-dominante_ec53b2fd200c2f8edd65b9f103b443cd">
+<div class="cell" data-hash="descriptiva_cache/html/distribucion-mano-ojo-dominante_bedc71ade4a12cb4fc2f722c6f4314a4">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -369,14 +467,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="distribución-por-fll" class="level2">
 <h2 class="anchored" data-anchor-id="distribución-por-fll">Distribución por FLL</h2>
-<div class="cell" data-hash="descriptiva_cache/html/frecuencias-fll_19f31839cbe41203e8a735b636ee0381">
+<div class="cell" data-hash="descriptiva_cache/html/frecuencias-fll_2c7ba05708f23b4aacd1ee9038c6d92c">
 <div class="cell-output-display">
 
 <table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>Distribución según FLL.</caption>
  <thead>
   <tr>
-   <th style="text-align:left;"> FLL RANGO </th>
+   <th style="text-align:left;"> FLL.RANGO </th>
    <th style="text-align:right;"> n </th>
   </tr>
  </thead>
@@ -984,11 +1082,6 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 
-</div>
-</div>
-<div class="cell" data-hash="descriptiva_cache/html/unnamed-chunk-2_4f384b154dbafd75fc632a6bc3daf555">
-<div class="cell-output-display">
-<p><img src="descriptiva_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
