@@ -1,7 +1,7 @@
 project:
   title: "Vergencias"
   type: website
-  #output-dir: "docs"
+  output-dir: "docs"
   preview:
     port: 1313
 
