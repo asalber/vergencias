@@ -6,7 +6,7 @@ lang: es
 ```{r libraries}
 #| results: hide
 # Carga de paquetes
-.packages <- c("knitr", "tidyverse", "DT", "kableExtra", "plotly",  "Hmisc", "GGally")
+.packages <- c("knitr", "tidyverse", "DT", "kableExtra", "pixiedust", "plotly",  "Hmisc", "GGally")
 .installed <- .packages %in% installed.packages()
 if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
 lapply(.packages, library, character.only=T)
@@ -67,6 +67,17 @@ regresion.evol <- function(df, var.dep) {
     ylab(var.dep) +
     facet_wrap(vars(Variable), scales = "free")
 }
+
+regresion.mult <- function(df, var.dep, vars.ind) {
+  formula = paste0(var.dep, "~", paste(vars.ind, collapse="+"))
+  lm(formula, data = df)
+}
+
+print.regresion <- function(model) {
+  coefs <- as.data.frame(summary(model)$coefficients)
+  kable(coefs, col.names = c("Coeficiente", "Error Estandar", "Estadístico", "p-valor"), caption = "Coeficientes de regresión lineal múltiple.") %>%
+    kable_styling(bootstrap_options = "hover", full_width = F)
+}
 ```
 
 
@@ -81,6 +92,15 @@ regresion.evol <- function(df, var.dep) {
 regresion(df, "MIO.D")
 ```
 
+#### Regresión múltiple
+
+```{r regresion-mult-miopia}
+model <- regresion.mult(df, "MIO.D", vars.ind)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
+
 ### Astigmatismo
 
 ```{r regresion-astismatigmo}
@@ -89,6 +109,15 @@ regresion(df, "MIO.D")
 #| fig-height: 8
 regresion(df, "AST.D")
 ```
+
+#### Regresión múltiple
+
+```{r regresion-mult-astigmatismo}
+model <- regresion.mult(df, "AST.D", vars.ind)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
 
 ### Presbicia
 
@@ -99,6 +128,15 @@ regresion(df, "AST.D")
 regresion(df, "PRE.D")
 ```
 
+#### Regresión múltiple
+
+```{r regresion-mult-presbicia}
+model <- regresion.mult(df, "PRE.D", vars.ind)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
+
 ### Hipermetropía
 
 ```{r regresion-hipermetropia}
@@ -107,6 +145,15 @@ regresion(df, "PRE.D")
 #| fig-height: 8
 regresion(df, "HIP.D")
 ```
+
+#### Regresión múltiple
+
+```{r regresion-mult-hipermetropia}
+model <- regresion.mult(df, "HIP.D", vars.ind)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
 
 ## Regresiones de las evoluciones de las variables clínicas
 
@@ -119,6 +166,15 @@ regresion(df, "HIP.D")
 regresion.evol(df, "MIO.D.EVOL")
 ```
 
+#### Regresión múltiple
+
+```{r regresion-mult-miopia-evol}
+model <- regresion.mult(df, "MIO.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
+
 ### Astigmatismo
 
 ```{r regresion-astismatigmo-evol}
@@ -127,6 +183,13 @@ regresion.evol(df, "MIO.D.EVOL")
 #| fig-height: 8
 regresion.evol(df, "AST.D")
 ```
+
+```{r regresion-mult-astigmatistmo-evol}
+model <- regresion.mult(df, "AST.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
 
 ### Presbicia
 
@@ -137,6 +200,13 @@ regresion.evol(df, "AST.D")
 regresion.evol(df, "PRE.D")
 ```
 
+```{r regresion-mult-presbicia-evol}
+model <- regresion.mult(df, "PRE.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
+
 ### Hipermetropía
 
 ```{r regresion-hipermetropia-evol}
@@ -145,6 +215,13 @@ regresion.evol(df, "PRE.D")
 #| fig-height: 8
 regresion.evol(df, "HIP.D")
 ```
+
+```{r regresion-mult-hipermetropia-evol}
+model <- regresion.mult(df, "HIP.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
 
 ## Regresiones de las evoluciones de las variables clínicas (sin medidas repetidas)
 
@@ -157,6 +234,13 @@ regresion.evol(df, "HIP.D")
 regresion.evol(df2, "MIO.D.EVOL")
 ```
 
+```{r regresion-mult-miopia-evol-no-rep}
+model <- regresion.mult(df2, "MIO.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
+
 ### Astigmatismo
 
 ```{r regresion-astismatigmo-evol-no-rep}
@@ -165,6 +249,13 @@ regresion.evol(df2, "MIO.D.EVOL")
 #| fig-height: 8
 regresion.evol(df2, "AST.D")
 ```
+
+```{r regresion-mult-astigmatistmo-evol-no-rep}
+model <- regresion.mult(df2, "AST.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
 
 ### Presbicia
 
@@ -175,6 +266,13 @@ regresion.evol(df2, "AST.D")
 regresion.evol(df2, "PRE.D")
 ```
 
+```{r regresion-mult-presbicia-evol-no-rep}
+model <- regresion.mult(df2, "PRE.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.
+
 ### Hipermetropía
 
 ```{r regresion-hipermetropia-evol-no-rep}
@@ -183,3 +281,11 @@ regresion.evol(df2, "PRE.D")
 #| fig-height: 8
 regresion.evol(df2, "HIP.D")
 ```
+
+```{r regresion-mult-hipermetropia-evol-no-rep}
+model <- regresion.mult(df2, "HIP.D.EVOL", vars.ind.evol)
+print.regresion(model)
+```
+
+**Coeficiente de determinación: $R^2 = `r round(summary(model)$r.squared,2)`$**.  
+**AIC = `r AIC(model)`**.
