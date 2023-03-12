@@ -26,7 +26,7 @@ df <- read_csv("data/datos.preprocesados.csv") %>%
 # Carga de datos sin medidas repetidas
 df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") %>% 
   mutate(ID = as.factor(ID)) 
-# Pacientes con 3 o más revisones
+# Pacientes con 3 o más revisiones
 ids <- df %>% 
   filter(REVISION == 3) %>% 
   pull(ID)
@@ -35,10 +35,13 @@ ids <- df %>%
 ```{r conjuntos-variables}
 vars.vergencias <- c("VHL.BT1", "VHL.BT2", "VHL.BN1", "VHL.BN2", "VHC.BT1", "VHC.BT2", "VHC.BT3", "VHC.BN1", "VHC.BN2", "VHC.BN3")
 vars.forias <- c("FVL", "FVC", "FLC")
+vars.otras <- c("ACA", "CCF", "AAOD", "AAOI", "Dif.AAOD.hofstetter", "Dif.AAOI.hofstetter")
 vars.dep <- c("HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
-vars.ind <- c(vars.vergencias, vars.forias)
+vars.ind <- c(vars.vergencias, vars.forias, vars.otras)
 vars.ind.evol <- paste0(vars.ind, ".EVOL")
 vars.dep.evol <- paste0(vars.dep, ".EVOL")
+# Eliminamos la Dif de hofstetter que no tiene evoluciones
+vars.ind.evol <- vars.ind.evol[!vars.ind.evol %in% c("Dif.AAOD.hofstetter.EVOL", "Dif.AAOI.hofstetter.EVOL")]
 vars <- c(vars.ind, vars.dep)
 vars.evol <- c(vars.ind.evol, vars.dep.evol)
 ```
@@ -65,14 +68,16 @@ df %>% select(vars) %>%
   guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
 ```
 
+
 ```{r  matriz-correlaciones-spearman}
 #| fig-cap: "Matriz de correlaciones de Spearman."
 #| fig-width: 10
 #| fig-height: 8
-df %>% select(vars) %>%
-  ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
-  guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
-```
+# df %>% select(vars) %>%
+#   ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+#   guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
+``` 
+
 
 
 ```{r  matriz-correlaciones-kendall}
@@ -84,7 +89,7 @@ df %>% select(vars) %>%
   guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
 ```
 
-En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la miopía son VHC.BN2 y VHC.BN3. Las variables más correlacionadas con la presbicia son VHC.BT3, FLC y VHC.BN3.  
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la miopía son VHC.BN2 y VHC.BN3. Las variables más correlacionadas con la presbicia son Dif.AAOI.hofstetter, Dif.AAOD.hofstetter, AAOI, AAOD, CCF, ACA, VHC.BT3, FLC y VHC.BN3.  
 
 ## Correlaciones entre las evoluciones de las variables clínicas
 
@@ -105,7 +110,6 @@ df %>% select(vars.evol) %>%
   ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
   guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
 ```
-
 
 ```{r  matriz-correlaciones-kendall-evol}
 #| fig-cap: "Matriz de correlaciones de Kendall"
@@ -148,7 +152,7 @@ df2 %>% select(vars.evol) %>%
   guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
 ```
 
-En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la evolución de la miopía son VHC.BT1.EVOL y VHC.BN1.EVOL. Las variables más correlacionadas con el astigmatismo son FLC.EVOL, VHL.BN1.EVOL y VHC.BN2.EVOL. Las variables más correlacionadas con la presbicia son VHL.BT1.EVOL (única significativa), FVC.EVOL, VHL.BN2.EVOL y VHL.BT2.EVOL. 
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la evolución de la miopía son AAOI.EVOL, AAOD.EVOL, VHC.BT1.EVOL y VHC.BN1.EVOL. Las variables más correlacionadas con el astigmatismo son FLC.EVOL, VHL.BN1.EVOL y VHC.BN2.EVOL. Las variables más correlacionadas con la presbicia son CCF.EVOL, ACA.EVOL, AAOD.EVOL, AAOI.EVOL, VHL.BT1.EVOL (única significativa), FVC.EVOL, VHL.BN2.EVOL y VHL.BT2.EVOL. 
 
 <!-- ```{r} -->
 <!-- df.tmp <- select(df2, vars.evol) -->

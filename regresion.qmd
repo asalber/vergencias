@@ -35,10 +35,13 @@ ids <- df %>%
 ```{r conjuntos-variables}
 vars.vergencias <- c("VHL.BT1", "VHL.BT2", "VHL.BN1", "VHL.BN2", "VHC.BT1", "VHC.BT2", "VHC.BT3", "VHC.BN1", "VHC.BN2", "VHC.BN3")
 vars.forias <- c("FVL", "FVC", "FLC")
+vars.otras <- c("ACA", "CCF", "AAOD", "AAOI", "Dif.AAOD.hofstetter", "Dif.AAOI.hofstetter")
 vars.dep <- c("HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
-vars.ind <- c(vars.vergencias, vars.forias)
+vars.ind <- c(vars.vergencias, vars.forias, vars.otras)
 vars.ind.evol <- paste0(vars.ind, ".EVOL")
 vars.dep.evol <- paste0(vars.dep, ".EVOL")
+# Eliminamos la Dif de hofstetter que no tiene evoluciones
+vars.ind.evol <- vars.ind.evol[!vars.ind.evol %in% c("Dif.AAOD.hofstetter.EVOL", "Dif.AAOI.hofstetter.EVOL")]
 vars <- c(vars.ind, vars.dep)
 vars.evol <- c(vars.ind.evol, vars.dep.evol)
 ```
