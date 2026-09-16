@@ -1,0 +1,721 @@
+---
+title: Correlación con medidas repetidas
+lang: es
+execute:
+  cache: false
+---
+
+```{r libraries}
+#| results: hide
+# Carga de paquetes
+.packages <- c("knitr", "tidyverse", "kableExtra", "DT", "rmcorr", "lmerTest", "geepack", "splines")
+.installed <- .packages %in% installed.packages()
+if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
+lapply(.packages, library, character.only=T)
+```
+
+```{r carga-datos}
+df <- read_csv("data/datos.preprocesados.csv") |>
+  mutate(ID = as.factor(ID)) |>
+  arrange(ID, REVISION)
+```
+
+```{r conjuntos-variables}
+vars.vergencias <- c("VHL.BT1", "VHL.BT2", "VHL.BN1", "VHL.BN2", "VHC.BT1", "VHC.BT2", "VHC.BT3", "VHC.BN1", "VHC.BN2", "VHC.BN3")
+vars.forias <- c("FVL", "FVC", "FLC")
+vars.otras <- c("ACA", "CCF", "AAOD", "AAOI", "Dif.AAOD.hofstetter", "Dif.AAOI.hofstetter")
+vars.dep <- c("HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
+vars.ind <- c(vars.vergencias, vars.forias, vars.otras)
+pares <- expand_grid(dep = vars.dep, ind = vars.ind)
+# Signo con el que se manifiesta cada defecto (MIO y AST se miden en dioptrías negativas)
+signo.defecto <- c(HIP.D = 1, HIP.I = 1, MIO.D = -1, MIO.I = -1, AST.D = -1, AST.I = -1, PRE.D = 1, PRE.I = 1)
+```
+
+```{r estructura}
+revisiones <- df |> count(ID)
+n.pac <- nrow(revisiones)
+n.pac.1 <- sum(revisiones$n == 1)
+```
+
+Los datos contienen `r nrow(df)` revisiones de `r n.pac` pacientes. `r n.pac.1` pacientes (`r round(100 * n.pac.1 / n.pac)`%) tienen una única revisión, mientras que los `r n.pac - n.pac.1` restantes tienen entre 2 y `r max(revisiones$n)` revisiones y aportan `r sum(revisiones$n[revisiones$n > 1])` de las `r nrow(df)` filas. Las mediciones de un mismo paciente no son independientes, por lo que los coeficientes de correlación clásicos (Pearson, Spearman, Kendall) y los tests de Wilcoxon calculados sobre todas las revisiones subestiman los errores estándar y dan p-valores demasiado optimistas.
+
+Quedarse con una única revisión por paciente eliminaría casi la mitad de los datos y, además, de forma no aleatoria: los pacientes con más revisiones son probablemente los que requieren un seguimiento más estrecho. En su lugar se usan métodos que tienen en cuenta la dependencia entre las revisiones de un mismo paciente:
+
+1. **Correlación de medidas repetidas** (rmcorr): estima la asociación *intra paciente*, es decir, si cuando cambia una variable en un paciente cambia también la otra.
+2. **Modelos lineales mixtos** con término independiente aleatorio por paciente, que separan el efecto *entre pacientes* (¿los pacientes con valores más altos de la variable independiente tienen más defecto?) del efecto *intra paciente*.
+3. **Análisis en dos partes** para los defectos visuales, que tienen muchos ceros: GEE logístico para la presencia del defecto, separando también los efectos entre e intra paciente, y modelo mixto para su magnitud.
+
+Por último, los modelos mixtos y el análisis en dos partes se repiten añadiendo la edad como covariable, ya que la edad está relacionada tanto con los defectos visuales como con varias de las variables independientes. También se estima la fiabilidad de las mediciones y se corrige la atenuación que el error de medida produce en los coeficientes.
+
+En todos los casos se contrastan los `r nrow(pares)` pares formados por las `r length(vars.ind)` variables independientes y las `r length(vars.dep)` dependientes, y los p-valores se corrigen por comparaciones múltiples con el método de Benjamini-Hochberg (BH) dentro de cada análisis. En los mapas de calor, un asterisco indica p-valor ajustado < 0.05.
+
+```{r funciones-ajuste}
+ajuste.rmcorr <- function(y, x) {
+  d <- df |> select(ID, all_of(c(x, y))) |> drop_na()
+  res <- rmcorr("ID", x, y, d)
+  tibble(n = nrow(d), n.pac = n_distinct(d$ID), estimacion = res$r,
+         ic.inf = res$CI[1], ic.sup = res$CI[2], p = res$p)
+}
+
+# Modelo mixto con la variable independiente descompuesta en media del paciente
+# (efecto entre pacientes) y desviación respecto a esa media (efecto intra paciente).
+# Con edad = TRUE la edad se descompone igual: media del paciente (spline) y variación intra paciente.
+ajuste.mixto <- function(y, x, datos = df, edad = FALSE) {
+  d <- datos |> select(ID, EDAD, x = all_of(x), y = all_of(y)) |> drop_na() |>
+    mutate(across(c(x, y), \(v) as.numeric(scale(v)))) |>
+    group_by(ID) |>
+    mutate(x.entre = mean(x), x.intra = x - x.entre, edad.entre = mean(EDAD), edad.intra = EDAD - edad.entre) |>
+    ungroup()
+  f.modelo <- if (edad) {
+    y ~ x.entre + x.intra + ns(edad.entre, df = 3) + edad.intra + (1 | ID)
+  } else {
+    y ~ x.entre + x.intra + (1 | ID)
+  }
+  co <- coef(summary(lmer(f.modelo, data = d)))[c("x.entre", "x.intra"), ]
+  tibble(efecto = c("Entre pacientes", "Intra paciente"), n = nrow(d), n.pac = n_distinct(d$ID),
+         estimacion = co[, "Estimate"],
+         ic.inf = estimacion - 1.96 * co[, "Std. Error"],
+         ic.sup = estimacion + 1.96 * co[, "Std. Error"],
+         p = co[, "Pr(>|t|)"])
+}
+
+# GEE logístico (correlación de independencia, errores robustos) para la presencia del defecto,
+# con la variable independiente descompuesta en efecto entre/intra paciente y sin descomponer (marginal).
+# La edad no se descompone porque en la presbicia produce separación completa.
+ajuste.presencia <- function(y, x, datos = df, edad = FALSE) {
+  s <- signo.defecto[[y]]
+  d <- datos |> select(ID, EDAD, x = all_of(x), y = all_of(y)) |> drop_na() |>
+    mutate(x = as.numeric(scale(x)), y = as.integer(y * s > 0)) |>
+    group_by(ID) |>
+    mutate(x.entre = mean(x), x.intra = x - x.entre) |>
+    ungroup()
+  f.desc <- if (edad) y ~ x.entre + x.intra + ns(EDAD, df = 3) else y ~ x.entre + x.intra
+  f.marg <- if (edad) y ~ x + ns(EDAD, df = 3) else y ~ x
+  co <- bind_rows(
+    coef(summary(geeglm(f.desc, id = ID, data = d, family = binomial, corstr = "independence")))[c("x.entre", "x.intra"), ],
+    coef(summary(geeglm(f.marg, id = ID, data = d, family = binomial, corstr = "independence")))["x", ]
+  )
+  tibble(efecto = c("Entre pacientes", "Intra paciente", "Marginal"), n = nrow(d), n.pac = n_distinct(d$ID),
+         estimacion = exp(co$Estimate),
+         ic.inf = exp(co$Estimate - 1.96 * co$Std.err),
+         ic.sup = exp(co$Estimate + 1.96 * co$Std.err),
+         p = co$`Pr(>|W|)`)
+}
+
+# Modelo mixto para la magnitud (valor absoluto) del defecto, solo en revisiones con defecto.
+ajuste.magnitud <- function(y, x, datos = df, edad = FALSE) {
+  s <- signo.defecto[[y]]
+  d <- datos |> select(ID, EDAD, x = all_of(x), y = all_of(y)) |> drop_na() |>
+    filter(y * s > 0) |>
+    mutate(y = abs(y), across(c(x, y), \(v) as.numeric(scale(v))))
+  f.modelo <- if (edad) y ~ x + ns(EDAD, df = 3) + (1 | ID) else y ~ x + (1 | ID)
+  co <- coef(summary(lmer(f.modelo, data = d)))["x", ]
+  tibble(n = nrow(d), n.pac = n_distinct(d$ID), estimacion = co[["Estimate"]],
+         ic.inf = estimacion - 1.96 * co[["Std. Error"]],
+         ic.sup = estimacion + 1.96 * co[["Std. Error"]],
+         p = co[["Pr(>|t|)"]])
+}
+
+ajustar.pares <- function(f) {
+  pares |>
+    mutate(res = map2(dep, ind, f)) |>
+    unnest(res) |>
+    group_by(across(any_of("efecto"))) |>
+    mutate(p.adj = p.adjust(p, method = "BH")) |>
+    ungroup()
+}
+```
+
+```{r funciones-presentacion}
+formatear.p <- function(p) if_else(p < 0.001, "< 0.001", paste0("= ", round(p, 3)))
+
+# Párrafo interpretativo a partir de una tabla con columnas variable, estimacion, ic.inf, ic.sup, p y p.adj.
+interpretar <- function(tabla, contexto, etiqueta, unidad, log = FALSE) {
+  tabla <- tabla |> mutate(fuerza = if (log) abs(log(estimacion)) else abs(estimacion))
+  n.sig <- sum(tabla$p < 0.05)
+  n.adj <- sum(tabla$p.adj < 0.05)
+  total <- paste0("de un total de ", nrow(tabla), " ", unidad)
+  if (n.sig == 0) {
+    return(paste0(contexto, " no se obtiene ninguna asociación estadísticamente significativa (p < 0.05) ", total, "."))
+  }
+  top <- tabla |> filter(p < 0.05) |> arrange(desc(fuerza)) |> head(3)
+  top.txt <- paste0(top$variable, " (", etiqueta, " = ", round(top$estimacion, 2),
+                    ", IC95% [", round(top$ic.inf, 2), ", ", round(top$ic.sup, 2), "], p ", formatear.p(top$p), ")",
+                    collapse = "; ")
+  hallazgo <- if (n.sig == 1) {
+    "se obtiene 1 asociación estadísticamente significativa (p < 0.05) "
+  } else {
+    paste0("se obtienen ", n.sig, " asociaciones estadísticamente significativas (p < 0.05) ")
+  }
+  ajuste <- case_when(
+    n.adj == 0 & n.sig == 1 ~ ", que no se mantiene tras la corrección de Benjamini-Hochberg",
+    n.adj == 0 ~ ", aunque ninguna se mantiene tras la corrección de Benjamini-Hochberg",
+    n.adj == n.sig & n.sig == 1 ~ ", que se mantiene tras la corrección de Benjamini-Hochberg",
+    n.adj == n.sig ~ ", y todas se mantienen tras la corrección de Benjamini-Hochberg",
+    n.adj == 1 ~ ", de las cuales 1 se mantiene tras la corrección de Benjamini-Hochberg",
+    .default = paste0(", de las cuales ", n.adj, " se mantienen tras la corrección de Benjamini-Hochberg")
+  )
+  destacadas <- if (nrow(top) == 1) ". Se trata de: " else ". Las más fuertes son: "
+  paste0(contexto, " ", hallazgo, total, ajuste, destacadas, top.txt, ".")
+}
+
+plot.heatmap <- function(tabla, titulo.leyenda, limite = 1, transformar = identity, etiquetas.leyenda = waiver()) {
+  tabla |>
+    mutate(ind = factor(ind, levels = rev(vars.ind)),
+           dep = factor(dep, levels = vars.dep),
+           valor = transformar(estimacion),
+           texto = if_else(is.na(estimacion), "—",
+                           paste0(sprintf("%.2f", estimacion), if_else(p.adj < 0.05, "*", "")))) |>
+    ggplot(aes(x = dep, y = ind, fill = valor)) +
+    geom_tile(color = "white", linewidth = 0.8) +
+    geom_text(aes(label = texto, color = abs(valor) > 0.6 * limite), size = 3) +
+    scale_color_manual(values = c(`FALSE` = "#222222", `TRUE` = "white"), na.value = "#666666", guide = "none") +
+    scale_fill_gradient2(low = "darkred", mid = "#EEEEEE", high = "#0072B2", midpoint = 0,
+                         limits = c(-limite, limite), oob = scales::squish, na.value = "grey92",
+                         labels = etiquetas.leyenda, name = titulo.leyenda) +
+    labs(x = NULL, y = NULL) +
+    theme_minimal() +
+    theme(panel.grid = element_blank())
+}
+
+tabla.dt <- function(tabla, etiqueta) {
+  tabla |>
+    select(any_of("efecto"), dep, ind, n, n.pac, estimacion, ic.inf, ic.sup, p, p.adj) |>
+    arrange(p) |>
+    rename(any_of(c(Efecto = "efecto")), Defecto = dep, Variable = ind, Revisiones = n, Pacientes = n.pac,
+           !!etiqueta := estimacion, `IC95% inf.` = ic.inf, `IC95% sup.` = ic.sup,
+           `p-valor` = p, `p-valor BH` = p.adj) |>
+    datatable(rownames = FALSE, filter = "top", options = list(pageLength = 10, scrollX = TRUE)) |>
+    formatRound(c(etiqueta, "IC95% inf.", "IC95% sup."), 3) |>
+    formatSignif(c("p-valor", "p-valor BH"), 2)
+}
+
+tabla.kable <- function(tabla, etiqueta, titulo) {
+  tabla |>
+    select(ind, n, n.pac, estimacion, ic.inf, ic.sup, p, p.adj) |>
+    arrange(p) |>
+    mutate(across(c(p, p.adj), \(v) format.pval(v, digits = 2, eps = 0.001))) |>
+    kable(digits = 3, caption = titulo,
+          col.names = c("Variable", "Revisiones", "Pacientes", etiqueta, "IC95% inf.", "IC95% sup.", "p-valor", "p-valor BH")) |>
+    kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
+}
+
+# Tabla de la presencia de un defecto con los OR entre pacientes, intra paciente y marginal en columnas.
+tabla.presencia <- function(pres, titulo) {
+  orden <- pres |> filter(efecto == "Entre pacientes") |> arrange(p) |> pull(ind)
+  pres |>
+    mutate(ind = factor(ind, levels = orden),
+           efecto = factor(efecto, levels = c("Entre pacientes", "Intra paciente", "Marginal")),
+           or = sprintf("%.2f [%.2f, %.2f]", estimacion, ic.inf, ic.sup),
+           p.bh = format.pval(p.adj, digits = 2, eps = 0.001)) |>
+    select(ind, efecto, or, p.bh) |>
+    pivot_wider(names_from = efecto, values_from = c(or, p.bh), names_vary = "slowest", names_sort = TRUE) |>
+    arrange(ind) |>
+    kable(caption = titulo, col.names = c("Variable", rep(c("OR [IC95%]", "p-valor BH"), 3))) |>
+    add_header_above(c(" " = 1, "Entre pacientes" = 2, "Intra paciente" = 2, "Marginal (independencia)" = 2)) |>
+    kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
+}
+
+# Tablas y párrafos del análisis en dos partes, una pestaña por defecto (usar con results: asis).
+mostrar.dos.partes <- function(presencia, magnitud, nivel = "###", sufijo = "") {
+  for (v in vars.dep) {
+    pres <- presencia |> filter(dep == v) |> mutate(variable = ind)
+    mag <- magnitud |> filter(dep == v) |> mutate(variable = ind)
+    cat(nivel, " ", v, "\n\n", sep = "")
+    cat(tabla.presencia(pres, paste0("GEE logístico para la presencia de ", v, sufijo, " (", pres$n.pac[1], " pacientes). OR por desviación típica de la variable independiente.")), "\n\n")
+    for (ef in c("Entre pacientes", "Intra paciente")) {
+      cat(interpretar(filter(pres, efecto == ef), paste0("Para la presencia de ", v, " (efecto ", tolower(ef), ")"),
+                      "OR", "variables independientes", log = TRUE), "\n\n")
+    }
+    cat(tabla.kable(mag, "β", paste0("Modelo mixto para la magnitud de ", v, sufijo, " (", mag$n[1], " revisiones con defecto de ", mag$n.pac[1], " pacientes).")), "\n\n")
+    cat(interpretar(mag, paste0("Para la magnitud de ", v), "β", "variables independientes"), "\n\n")
+  }
+}
+```
+
+```{r ajustes}
+res.rmcorr <- ajustar.pares(ajuste.rmcorr)
+res.mixto <- ajustar.pares(ajuste.mixto)
+res.presencia <- ajustar.pares(ajuste.presencia)
+res.magnitud <- ajustar.pares(ajuste.magnitud)
+```
+
+## Correlación de medidas repetidas (rmcorr)
+
+La correlación de medidas repetidas (Bakdash y Marusich, 2017) estima la asociación lineal común dentro de cada paciente, eliminando las diferencias entre pacientes mediante un modelo ANCOVA. Solo informa de la asociación *intra paciente*: los pacientes con una única revisión no aportan información y la correlación no dice nada sobre si los pacientes con valores más altos de una variable tienen también valores más altos de la otra.
+
+```{r heatmap-rmcorr}
+#| fig-cap: "Coeficientes de correlación de medidas repetidas entre las variables independientes y los defectos visuales."
+#| fig-width: 8
+#| fig-height: 8
+plot.heatmap(res.rmcorr, "r (rmcorr)")
+```
+
+```{r tabla-rmcorr}
+tabla.dt(res.rmcorr, "r")
+```
+
+`r interpretar(mutate(res.rmcorr, variable = paste0(ind, " / ", dep)), "Con la correlación de medidas repetidas", "r", "pares de variables")`
+
+## Modelos mixtos: efectos entre e intra paciente
+
+Para cada par de variables se ajusta el modelo lineal mixto
+
+$$Y_{ij} = \beta_0 + \beta_E \bar{X}_i + \beta_I (X_{ij} - \bar{X}_i) + u_i + \varepsilon_{ij},$$
+
+donde $i$ es el paciente, $j$ la revisión, $\bar{X}_i$ la media de la variable independiente en el paciente y $u_i$ un término independiente aleatorio por paciente. Ambas variables se estandarizan, de modo que los coeficientes son comparables entre pares:
+
+- $\beta_E$ (**entre pacientes**) indica si los pacientes con valores medios más altos de la variable independiente tienen más defecto. Es la pregunta que responden las correlaciones clásicas, pero ahora cada paciente pesa como una unidad y no como tantas observaciones como revisiones tenga.
+- $\beta_I$ (**intra paciente**) indica si los cambios de la variable independiente dentro de un paciente van acompañados de cambios en el defecto. Es equivalente a la correlación de medidas repetidas.
+
+Los defectos con muchos ceros (sobre todo HIP y PRE) no cumplen bien la hipótesis de normalidad de los residuos, por lo que para ellos conviene contrastar estos resultados con el análisis en dos partes de la sección siguiente.
+
+```{r heatmap-mixto}
+#| fig-cap: "Coeficientes estandarizados de los modelos mixtos (efecto entre pacientes e intra paciente)."
+#| fig-width: 12
+#| fig-height: 8
+plot.heatmap(res.mixto, "β estandarizado") + facet_wrap(~efecto)
+```
+
+```{r tabla-mixto}
+tabla.dt(res.mixto, "β")
+```
+
+`r interpretar(res.mixto |> filter(efecto == "Entre pacientes") |> mutate(variable = paste0(ind, " / ", dep)), "Para el efecto entre pacientes", "β", "pares de variables")`
+
+`r interpretar(res.mixto |> filter(efecto == "Intra paciente") |> mutate(variable = paste0(ind, " / ", dep)), "Para el efecto intra paciente", "β", "pares de variables")`
+
+## Análisis en dos partes para los defectos visuales
+
+Como en el análisis sin medidas repetidas, cada defecto se analiza en dos partes, ahora teniendo en cuenta la dependencia entre revisiones:
+
+1. **Presencia del defecto**: se codifica el defecto como presente (HIP y PRE mayores que 0; MIO y AST menores que 0) y se ajustan dos modelos logísticos de ecuaciones de estimación generalizadas (GEE):
+   - **Con descomposición entre/intra paciente** (análisis principal): como en el modelo mixto, la variable independiente se descompone en la media del paciente y la desviación respecto a esa media. Se obtienen dos *odds ratios* (OR) poblacionales por desviación típica de la variable independiente: el OR entre pacientes y el OR intra paciente.
+   - **Marginal**: con la variable sin descomponer. Da un único OR que mezcla las diferencias entre pacientes y las variaciones dentro del paciente.
+
+   Ambos modelos usan una estructura de correlación de trabajo de independencia con errores estándar robustos (sándwich), que tienen en cuenta la dependencia entre las revisiones de un mismo paciente. El modelo marginal equivale así a una regresión logística ordinaria con los errores estándar corregidos. Con variables que cambian entre revisiones, un GEE con correlación intercambiable sin descomponer solo estima correctamente la asociación si la probabilidad del defecto en una revisión depende únicamente del valor de la variable en esa revisión (Pepe y Anderson, 1994). Cuando los efectos entre e intra paciente son distintos, esa condición no se cumple y la estimación es una mezcla difícil de interpretar. Además, la presencia de los defectos es tan estable dentro de cada paciente (correlación intercambiable estimada de hasta 0.95 en la miopía) que el algoritmo con correlación intercambiable no converge en varios pares, por lo que se usa la de independencia en todos los casos. Con ella cada revisión pesa lo mismo, de modo que los pacientes con más revisiones tienen más peso en la estimación.
+
+   En todos los casos, OR > 1 indica que valores más altos de la variable se asocian a una mayor probabilidad de presentar el defecto, y OR < 1 a una menor.
+2. **Magnitud del defecto**: solo con las revisiones en las que el defecto está presente, se ajusta un modelo lineal mixto con término independiente aleatorio por paciente entre la magnitud del defecto (valor absoluto en dioptrías, de modo que un valor mayor indica siempre más defecto) y la variable independiente, ambas estandarizadas.
+
+```{r heatmap-presencia}
+#| fig-cap: "Odds ratios (por desviación típica) del GEE logístico con descomposición entre/intra paciente para la presencia de cada defecto."
+#| fig-width: 12
+#| fig-height: 8
+plot.heatmap(filter(res.presencia, efecto != "Marginal"), "OR", limite = 3, transformar = log2,
+             etiquetas.leyenda = \(b) round(2^b, 2)) +
+  facet_wrap(~efecto)
+```
+
+```{r heatmap-presencia-marginal}
+#| fig-cap: "Odds ratios (por desviación típica) del GEE logístico marginal con correlación de independencia para la presencia de cada defecto."
+#| fig-width: 8
+#| fig-height: 8
+plot.heatmap(filter(res.presencia, efecto == "Marginal"), "OR", limite = 3, transformar = log2,
+             etiquetas.leyenda = \(b) round(2^b, 2))
+```
+
+```{r comparacion-gee}
+presencia.ancha <- res.presencia |>
+  select(dep, ind, efecto, estimacion) |>
+  pivot_wider(names_from = efecto, values_from = estimacion) |>
+  mutate(defecto = factor(str_sub(dep, 1, 3), levels = c("HIP", "MIO", "AST", "PRE")))
+cor.entre <- cor(log(presencia.ancha$Marginal), log(presencia.ancha$`Entre pacientes`))
+cor.intra <- cor(log(presencia.ancha$Marginal), log(presencia.ancha$`Intra paciente`))
+texto.gee <- if (cor.entre >= cor.intra) {
+  paste0("Los OR marginales se parecen más a los del efecto entre pacientes (correlación entre sus logaritmos de ", round(cor.entre, 2),
+         ") que a los del efecto intra paciente (", round(cor.intra, 2), "), lo que indica que la asociación marginal refleja sobre todo diferencias entre pacientes.")
+} else {
+  paste0("Los OR marginales se parecen más a los del efecto intra paciente (correlación entre sus logaritmos de ", round(cor.intra, 2),
+         ") que a los del efecto entre pacientes (", round(cor.entre, 2), ").")
+}
+
+res.presencia |>
+  mutate(efecto = factor(efecto, levels = c("Marginal", "Entre pacientes", "Intra paciente")),
+         defecto = factor(str_sub(dep, 1, 3), levels = c("HIP", "MIO", "AST", "PRE"))) |>
+  count(efecto, defecto, wt = p.adj < 0.05) |>
+  pivot_wider(names_from = defecto, values_from = n) |>
+  mutate(Total = HIP + MIO + AST + PRE) |>
+  kable(caption = paste0("Número de asociaciones significativas (p-valor BH < 0.05) con cada estrategia GEE para la presencia del defecto. Cada defecto incluye ", 2 * length(vars.ind), " pares (ojo derecho e izquierdo)."),
+        col.names = c("Estrategia", "HIP", "MIO", "AST", "PRE", "Total")) |>
+  kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
+```
+
+```{r grafico-comparacion-gee}
+#| fig-cap: "OR del GEE marginal con independencia frente a los OR entre pacientes e intra paciente del GEE con descomposición, en escala log2. Los puntos sobre la diagonal discontinua coinciden en ambas estrategias."
+#| fig-width: 10
+#| fig-height: 5
+presencia.ancha |>
+  pivot_longer(c(`Entre pacientes`, `Intra paciente`), names_to = "componente", values_to = "or.desc") |>
+  ggplot(aes(x = log2(Marginal), y = log2(or.desc), color = defecto, shape = defecto)) +
+  geom_hline(yintercept = 0, color = "grey85") +
+  geom_vline(xintercept = 0, color = "grey85") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
+  geom_point(size = 2.2, alpha = 0.85) +
+  scale_color_manual(values = c(HIP = "#2a78d6", MIO = "#eb6834", AST = "#1baf7a", PRE = "#eda100")) +
+  scale_shape_manual(values = c(HIP = 16, MIO = 17, AST = 15, PRE = 18)) +
+  facet_wrap(~componente) +
+  labs(x = "log2 OR marginal (independencia)", y = "log2 OR con descomposición", color = "Defecto", shape = "Defecto") +
+  theme_minimal()
+```
+
+`r texto.gee` El GEE con descomposición es más informativo, porque además permite comprobar si las variaciones dentro de un mismo paciente se asocian con la aparición o desaparición del defecto.
+
+```{r heatmap-magnitud}
+#| fig-cap: "Coeficientes estandarizados del modelo mixto para la magnitud de cada defecto (solo revisiones con defecto)."
+#| fig-width: 8
+#| fig-height: 8
+plot.heatmap(res.magnitud, "β estandarizado")
+```
+
+::: {.panel-tabset}
+
+```{r tablas-dos-partes}
+#| results: asis
+mostrar.dos.partes(res.presencia, res.magnitud)
+```
+
+:::
+
+## Análisis ajustado por edad
+
+La edad está relacionada tanto con los defectos visuales (la presbicia aparece a partir de los 40 años y la miopía progresa sobre todo en la infancia y la adolescencia) como con varias de las variables independientes (la amplitud de acomodación disminuye con la edad y su diferencia respecto a la fórmula de Hofstetter se calcula a partir de ella), por lo que puede actuar como factor de confusión. Para controlarla, se repiten los modelos mixtos y el análisis en dos partes añadiendo la edad como covariable:
+
+- **Modelos mixtos**: la edad se descompone igual que la variable independiente, en la edad media del paciente, que entra mediante un spline natural con 3 grados de libertad para recoger relaciones no lineales como la aparición de la presbicia, y su variación dentro del paciente, que entra de forma lineal y equivale al tiempo transcurrido desde la primera revisión.
+- **GEE para la presencia**: en ambos modelos, la edad en cada revisión entra mediante un spline natural con 3 grados de libertad. A diferencia del modelo mixto, no se descompone en edad media y variación intra paciente: en la presbicia eso produce separación completa, porque dentro de cada paciente su aparición queda totalmente determinada por el aumento de la edad, y las estimaciones divergen.
+- **Modelo mixto para la magnitud**: la edad en cada revisión entra mediante un spline natural con 3 grados de libertad.
+
+La correlación de medidas repetidas no admite covariables; su equivalente ajustado por edad es el efecto intra paciente del modelo mixto.
+
+```{r datos-edad}
+df.edad <- df |>
+  mutate(edad.valida = FECHA.REVISION > FECHA.NACIMIENTO & FECHA.REVISION <= Sys.Date() & EDAD <= 100)
+revisiones.excluidas <- df.edad |> filter(!edad.valida)
+df.edad <- df.edad |>
+  filter(edad.valida) |>
+  mutate(EDAD = as.numeric(FECHA.REVISION - FECHA.NACIMIENTO) / 365.25)
+```
+
+La edad se calcula en años, con decimales, a partir de las fechas de nacimiento y de revisión. Se excluyen `r nrow(revisiones.excluidas)` revisiones con fechas incoherentes (revisión anterior o igual a la fecha de nacimiento, posterior a la fecha actual, o edad mayor de 100 años), que probablemente se deben a errores de transcripción en los datos originales y convendría revisar:
+
+```{r tabla-excluidas}
+revisiones.excluidas |>
+  select(ID, REVISION, FECHA.NACIMIENTO, FECHA.REVISION, EDAD) |>
+  kable(caption = "Revisiones excluidas del análisis ajustado por edad por tener fechas incoherentes.",
+        col.names = c("Paciente", "Revisión", "Fecha de nacimiento", "Fecha de revisión", "Edad calculada")) |>
+  kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
+```
+
+```{r ajustes-edad}
+res.mixto.sin <- ajustar.pares(\(y, x) ajuste.mixto(y, x, df.edad))
+res.mixto.edad <- ajustar.pares(\(y, x) ajuste.mixto(y, x, df.edad, edad = TRUE))
+res.presencia.sin <- ajustar.pares(\(y, x) ajuste.presencia(y, x, df.edad))
+res.presencia.edad <- ajustar.pares(\(y, x) ajuste.presencia(y, x, df.edad, edad = TRUE))
+res.magnitud.sin <- ajustar.pares(\(y, x) ajuste.magnitud(y, x, df.edad))
+res.magnitud.edad <- ajustar.pares(\(y, x) ajuste.magnitud(y, x, df.edad, edad = TRUE))
+
+apilar <- function(mixto, presencia, magnitud) {
+  bind_rows(
+    mixto |> mutate(analisis = paste0("Modelo mixto: ", tolower(efecto), " (β)")),
+    presencia |> mutate(analisis = paste0("Presencia: ", tolower(efecto), " (log2 OR)"), estimacion = log2(estimacion)),
+    magnitud |> mutate(analisis = "Magnitud del defecto (β)")
+  ) |>
+    select(analisis, dep, ind, estimacion, p.adj)
+}
+
+comparacion <- inner_join(apilar(res.mixto.sin, res.presencia.sin, res.magnitud.sin),
+                          apilar(res.mixto.edad, res.presencia.edad, res.magnitud.edad),
+                          by = c("analisis", "dep", "ind"), suffix = c(".sin", ".edad")) |>
+  mutate(analisis = fct_inorder(analisis),
+         defecto = factor(str_sub(dep, 1, 3), levels = c("HIP", "MIO", "AST", "PRE")))
+
+cambio.defecto <- comparacion |>
+  group_by(defecto) |>
+  summarise(sin = sum(p.adj.sin < 0.05), edad = sum(p.adj.edad < 0.05)) |>
+  mutate(caida = sin - edad) |>
+  arrange(desc(caida))
+
+texto.cambio <- paste0("En conjunto, el número de asociaciones significativas tras la corrección de Benjamini-Hochberg pasa de ",
+                       sum(cambio.defecto$sin), " sin ajustar a ", sum(cambio.defecto$edad), " al ajustar por edad.")
+if (cambio.defecto$caida[1] > 0) {
+  texto.cambio <- paste0(texto.cambio, " El defecto más afectado por el ajuste es ", cambio.defecto$defecto[1],
+                         ", que pasa de ", cambio.defecto$sin[1], " a ", cambio.defecto$edad[1],
+                         " asociaciones significativas, lo que indica que buena parte de su relación con las variables independientes se explicaba por la edad.")
+}
+```
+
+### Efecto del ajuste
+
+Para aislar el efecto del ajuste, los modelos sin ajustar y ajustados se estiman sobre la misma muestra de `r nrow(df.edad)` revisiones con edad válida.
+
+```{r tabla-comparacion}
+comparacion |>
+  group_by(analisis, defecto) |>
+  summarise(celda = paste0(sum(p.adj.sin < 0.05), " → ", sum(p.adj.edad < 0.05)), .groups = "drop") |>
+  pivot_wider(names_from = defecto, values_from = celda) |>
+  left_join(comparacion |>
+              group_by(analisis) |>
+              summarise(Total = paste0(sum(p.adj.sin < 0.05), " → ", sum(p.adj.edad < 0.05))),
+            by = "analisis") |>
+  kable(caption = paste0("Número de asociaciones significativas (p-valor BH < 0.05) sin ajustar → ajustando por edad. Cada defecto incluye ", 2 * length(vars.ind), " pares (ojo derecho e izquierdo)."),
+        col.names = c("Análisis", levels(comparacion$defecto), "Total")) |>
+  kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
+```
+
+```{r grafico-comparacion}
+#| fig-cap: "Estimaciones sin ajustar frente a ajustadas por edad para cada par de variables. Los puntos sobre la diagonal discontinua no cambian con el ajuste; los que se acercan a 0 en el eje vertical pierden asociación al controlar la edad."
+#| fig-width: 12
+#| fig-height: 8
+ggplot(comparacion, aes(x = estimacion.sin, y = estimacion.edad, color = defecto, shape = defecto)) +
+  geom_hline(yintercept = 0, color = "grey85") +
+  geom_vline(xintercept = 0, color = "grey85") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
+  geom_point(size = 2.2, alpha = 0.85) +
+  scale_color_manual(values = c(HIP = "#2a78d6", MIO = "#eb6834", AST = "#1baf7a", PRE = "#eda100")) +
+  scale_shape_manual(values = c(HIP = 16, MIO = 17, AST = 15, PRE = 18)) +
+  facet_wrap(~analisis, scales = "free", ncol = 3) +
+  labs(x = "Estimación sin ajustar", y = "Estimación ajustada por edad", color = "Defecto", shape = "Defecto") +
+  theme_minimal()
+```
+
+`r texto.cambio`
+
+### Modelos mixtos ajustados por edad
+
+```{r heatmap-mixto-edad}
+#| fig-cap: "Coeficientes estandarizados de los modelos mixtos ajustados por edad (efecto entre pacientes e intra paciente)."
+#| fig-width: 12
+#| fig-height: 8
+plot.heatmap(res.mixto.edad, "β estandarizado") + facet_wrap(~efecto)
+```
+
+```{r tabla-mixto-edad}
+tabla.dt(res.mixto.edad, "β")
+```
+
+`r interpretar(res.mixto.edad |> filter(efecto == "Entre pacientes") |> mutate(variable = paste0(ind, " / ", dep)), "Ajustando por edad, para el efecto entre pacientes", "β", "pares de variables")`
+
+`r interpretar(res.mixto.edad |> filter(efecto == "Intra paciente") |> mutate(variable = paste0(ind, " / ", dep)), "Ajustando por edad, para el efecto intra paciente", "β", "pares de variables")`
+
+### Análisis en dos partes ajustado por edad
+
+```{r heatmap-presencia-edad}
+#| fig-cap: "Odds ratios (por desviación típica) del GEE logístico con descomposición entre/intra paciente para la presencia de cada defecto, ajustados por edad. Los OR marginales ajustados figuran en las tablas de cada defecto."
+#| fig-width: 12
+#| fig-height: 8
+plot.heatmap(filter(res.presencia.edad, efecto != "Marginal"), "OR", limite = 3, transformar = log2,
+             etiquetas.leyenda = \(b) round(2^b, 2)) +
+  facet_wrap(~efecto)
+```
+
+```{r heatmap-magnitud-edad}
+#| fig-cap: "Coeficientes estandarizados del modelo mixto para la magnitud de cada defecto (solo revisiones con defecto), ajustados por edad."
+#| fig-width: 8
+#| fig-height: 8
+plot.heatmap(res.magnitud.edad, "β estandarizado")
+```
+
+::: {.panel-tabset}
+
+```{r tablas-dos-partes-edad}
+#| results: asis
+mostrar.dos.partes(res.presencia.edad, res.magnitud.edad, nivel = "####", sufijo = " ajustado por edad")
+```
+
+:::
+
+## Fiabilidad de las mediciones
+
+Muchas de las variables independientes se miden con pruebas subjetivas (puntos de borrosidad, ruptura y recobro de las vergencias, forias), cuyo resultado depende de la respuesta del paciente, del procedimiento y del examinador. El error de medida atenúa las asociaciones hacia cero, por lo que conviene cuantificarlo.
+
+El estudio no incluye mediciones repetidas en la misma sesión, pero la repetibilidad se puede aproximar con los pares de revisiones consecutivas de un mismo paciente muy próximas en el tiempo, en las que el valor real apenas ha podido cambiar. Se consideran dos umbrales: revisiones separadas como máximo 6 meses y como máximo 1 año. Para cada variable se calcula:
+
+- El **coeficiente de correlación intraclase** ICC(2,1) de acuerdo absoluto, con su intervalo de confianza del 95%. Como referencia (Koo y Li, 2016), un ICC < 0.5 indica fiabilidad pobre, entre 0.5 y 0.75 moderada, entre 0.75 y 0.9 buena y > 0.9 excelente.
+- El **sesgo** (media de las diferencias entre la segunda y la primera medición) y los **límites de acuerdo del 95%** de Bland-Altman, dentro de los cuales se espera que caigan el 95% de las diferencias entre dos mediciones del mismo paciente.
+
+Estas estimaciones deben interpretarse con prudencia: el número de pares es pequeño, algunos pacientes aportan más de un par y las revisiones muy próximas pueden deberse a motivos clínicos (una terapia visual, la adaptación a una nueva graduación) que producen cambios reales, en cuyo caso el error de medida se sobrestima.
+
+```{r fiabilidad}
+pares.proximos <- function(v, max.anios) {
+  df.edad |>
+    group_by(ID) |>
+    arrange(FECHA.REVISION, .by_group = TRUE) |>
+    transmute(intervalo = as.numeric(FECHA.REVISION - lag(FECHA.REVISION)) / 365.25,
+              m1 = lag(.data[[v]]), m2 = .data[[v]]) |>
+    ungroup() |>
+    filter(intervalo <= max.anios) |>
+    drop_na()
+}
+
+icc.acuerdo <- function(d) {
+  r <- psych::ICC(cbind(d$m1, d$m2), lmer = FALSE)$results
+  r[r$type == "ICC2", ]
+}
+
+fiabilidad <- map_dfr(vars.ind, function(v) {
+  d6 <- pares.proximos(v, 0.5)
+  d12 <- pares.proximos(v, 1)
+  i6 <- icc.acuerdo(d6)
+  i12 <- icc.acuerdo(d12)
+  dif <- d6$m2 - d6$m1
+  tibble(variable = v,
+         pares.6 = nrow(d6), pac.6 = n_distinct(d6$ID),
+         icc.6 = i6$ICC, icc.inf.6 = i6$`lower bound`, icc.sup.6 = i6$`upper bound`,
+         sesgo = mean(dif), loa.inf = sesgo - 1.96 * sd(dif), loa.sup = sesgo + 1.96 * sd(dif),
+         pares.12 = nrow(d12), pac.12 = n_distinct(d12$ID),
+         icc.12 = i12$ICC, icc.inf.12 = i12$`lower bound`, icc.sup.12 = i12$`upper bound`,
+         var.error.6 = var(dif) / 2,
+         var.error.12 = var(d12$m2 - d12$m1) / 2)
+})
+
+formatear.icc <- function(icc, inf, sup) sprintf("%.2f [%.2f, %.2f]", icc, inf, sup)
+```
+
+```{r tabla-fiabilidad}
+fiabilidad |>
+  transmute(variable, pares.6,
+            icc.6 = formatear.icc(icc.6, icc.inf.6, icc.sup.6),
+            sesgo = round(sesgo, 2),
+            loa = sprintf("[%.2f, %.2f]", loa.inf, loa.sup),
+            pares.12,
+            icc.12 = formatear.icc(icc.12, icc.inf.12, icc.sup.12)) |>
+  kable(caption = paste0("Fiabilidad de las variables independientes a partir de pares de revisiones consecutivas próximas (",
+                         max(fiabilidad$pac.6), " pacientes con pares separados como máximo 6 meses y ",
+                         max(fiabilidad$pac.12), " con pares separados como máximo 1 año). El sesgo y los límites de acuerdo se calculan con los pares de 6 meses."),
+        col.names = c("Variable", "Pares (≤ 6 meses)", "ICC [IC95%] (≤ 6 meses)", "Sesgo", "Límites de acuerdo 95%",
+                      "Pares (≤ 1 año)", "ICC [IC95%] (≤ 1 año)")) |>
+  kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
+```
+
+```{r grafico-bland-altman}
+#| fig-cap: "Gráficos de Bland-Altman de los pares de revisiones consecutivas separadas como máximo 6 meses. La línea continua es el sesgo y las discontinuas los límites de acuerdo del 95%."
+#| fig-width: 10
+#| fig-height: 12
+lineas.ba <- fiabilidad |>
+  select(variable, sesgo, loa.inf, loa.sup) |>
+  mutate(variable = factor(variable, levels = vars.ind))
+
+map_dfr(vars.ind, \(v) pares.proximos(v, 0.5) |> transmute(variable = v, media = (m1 + m2) / 2, dif = m2 - m1)) |>
+  mutate(variable = factor(variable, levels = vars.ind)) |>
+  ggplot(aes(x = media, y = dif)) +
+  geom_hline(data = lineas.ba, aes(yintercept = sesgo), color = "grey30") +
+  geom_hline(data = lineas.ba, aes(yintercept = loa.inf), color = "grey50", linetype = "dashed") +
+  geom_hline(data = lineas.ba, aes(yintercept = loa.sup), color = "grey50", linetype = "dashed") +
+  geom_point(color = "#2a78d6", alpha = 0.8, size = 1.8) +
+  facet_wrap(~variable, scales = "free", ncol = 4) +
+  labs(x = "Media de las dos revisiones", y = "Diferencia (segunda − primera)") +
+  theme_minimal()
+```
+
+```{r texto-fiabilidad}
+categorias.icc <- fiabilidad |>
+  mutate(categoria = cut(icc.6, c(-Inf, 0.5, 0.75, 0.9, Inf), labels = c("pobre (ICC < 0.5)", "moderada (0.5–0.75)", "buena (0.75–0.9)", "excelente (> 0.9)"))) |>
+  group_by(categoria, .drop = TRUE) |>
+  summarise(variables = paste(variable, collapse = ", "), .groups = "drop")
+
+texto.fiabilidad <- paste0("Con los pares separados como máximo 6 meses, la fiabilidad es ",
+                           paste0(categorias.icc$categoria, " en ", categorias.icc$variables, collapse = "; "), ".")
+
+ver.fiab <- \(v, col) fiabilidad[[col]][fiabilidad$variable == v]
+```
+
+`r texto.fiabilidad`
+
+El ICC depende de la heterogeneidad de la muestra además del error de medida. Por ejemplo, Dif.AAOD.hofstetter tiene un ICC de `r round(ver.fiab("Dif.AAOD.hofstetter", "icc.6"), 2)` frente a `r round(ver.fiab("AAOD", "icc.6"), 2)` de AAOD, con una varianza de error similar (`r round(ver.fiab("Dif.AAOD.hofstetter", "var.error.6"), 2)` frente a `r round(ver.fiab("AAOD", "var.error.6"), 2)`), porque su variabilidad entre pacientes incluye la de la edad a través de la fórmula de Hofstetter. Por eso, para corregir la atenuación se utiliza directamente la varianza del error y no el ICC. Además, para varias variables el ICC con pares de hasta 1 año es mayor que con pares de hasta 6 meses, lo que no debería ocurrir si la única diferencia fuera el tiempo transcurrido y refleja la imprecisión de las estimaciones con tan pocos pares.
+
+### Corrección de la atenuación
+
+Según el modelo clásico de error de medida, el valor observado de una variable independiente es su valor real más un error aleatorio de varianza $\sigma^2_e$, que se estima como la mitad de la varianza de las diferencias entre dos mediciones próximas. Se usan los pares separados como máximo 1 año, que son más numerosos y dan una estimación más precisa, aunque pueden incluir algún cambio real y, por tanto, sobrestimar ligeramente el error.
+
+En el modelo mixto ajustado por edad, cada componente de la variable independiente tiene su propia fiabilidad $\lambda$, condicionada a la edad:
+
+- **Entre pacientes**: la media de las $k_i$ revisiones de un paciente tiene una varianza de error $\sigma^2_e / k_i$, de modo que $\lambda_E = 1 - \overline{\sigma^2_e / k_i} \,/\, \mathrm{Var}(\bar{X}_i \mid \text{edad media})$. Los pacientes con más revisiones tienen medias más fiables.
+- **Intra paciente**: las desviaciones respecto a la media del paciente conservan casi todo el error, de modo que $\lambda_I = 1 - \sigma^2_e \sum_i (k_i - 1) \,/\, \mathrm{SC}(X_{ij} - \bar{X}_i \mid \text{variación de la edad})$.
+
+El coeficiente corregido es $\beta / \lambda$ (calibración de la regresión). La corrección no cambia la significación estadística, solo el tamaño estimado del efecto, y su intervalo de confianza se obtiene dividiendo también por $\lambda$, sin incorporar la incertidumbre de la propia $\lambda$, por lo que es demasiado estrecho. Cuando $\lambda < 0.4$ la corrección multiplicaría el coeficiente por más de 2.5 y resulta demasiado inestable, así que no se aplica: en ese caso el error de medida es comparable a la variación real de la variable y el coeficiente no se puede interpretar como una asociación entre valores reales.
+
+```{r atenuacion}
+umbral.lambda <- 0.4
+
+lambda.componentes <- function(v, var.error) {
+  d <- df.edad |>
+    select(ID, EDAD, x = all_of(v)) |>
+    drop_na() |>
+    group_by(ID) |>
+    mutate(k = n(), x.entre = mean(x), x.intra = x - x.entre,
+           edad.entre = mean(EDAD), edad.intra = EDAD - edad.entre) |>
+    ungroup()
+  pac <- d |> distinct(ID, k, x.entre, edad.entre)
+  var.entre <- var(resid(lm(x.entre ~ ns(edad.entre, df = 3), data = pac)))
+  sc.intra <- sum(resid(lm(x.intra ~ 0 + edad.intra, data = d))^2)
+  c(entre = 1 - mean(var.error / pac$k) / var.entre,
+    intra = 1 - var.error * sum(pac$k - 1) / sc.intra)
+}
+
+lambdas <- fiabilidad |>
+  select(variable, var.error.6, var.error.12) |>
+  mutate(l6 = map2(variable, var.error.6, lambda.componentes),
+         l12 = map2(variable, var.error.12, lambda.componentes),
+         entre.6 = map_dbl(l6, "entre"), intra.6 = map_dbl(l6, "intra"),
+         entre.12 = map_dbl(l12, "entre"), intra.12 = map_dbl(l12, "intra")) |>
+  select(variable, entre.6, entre.12, intra.6, intra.12)
+
+res.corregido <- res.mixto.edad |>
+  left_join(lambdas |> select(ind = variable, entre.12, intra.12), by = "ind") |>
+  mutate(lambda = if_else(efecto == "Entre pacientes", entre.12, intra.12),
+         corregible = lambda >= umbral.lambda,
+         across(c(estimacion, ic.inf, ic.sup), \(b) if_else(corregible, b / lambda, NA_real_), .names = "{.col}.corr"))
+```
+
+```{r tabla-lambdas}
+lambdas |>
+  kable(digits = 2, caption = paste0("Fiabilidad condicionada a la edad de los componentes entre pacientes (λ_E) e intra paciente (λ_I), estimada con la varianza del error de los pares de hasta 6 meses y de hasta 1 año. La corrección usa la estimación con pares de hasta 1 año y solo se aplica si λ ≥ ", umbral.lambda, ". Los valores negativos indican que el error estimado supera la variación observada."),
+        col.names = c("Variable", "λ_E (≤ 6 meses)", "λ_E (≤ 1 año)", "λ_I (≤ 6 meses)", "λ_I (≤ 1 año)")) |>
+  kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
+```
+
+```{r heatmap-corregido}
+#| fig-cap: "Coeficientes estandarizados de los modelos mixtos ajustados por edad, corregidos por la atenuación debida al error de medida. Las celdas con — corresponden a variables con fiabilidad insuficiente (λ < 0.4) para aplicar la corrección. El asterisco indica p-valor BH < 0.05 en el modelo sin corregir."
+#| fig-width: 12
+#| fig-height: 8
+plot.heatmap(res.corregido |> mutate(estimacion = estimacion.corr), "β corregido") + facet_wrap(~efecto)
+```
+
+```{r tabla-corregido}
+res.corregido |>
+  filter(p.adj < 0.05) |>
+  arrange(efecto, desc(abs(estimacion))) |>
+  select(efecto, dep, ind, estimacion, lambda, estimacion.corr, ic.inf.corr, ic.sup.corr, p.adj) |>
+  datatable(rownames = FALSE, filter = "top", options = list(pageLength = 10, scrollX = TRUE),
+            caption = "Asociaciones significativas (p-valor BH < 0.05) del modelo mixto ajustado por edad, con su coeficiente corregido por la atenuación.",
+            colnames = c("Efecto", "Defecto", "Variable", "β observado", "λ", "β corregido", "IC95% inf. corregido", "IC95% sup. corregido", "p-valor BH")) |>
+  formatRound(c("estimacion", "lambda", "estimacion.corr", "ic.inf.corr", "ic.sup.corr"), 3) |>
+  formatSignif("p.adj", 2)
+```
+
+```{r texto-atenuacion}
+interpretar.atenuacion <- function(ef) {
+  sig <- res.corregido |> filter(efecto == ef, p.adj < 0.05)
+  corr <- sig |> filter(corregible)
+  inicio <- paste0("Para el efecto ", tolower(ef), ", ", nrow(corr), " de las ", nrow(sig),
+                   " asociaciones significativas corresponden a variables con fiabilidad suficiente para corregir la atenuación")
+  if (nrow(corr) == 0) return(paste0(inicio, "."))
+  top <- corr |> arrange(desc(abs(estimacion.corr))) |> head(3)
+  paste0(inicio, ". Tras la corrección, las más fuertes son: ",
+         paste0(top$ind, " / ", top$dep, " (β observado = ", round(top$estimacion, 2),
+                ", λ = ", round(top$lambda, 2), ", β corregido = ", round(top$estimacion.corr, 2), ")", collapse = "; "), ".")
+}
+```
+
+`r interpretar.atenuacion("Entre pacientes")`
+
+`r interpretar.atenuacion("Intra paciente")`
+
+En general, los componentes entre pacientes son bastante más fiables que los intra paciente, porque la media de varias revisiones reduce el error, mientras que las variaciones dentro del paciente de la mayoría de las vergencias son comparables a su error de medida. Por eso las asociaciones entre pacientes son las más sólidas del estudio y las intra paciente que afectan a variables con λ < 0.4 deben interpretarse con mucha cautela. Si aun así resultan significativas, puede deberse a que el error de medida está sobrestimado (las revisiones próximas incluyen cambios reales) o a que existen errores correlacionados entre la variable independiente y el defecto (por ejemplo, por medirse en la misma sesión).
+
+## Consideraciones
+
+- **Edad y tiempo de seguimiento**: dentro de un paciente, las revisiones sucesivas coinciden con un aumento de la edad, que afecta a la vez a la presbicia, a la amplitud de acomodación (AAOD, AAOI) y a su diferencia respecto a la fórmula de Hofstetter. La sección de análisis ajustado por edad controla este factor. Aun así, Dif.AAOD.hofstetter y Dif.AAOI.hofstetter se definen a partir de la edad esperada, por lo que su asociación con la presbicia debe interpretarse con cautela incluso después del ajuste.
+- **Error de medida**: la fiabilidad de varias vergencias y del AC/A es baja, lo que atenúa las asociaciones hacia cero. Los resultados no significativos no deben interpretarse como ausencia de relación, sino como falta de potencia para detectarla, sobre todo en los efectos intra paciente.
+- **Ojo derecho e izquierdo**: los defectos de ambos ojos están muy correlacionados, por lo que los resultados de D e I son prácticamente redundantes y no deben interpretarse como evidencia independiente.
+- **Comparaciones múltiples**: con `r nrow(pares)` contrastes por análisis cabe esperar unos `r round(0.05 * nrow(pares))` resultados significativos al 5% por azar, por lo que conviene basar las conclusiones en los p-valores ajustados por Benjamini-Hochberg.

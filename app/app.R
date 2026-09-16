@@ -13,15 +13,15 @@ color4 <- "#C77CFF"
 
 # Carga de datos
 # Conjunto de datos original
-df <- read_csv("../data/datos.preprocesados.csv") %>%
+df <- read_csv("../data/datos.preprocesados.csv") |>
   mutate(ID = as.factor(ID))
 # Conjunto de datos sin medidas repetidas
-df2 <- read_csv("../data/datos.preprocesados.sin.medidas.repetidas.csv") %>%
+df2 <- read_csv("../data/datos.preprocesados.sin.medidas.repetidas.csv") |>
   mutate(ID = as.factor(ID))
 
 # Pacientes con 3 o más revisones
-ids <- df %>%
-  filter(REVISION == 3) %>%
+ids <- df |>
+  filter(REVISION == 3) |>
   pull(ID)
 
 # Variables
@@ -33,7 +33,7 @@ vars.ind <- c(vars.vergencias, vars.forias)
 vars.ind.evol <- paste0(vars.ind, ".EVOL")
 vars <- c(vars.ind, vars.dep)
 
-df2.dep <- df2 %>% select(vars.dep)
+df2.dep <- df2 |> select(vars.dep)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -47,7 +47,7 @@ ui <- fluidPage(
       # Sidebar with a slider input for number of bins
       sidebarLayout(
         sidebarPanel(
-          varSelectInput("var1", "Variable", df %>% select(order(colnames(df))) %>% select(where(is.numeric))),
+          varSelectInput("var1", "Variable", df |> select(order(colnames(df))) |> select(where(is.numeric))),
         ),
 
         # Show a plot of the generated distribution
@@ -68,8 +68,8 @@ ui <- fluidPage(
       # Sidebar with a slider input for number of bins
       sidebarLayout(
         sidebarPanel(
-          varSelectInput("vardep", "Variable Dependiente", df2 %>% select(vars.dep)),
-          varSelectInput("varind", "Variable Independiente", df2 %>% select(vars.ind)),
+          varSelectInput("vardep", "Variable Dependiente", df2 |> select(vars.dep)),
+          varSelectInput("varind", "Variable Independiente", df2 |> select(vars.ind)),
           selectInput("id", "Id Paciente", setNames(ids, ids)),
         ),
 
@@ -86,8 +86,8 @@ ui <- fluidPage(
       # Sidebar with a slider input for number of bins
       sidebarLayout(
         sidebarPanel(
-          varSelectInput("vardep", "Variable Dependiente", df2 %>% select(vars.dep.evol)),
-          varSelectInput("varind", "Variable Independiente", df2 %>% select(vars.ind.evol)),
+          varSelectInput("vardep", "Variable Dependiente", df2 |> select(vars.dep.evol)),
+          varSelectInput("varind", "Variable Independiente", df2 |> select(vars.ind.evol)),
         ),
 
         # Show a plot of the generated distribution
@@ -114,18 +114,18 @@ server <- function(input, output) {
   })
 
   output$freqTable <- reactive({
-    kable(count(df, !!input$var1)) %>%
+    kable(count(df, !!input$var1)) |>
       kable_styling(bootstrap_options = c("hover", "striped"), full_width = F)
   })
 
   output$evolPlot <- renderPlot({
     # Dibujo del diagrama de evolución
-    p1 <- df %>%
-      filter(ID == input$id) %>%
+    p1 <- df |>
+      filter(ID == input$id) |>
       ggplot(aes(x = REVISION, y = !!input$vardep, group = 1)) +
       geom_line(col = color1)
-    p2 <- df %>%
-      filter(ID == input$id) %>%
+    p2 <- df |>
+      filter(ID == input$id) |>
       ggplot(aes(x = REVISION, y = !!input$varind, group = 1)) +
       geom_line(col = color2)
     grid.arrange(p1, p2, nrow = 2)

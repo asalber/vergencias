@@ -6,7 +6,7 @@ lang: es
 ```{r libraries}
 #| results: hide
 # Carga de paquetes
-.packages <- c("knitr", "tidyverse", "DT", "kableExtra", "pixiedust", "plotly",  "Hmisc", "GGally")
+.packages <- c("knitr", "tidyverse", "DT", "kableExtra", "plotly",  "Hmisc", "GGally")
 .installed <- .packages %in% installed.packages()
 if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
 lapply(.packages, library, character.only=T)
@@ -21,14 +21,14 @@ color4 <- "#C77CFF"
 
 ```{r carga datos}
 # Carga de datos preprocesados (con medidas repetidas)
-df <- read_csv("data/datos.preprocesados.csv") %>%
+df <- read_csv("data/datos.preprocesados.csv") |>
   mutate(ID = as.factor(ID)) 
 # Carga de datos sin medidas repetidas
-df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") %>% 
+df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") |> 
   mutate(ID = as.factor(ID)) 
 # Pacientes con 3 o más revisones
-ids <- df %>% 
-  filter(REVISION == 3) %>% 
+ids <- df |> 
+  filter(REVISION == 3) |> 
   pull(ID)
 ```
 
@@ -48,9 +48,9 @@ vars.evol <- c(vars.ind.evol, vars.dep.evol)
 
 ```{r funciones}
 regresion <- function(df, var.dep) {
-  df %>% 
-    select(c(all_of(vars.ind), var.dep)) %>% 
-    pivot_longer(-var.dep, names_to = "Variable") %>% 
+  df |> 
+    select(c(all_of(vars.ind), var.dep)) |> 
+    pivot_longer(-var.dep, names_to = "Variable") |> 
     ggplot(aes(x = value, y = get(var.dep))) +
     geom_point(col = color1) +
     geom_smooth(method = "lm", col = color2) +
@@ -60,9 +60,9 @@ regresion <- function(df, var.dep) {
 }
 
 regresion.evol <- function(df, var.dep) {
-  df %>% 
-    select(c(all_of(vars.ind.evol), var.dep)) %>% 
-    pivot_longer(-var.dep, names_to = "Variable") %>% 
+  df |> 
+    select(c(all_of(vars.ind.evol), var.dep)) |> 
+    pivot_longer(-var.dep, names_to = "Variable") |> 
     ggplot(aes(x = value, y = get(var.dep))) +
     geom_point(col = color1) +
     geom_smooth(method = "lm", col = color2) +
@@ -78,7 +78,7 @@ regresion.mult <- function(df, var.dep, vars.ind) {
 
 print.regresion <- function(model) {
   coefs <- as.data.frame(summary(model)$coefficients)
-  kable(coefs, col.names = c("Coeficiente", "Error Estandar", "Estadístico", "p-valor"), caption = "Coeficientes de regresión lineal múltiple.") %>%
+  kable(coefs, col.names = c("Coeficiente", "Error Estandar", "Estadístico", "p-valor"), caption = "Coeficientes de regresión lineal múltiple.") |>
     kable_styling(bootstrap_options = "hover", full_width = F)
 }
 ```

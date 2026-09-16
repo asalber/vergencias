@@ -1,0 +1,312 @@
+---
+title: Correlación
+lang: es
+---
+
+```{r libraries}
+#| results: hide
+# Carga de paquetes
+.packages <- c("knitr", "tidyverse", "GGally", "Hmisc", "DT", "kableExtra")
+.installed <- .packages %in% installed.packages()
+if (length(.packages[!.installed])>0) install.packages(.packages[!.installed])
+lapply(.packages, library, character.only=T)
+```
+
+```{r colores}
+color1 <- "#00BFC4"
+color2 <- "#F8766D"
+color3 <- "#7CAE00"
+color4 <- "#C77CFF"
+```
+
+```{r carga datos}
+# Carga de datos preprocesados (con medidas repetidas)
+df <- read_csv("data/datos.preprocesados.csv") |>
+  mutate(ID = as.factor(ID)) 
+# Carga de datos sin medidas repetidas
+df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") |> 
+  mutate(ID = as.factor(ID)) 
+# Pacientes con 3 o más revisiones
+ids <- df |> 
+  filter(REVISION == 3) |> 
+  pull(ID)
+```
+
+```{r conjuntos-variables}
+vars.vergencias <- c("VHL.BT1", "VHL.BT2", "VHL.BN1", "VHL.BN2", "VHC.BT1", "VHC.BT2", "VHC.BT3", "VHC.BN1", "VHC.BN2", "VHC.BN3")
+vars.forias <- c("FVL", "FVC", "FLC")
+vars.otras <- c("ACA", "CCF", "AAOD", "AAOI", "Dif.AAOD.hofstetter", "Dif.AAOI.hofstetter")
+vars.dep <- c("HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
+vars.ind <- c(vars.vergencias, vars.forias, vars.otras)
+vars.ind.evol <- paste0(vars.ind, ".EVOL")
+vars.dep.evol <- paste0(vars.dep, ".EVOL")
+# Eliminamos la Dif de hofstetter que no tiene evoluciones
+vars.ind.evol <- vars.ind.evol[!vars.ind.evol %in% c("Dif.AAOD.hofstetter.EVOL", "Dif.AAOI.hofstetter.EVOL")]
+vars <- c(vars.ind, vars.dep)
+vars.evol <- c(vars.ind.evol, vars.dep.evol)
+```
+
+```{r funciones}
+plot.corr <- function(var){
+  plot <- df |> select(where(is.numeric)) |>
+  select(FLL:FVC, get(var)) |>
+  ggcorr(hjust = 0.9, size = 2, layout.exp = 2, label = F, label_size = 2, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  ggtitle(paste0("Matriz de correlaciones ", var )) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson"))
+  return(plot)
+}
+
+# Tabla de correlación biserial por rangos (Wilcoxon) entre una variable
+# dicotomizada (presencia/ausencia de defecto) y un conjunto de variables continuas.
+tabla.biserial <- function(data, var.bin, vars.cont) {
+  map_dfr(vars.cont, function(v) {
+    x <- data[[v]]
+    g <- data[[var.bin]]
+    ok <- complete.cases(x, g)
+    x <- x[ok]; g <- g[ok]
+    n1 <- sum(g == levels(g)[1])
+    n2 <- sum(g == levels(g)[2])
+    if (n1 < 3 || n2 < 3 || length(unique(x)) < 2) {
+      return(tibble(variable = v, n.no = n1, n.si = n2, r.biserial = NA_real_, p.valor = NA_real_))
+    }
+    test <- wilcox.test(x ~ g, exact = FALSE)
+    r_rb <- 1 - 2 * unname(test$statistic) / (n1 * n2)
+    tibble(variable = v, n.no = n1, n.si = n2, r.biserial = r_rb, p.valor = test$p.value)
+  }) |> arrange(p.valor)
+}
+
+# Boxplots de un conjunto de variables continuas según una variable dicotomizada.
+plot.boxplot.bin <- function(data, var.bin, vars.cont) {
+  data |>
+    select(all_of(c(var.bin, vars.cont))) |>
+    pivot_longer(-all_of(var.bin), names_to = "variable", values_to = "valor") |>
+    ggplot(aes(x = .data[[var.bin]], y = valor, fill = .data[[var.bin]])) +
+    geom_boxplot() +
+    facet_wrap(~variable, scales = "free_y") +
+    scale_fill_manual(values = c("No" = color1, "Sí" = color2)) +
+    labs(x = NULL, y = NULL) +
+    theme(legend.position = "none")
+}
+
+# Correlación de Kendall entre la magnitud del defecto y las variables
+# independientes, restringida a los individuos que presentan el defecto.
+tabla.correlacion.magnitud <- function(data, var.dep, vars.ind) {
+  sub <- data |> filter(.data[[var.dep]] > 0)
+  map_dfr(vars.ind, function(v) {
+    test <- suppressWarnings(cor.test(sub[[var.dep]], sub[[v]], method = "kendall"))
+    tibble(variable = v, n = nrow(sub), tau = unname(test$estimate), p.valor = test$p.value)
+  }) |> arrange(p.valor)
+}
+```
+
+## Correlaciones entre variables clínicas 
+
+```{r matriz-correlaciones-pearson}
+#| fig-cap: "Matriz de correlaciones de Pearson."
+#| fig-width: 10
+#| fig-height: 8
+df |> select(vars) |>
+  ggcorr(hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1))  +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```
+
+
+```{r  matriz-correlaciones-spearman}
+#| fig-cap: "Matriz de correlaciones de Spearman."
+#| fig-width: 10
+#| fig-height: 8
+# df |> select(vars) |>
+#   ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+#   guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
+``` 
+
+
+
+```{r  matriz-correlaciones-kendall}
+#| fig-cap: "Matriz de correlaciones de Kendall"
+#| fig-width: 10
+#| fig-height: 8
+df |> select(vars) |>
+  ggcorr(method = c("pairwise", "kendall"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
+```
+
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la miopía son VHC.BN2 y VHC.BN3. Las variables más correlacionadas con la presbicia son Dif.AAOI.hofstetter, Dif.AAOD.hofstetter, AAOI, AAOD, CCF, ACA, VHC.BT3, FLC y VHC.BN3.
+
+## Correlación con variables de baja variabilidad (HIP.D, HIP.I, PRE.D, PRE.I)
+
+Las variables HIP.D, HIP.I, PRE.D y PRE.I apenas presentan variabilidad (entre el 73% y el 80% de los individuos tienen valor 0), lo que hace que los coeficientes de correlación habituales (Pearson, Spearman, Kendall) tengan muy poca potencia y sean poco fiables para estas variables. En su lugar se analizan en dos partes:
+
+1. **Presencia del defecto**: se dicotomiza la variable (0 = sin defecto, >0 = con defecto) y se compara la distribución de cada variable independiente entre ambos grupos mediante el test de Wilcoxon-Mann-Whitney, con el coeficiente de correlación biserial por rangos como tamaño del efecto.
+2. **Magnitud del defecto**: restringido a los individuos que presentan el defecto, se calcula la correlación de Kendall entre la magnitud del defecto y cada variable independiente.
+
+```{r dicotomizacion}
+vars.dep.bajavar <- c("HIP.D", "HIP.I", "PRE.D", "PRE.I")
+
+df <- df |>
+  mutate(across(all_of(vars.dep.bajavar),
+                ~factor(if_else(.x > 0, "Sí", "No"), levels = c("No", "Sí")),
+                .names = "{.col}.bin"))
+```
+
+### HIP.D
+
+```{r biserial-hip-d}
+#| tbl-cap: "Test de Wilcoxon y correlación biserial por rangos entre la presencia de hipermetropía (HIP.D) y las variables independientes."
+tabla.biserial(df, "HIP.D.bin", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+```{r boxplot-hip-d}
+#| fig-cap: "Distribución de las variables independientes según presencia de hipermetropía (HIP.D)."
+#| fig-width: 10
+#| fig-height: 10
+plot.boxplot.bin(df, "HIP.D.bin", vars.ind)
+```
+
+```{r magnitud-hip-d}
+#| tbl-cap: "Correlación de Kendall entre la magnitud de HIP.D y las variables independientes (solo individuos con hipermetropía)."
+tabla.correlacion.magnitud(df, "HIP.D", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+### HIP.I
+
+```{r biserial-hip-i}
+#| tbl-cap: "Test de Wilcoxon y correlación biserial por rangos entre la presencia de hipermetropía (HIP.I) y las variables independientes."
+tabla.biserial(df, "HIP.I.bin", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+```{r boxplot-hip-i}
+#| fig-cap: "Distribución de las variables independientes según presencia de hipermetropía (HIP.I)."
+#| fig-width: 10
+#| fig-height: 10
+plot.boxplot.bin(df, "HIP.I.bin", vars.ind)
+```
+
+```{r magnitud-hip-i}
+#| tbl-cap: "Correlación de Kendall entre la magnitud de HIP.I y las variables independientes (solo individuos con hipermetropía)."
+tabla.correlacion.magnitud(df, "HIP.I", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+### PRE.D
+
+```{r biserial-pre-d}
+#| tbl-cap: "Test de Wilcoxon y correlación biserial por rangos entre la presencia de presbicia (PRE.D) y las variables independientes."
+tabla.biserial(df, "PRE.D.bin", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+```{r boxplot-pre-d}
+#| fig-cap: "Distribución de las variables independientes según presencia de presbicia (PRE.D)."
+#| fig-width: 10
+#| fig-height: 10
+plot.boxplot.bin(df, "PRE.D.bin", vars.ind)
+```
+
+```{r magnitud-pre-d}
+#| tbl-cap: "Correlación de Kendall entre la magnitud de PRE.D y las variables independientes (solo individuos con presbicia)."
+tabla.correlacion.magnitud(df, "PRE.D", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+### PRE.I
+
+```{r biserial-pre-i}
+#| tbl-cap: "Test de Wilcoxon y correlación biserial por rangos entre la presencia de presbicia (PRE.I) y las variables independientes."
+tabla.biserial(df, "PRE.I.bin", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+```{r boxplot-pre-i}
+#| fig-cap: "Distribución de las variables independientes según presencia de presbicia (PRE.I)."
+#| fig-width: 10
+#| fig-height: 10
+plot.boxplot.bin(df, "PRE.I.bin", vars.ind)
+```
+
+```{r magnitud-pre-i}
+#| tbl-cap: "Correlación de Kendall entre la magnitud de PRE.I y las variables independientes (solo individuos con presbicia)."
+tabla.correlacion.magnitud(df, "PRE.I", vars.ind) |>
+  kable(digits = 3) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+<!-- 
+## Correlaciones entre las evoluciones de las variables clínicas
+
+```{r matriz-correlaciones-pearson-evol}
+#| fig-cap: "Matriz de correlaciones de Pearson."
+#| fig-width: 10
+#| fig-height: 8
+df |> select(vars.evol) |>
+  ggcorr(hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1))  +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```
+
+```{r  matriz-correlaciones-spearman-evol}
+#| fig-cap: "Matriz de correlaciones de Spearman."
+#| fig-width: 10
+#| fig-height: 8
+df |> select(vars.evol) |>
+  ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nSpearman"))
+```
+
+```{r  matriz-correlaciones-kendall-evol}
+#| fig-cap: "Matriz de correlaciones de Kendall"
+#| fig-width: 10
+#| fig-height: 8
+df |> select(vars.evol) |>
+  ggcorr(method = c("pairwise", "kendall"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
+```
+
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. 
+
+## Correlaciones entre las evoluciones de las variables clínicas (sin medidas repetidas)
+
+```{r matriz-correlaciones-pearson-evol-no-rep}
+#| fig-cap: "Matriz de correlaciones de Pearson."
+#| fig-width: 10
+#| fig-height: 8
+df2 |> select(vars.evol) |>
+  ggcorr(hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1))  +
+  guides(fill = guide_colourbar(title="Coef. correlación\nPearson")) 
+```
+
+```{r  matriz-correlaciones-spearman-evol-no-rep}
+#| fig-cap: "Matriz de correlaciones de Spearman."
+#| fig-width: 10
+#| fig-height: 8
+df2 |> select(vars.evol) |>
+  ggcorr(method = c("all.obs", "spearman"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nSpearman")) 
+```
+
+
+```{r  matriz-correlaciones-kendall-evol-no-rep}
+#| fig-cap: "Matriz de correlaciones de Kendall"
+#| fig-width: 10
+#| fig-height: 8
+df2 |> select(vars.evol) |>
+  ggcorr(method = c("pairwise", "kendall"), hjust = 0.9, size = 4, layout.exp = 2, label = T, label_size = 3, label_round = 2, low = "darkred", high = "#0072B2", limits = c(-1, 1)) +
+  guides(fill = guide_colourbar(title="Coef. correlación\nKendall")) 
+```
+
+En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la evolución de la miopía son AAOI.EVOL, AAOD.EVOL, VHC.BT1.EVOL y VHC.BN1.EVOL. Las variables más correlacionadas con el astigmatismo son FLC.EVOL, VHL.BN1.EVOL y VHC.BN2.EVOL. Las variables más correlacionadas con la presbicia son CCF.EVOL, ACA.EVOL, AAOD.EVOL, AAOI.EVOL, VHL.BT1.EVOL (única significativa), FVC.EVOL, VHL.BN2.EVOL y VHL.BT2.EVOL.  -->
+
+<!-- ```{r} -->
+<!-- df.tmp <- select(df2, vars.evol) -->
+
+<!-- rcorr(as.matrix(df.tmp), type = "spearman") -->
+<!-- ``` -->
+

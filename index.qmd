@@ -37,6 +37,14 @@ datatable(var, rownames = F, escape=F, class = 'display', options = list(pageLen
 
 ### Número total de mediciones: `r nrow(df)`
 
+### Número de mediciones por paciente
+
+```{r mediciones por paciente}
+df |>
+  group_by(ID) |>
+  summarise(n = n()) |>
+  datatable(rownames = F, escape=F, class = 'display', options = list(pageLength = 10, dom="ltip", language = list(url = 'http://cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')))
+```
 
  
  

@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Vergencias - Regresión</title>
+<title>Regresión – Vergencias</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -17,7 +20,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -31,89 +34,289 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./img/logos/favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-27b9f889d6e109d015426ac4f274b7e7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-1242ccc02940432acd87c1b818d9cd49.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
-    "search-no-results-text": "Sin resultados",
+    "search-no-results-text": "No se han encontrado resultados",
     "search-matching-documents-text": "documentos encontrados",
     "search-copy-link-title": "Copiar el enlace en la búsqueda",
     "search-hide-matches-text": "Ocultar resultados adicionales",
     "search-more-match-text": "resultado adicional en este documento",
     "search-more-matches-text": "resultados adicionales en este documento",
     "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancelar",
-    "search-submit-button-title": "Enviar"
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Vergencias</span>
     </a>
   </div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html">
- <span class="menu-text">Introducción</span></a>
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Introducción</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./descriptiva.html">
- <span class="menu-text">Estadística Descriptiva</span></a>
+    <a class="nav-link" href="./descriptiva.html"> 
+<span class="menu-text">Estadística Descriptiva</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./correlacion.html">
- <span class="menu-text">Correlación</span></a>
+    <a class="nav-link" href="./correlacion.html"> 
+<span class="menu-text">Correlación (última revisión)</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./regresion.html" aria-current="page">
- <span class="menu-text">Regresión</span></a>
+    <a class="nav-link" href="./correlacion-medidas-repetidas.html"> 
+<span class="menu-text">Correlación con medidas repetidas</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./regresion.html" aria-current="page"> 
+<span class="menu-text">Regresión</span></a>
   </li>  
 </ul>
-              <div class="quarto-toggle-container">
-                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
   </div>
 </a>
-              </div>
-              <div id="quarto-search" class="" title="Search"></div>
-          </div> <!-- /navcollapse -->
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -153,6 +356,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Regresión</h1>
@@ -168,703 +372,710 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
 
-<div class="cell" data-hash="regresion_cache/html/libraries_39e8869a1a361b0e0d9eb884396e3d6d">
 
-</div>
-<div class="cell" data-hash="regresion_cache/html/colores_08622edee070a7962fceaf5a28258047">
-
-</div>
-<div class="cell" data-hash="regresion_cache/html/carga datos_fe7dd03f6177d4aee040de72c7a7c924">
-
-</div>
-<div class="cell" data-hash="regresion_cache/html/conjuntos-variables_76f613ac3aadaadaea49498809b96219">
-
-</div>
-<div class="cell" data-hash="regresion_cache/html/funciones_c300f1234860f93bd3e6304eca7633b7">
-
-</div>
 <section id="regresiones-de-las-variables-clínicas" class="level2">
 <h2 class="anchored" data-anchor-id="regresiones-de-las-variables-clínicas">Regresiones de las variables clínicas</h2>
 <section id="miopía" class="level3">
 <h3 class="anchored" data-anchor-id="miopía">Miopía</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-miopia_dae9e0dfb1bc69a84fd48ae6af8cddee">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-miopia-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la miopía.</figcaption><p></p>
+<figcaption>Rectas de regresión para la miopía.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <section id="regresión-múltiple" class="level4">
 <h4 class="anchored" data-anchor-id="regresión-múltiple">Regresión múltiple</h4>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-miopia_899eb63d6e061d8a8a2b23ac480c44bf">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.2632078 </td>
-   <td style="text-align:right;"> 2.4819929 </td>
-   <td style="text-align:right;"> 0.1060469 </td>
-   <td style="text-align:right;"> 0.9159871 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1 </td>
-   <td style="text-align:right;"> 0.0700611 </td>
-   <td style="text-align:right;"> 0.0708133 </td>
-   <td style="text-align:right;"> 0.9893776 </td>
-   <td style="text-align:right;"> 0.3274398 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2 </td>
-   <td style="text-align:right;"> 0.0035250 </td>
-   <td style="text-align:right;"> 0.0737815 </td>
-   <td style="text-align:right;"> 0.0477764 </td>
-   <td style="text-align:right;"> 0.9620927 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1 </td>
-   <td style="text-align:right;"> 0.1031774 </td>
-   <td style="text-align:right;"> 0.1510120 </td>
-   <td style="text-align:right;"> 0.6832397 </td>
-   <td style="text-align:right;"> 0.4977402 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2 </td>
-   <td style="text-align:right;"> -0.2122605 </td>
-   <td style="text-align:right;"> 0.1657107 </td>
-   <td style="text-align:right;"> -1.2809097 </td>
-   <td style="text-align:right;"> 0.2063798 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1 </td>
-   <td style="text-align:right;"> 0.0455856 </td>
-   <td style="text-align:right;"> 0.0561176 </td>
-   <td style="text-align:right;"> 0.8123221 </td>
-   <td style="text-align:right;"> 0.4206174 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2 </td>
-   <td style="text-align:right;"> -0.0613897 </td>
-   <td style="text-align:right;"> 0.0646314 </td>
-   <td style="text-align:right;"> -0.9498439 </td>
-   <td style="text-align:right;"> 0.3469497 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3 </td>
-   <td style="text-align:right;"> -0.0190728 </td>
-   <td style="text-align:right;"> 0.0626784 </td>
-   <td style="text-align:right;"> -0.3042959 </td>
-   <td style="text-align:right;"> 0.7622179 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1 </td>
-   <td style="text-align:right;"> -0.0998330 </td>
-   <td style="text-align:right;"> 0.0819227 </td>
-   <td style="text-align:right;"> -1.2186246 </td>
-   <td style="text-align:right;"> 0.2289423 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2 </td>
-   <td style="text-align:right;"> -0.1485100 </td>
-   <td style="text-align:right;"> 0.0915239 </td>
-   <td style="text-align:right;"> -1.6226363 </td>
-   <td style="text-align:right;"> 0.1112178 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3 </td>
-   <td style="text-align:right;"> -0.0661201 </td>
-   <td style="text-align:right;"> 0.0904949 </td>
-   <td style="text-align:right;"> -0.7306495 </td>
-   <td style="text-align:right;"> 0.4685448 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL </td>
-   <td style="text-align:right;"> -0.5021138 </td>
-   <td style="text-align:right;"> 0.2596275 </td>
-   <td style="text-align:right;"> -1.9339775 </td>
-   <td style="text-align:right;"> 0.0590235 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC </td>
-   <td style="text-align:right;"> -0.4266648 </td>
-   <td style="text-align:right;"> 0.3240871 </td>
-   <td style="text-align:right;"> -1.3165128 </td>
-   <td style="text-align:right;"> 0.1942538 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC </td>
-   <td style="text-align:right;"> -0.0715163 </td>
-   <td style="text-align:right;"> 0.0821444 </td>
-   <td style="text-align:right;"> -0.8706164 </td>
-   <td style="text-align:right;"> 0.3882971 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA </td>
-   <td style="text-align:right;"> 0.2155561 </td>
-   <td style="text-align:right;"> 0.1175421 </td>
-   <td style="text-align:right;"> 1.8338627 </td>
-   <td style="text-align:right;"> 0.0728781 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF </td>
-   <td style="text-align:right;"> 0.8673353 </td>
-   <td style="text-align:right;"> 0.6150700 </td>
-   <td style="text-align:right;"> 1.4101408 </td>
-   <td style="text-align:right;"> 0.1649455 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD </td>
-   <td style="text-align:right;"> -0.4756405 </td>
-   <td style="text-align:right;"> 0.4644990 </td>
-   <td style="text-align:right;"> -1.0239861 </td>
-   <td style="text-align:right;"> 0.3109749 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI </td>
-   <td style="text-align:right;"> 0.5926341 </td>
-   <td style="text-align:right;"> 0.4265106 </td>
-   <td style="text-align:right;"> 1.3894945 </td>
-   <td style="text-align:right;"> 0.1710944 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Dif.AAOD.hofstetter </td>
-   <td style="text-align:right;"> -0.0148743 </td>
-   <td style="text-align:right;"> 0.0560539 </td>
-   <td style="text-align:right;"> -0.2653575 </td>
-   <td style="text-align:right;"> 0.7918704 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">1.2967636</td>
+<td style="text-align: right;">0.6416599</td>
+<td style="text-align: right;">2.0209517</td>
+<td style="text-align: right;">0.0436273</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">0.0137313</td>
+<td style="text-align: right;">0.0195521</td>
+<td style="text-align: right;">0.7022903</td>
+<td style="text-align: right;">0.4827085</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">-0.0654807</td>
+<td style="text-align: right;">0.0201860</td>
+<td style="text-align: right;">-3.2438716</td>
+<td style="text-align: right;">0.0012296</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">-0.2507478</td>
+<td style="text-align: right;">0.0512887</td>
+<td style="text-align: right;">-4.8889450</td>
+<td style="text-align: right;">0.0000012</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">0.0787303</td>
+<td style="text-align: right;">0.0541835</td>
+<td style="text-align: right;">1.4530308</td>
+<td style="text-align: right;">0.1466189</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">0.0218985</td>
+<td style="text-align: right;">0.0133540</td>
+<td style="text-align: right;">1.6398479</td>
+<td style="text-align: right;">0.1014416</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">-0.0068663</td>
+<td style="text-align: right;">0.0165532</td>
+<td style="text-align: right;">-0.4148023</td>
+<td style="text-align: right;">0.6784011</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">-0.0209474</td>
+<td style="text-align: right;">0.0152488</td>
+<td style="text-align: right;">-1.3737141</td>
+<td style="text-align: right;">0.1699267</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">0.0609048</td>
+<td style="text-align: right;">0.0157729</td>
+<td style="text-align: right;">3.8613668</td>
+<td style="text-align: right;">0.0001221</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">-0.1057670</td>
+<td style="text-align: right;">0.0298208</td>
+<td style="text-align: right;">-3.5467587</td>
+<td style="text-align: right;">0.0004134</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">-0.0247841</td>
+<td style="text-align: right;">0.0278502</td>
+<td style="text-align: right;">-0.8899055</td>
+<td style="text-align: right;">0.3737921</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">-0.3479306</td>
+<td style="text-align: right;">0.1037105</td>
+<td style="text-align: right;">-3.3548246</td>
+<td style="text-align: right;">0.0008327</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">-0.5665574</td>
+<td style="text-align: right;">0.1150900</td>
+<td style="text-align: right;">-4.9227323</td>
+<td style="text-align: right;">0.0000010</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">0.0322757</td>
+<td style="text-align: right;">0.0236341</td>
+<td style="text-align: right;">1.3656438</td>
+<td style="text-align: right;">0.1724460</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">0.0139563</td>
+<td style="text-align: right;">0.0299369</td>
+<td style="text-align: right;">0.4661923</td>
+<td style="text-align: right;">0.6412085</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">0.5505715</td>
+<td style="text-align: right;">0.1258916</td>
+<td style="text-align: right;">4.3733764</td>
+<td style="text-align: right;">0.0000139</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">0.1641133</td>
+<td style="text-align: right;">0.1864192</td>
+<td style="text-align: right;">0.8803457</td>
+<td style="text-align: right;">0.3789443</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">0.0450421</td>
+<td style="text-align: right;">0.1943391</td>
+<td style="text-align: right;">0.2317706</td>
+<td style="text-align: right;">0.8167772</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">-0.3496022</td>
+<td style="text-align: right;">0.1478378</td>
+<td style="text-align: right;">-2.3647682</td>
+<td style="text-align: right;">0.0182862</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">0.2423220</td>
+<td style="text-align: right;">0.1493127</td>
+<td style="text-align: right;">1.6229164</td>
+<td style="text-align: right;">0.1050129</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.48\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.25\)</span></strong>.</p>
 </section>
 </section>
 <section id="astigmatismo" class="level3">
 <h3 class="anchored" data-anchor-id="astigmatismo">Astigmatismo</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-astismatigmo_1d12c4e519d27366ad28794c0cdd7634">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-astismatigmo-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para el astigmatismo.</figcaption><p></p>
+<figcaption>Rectas de regresión para el astigmatismo.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <section id="regresión-múltiple-1" class="level4">
 <h4 class="anchored" data-anchor-id="regresión-múltiple-1">Regresión múltiple</h4>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-astigmatismo_2c88e7aa45164d990a968dc5e0e07b3c">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> -0.3543307 </td>
-   <td style="text-align:right;"> 0.4576028 </td>
-   <td style="text-align:right;"> -0.7743194 </td>
-   <td style="text-align:right;"> 0.4425394 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1 </td>
-   <td style="text-align:right;"> -0.0113518 </td>
-   <td style="text-align:right;"> 0.0130558 </td>
-   <td style="text-align:right;"> -0.8694828 </td>
-   <td style="text-align:right;"> 0.3889103 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2 </td>
-   <td style="text-align:right;"> 0.0164051 </td>
-   <td style="text-align:right;"> 0.0136030 </td>
-   <td style="text-align:right;"> 1.2059875 </td>
-   <td style="text-align:right;"> 0.2337333 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1 </td>
-   <td style="text-align:right;"> 0.0197559 </td>
-   <td style="text-align:right;"> 0.0278419 </td>
-   <td style="text-align:right;"> 0.7095731 </td>
-   <td style="text-align:right;"> 0.4814017 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2 </td>
-   <td style="text-align:right;"> 0.0327368 </td>
-   <td style="text-align:right;"> 0.0305519 </td>
-   <td style="text-align:right;"> 1.0715138 </td>
-   <td style="text-align:right;"> 0.2892966 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1 </td>
-   <td style="text-align:right;"> 0.0203943 </td>
-   <td style="text-align:right;"> 0.0103464 </td>
-   <td style="text-align:right;"> 1.9711607 </td>
-   <td style="text-align:right;"> 0.0544857 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2 </td>
-   <td style="text-align:right;"> -0.0047969 </td>
-   <td style="text-align:right;"> 0.0119160 </td>
-   <td style="text-align:right;"> -0.4025582 </td>
-   <td style="text-align:right;"> 0.6890605 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3 </td>
-   <td style="text-align:right;"> -0.0044639 </td>
-   <td style="text-align:right;"> 0.0115560 </td>
-   <td style="text-align:right;"> -0.3862876 </td>
-   <td style="text-align:right;"> 0.7009907 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1 </td>
-   <td style="text-align:right;"> -0.0250502 </td>
-   <td style="text-align:right;"> 0.0151040 </td>
-   <td style="text-align:right;"> -1.6585143 </td>
-   <td style="text-align:right;"> 0.1037353 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2 </td>
-   <td style="text-align:right;"> -0.0183670 </td>
-   <td style="text-align:right;"> 0.0168742 </td>
-   <td style="text-align:right;"> -1.0884668 </td>
-   <td style="text-align:right;"> 0.2818241 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3 </td>
-   <td style="text-align:right;"> 0.0023589 </td>
-   <td style="text-align:right;"> 0.0166845 </td>
-   <td style="text-align:right;"> 0.1413845 </td>
-   <td style="text-align:right;"> 0.8881579 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL </td>
-   <td style="text-align:right;"> -0.0670724 </td>
-   <td style="text-align:right;"> 0.0478673 </td>
-   <td style="text-align:right;"> -1.4012154 </td>
-   <td style="text-align:right;"> 0.1675823 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC </td>
-   <td style="text-align:right;"> -0.0839539 </td>
-   <td style="text-align:right;"> 0.0597516 </td>
-   <td style="text-align:right;"> -1.4050470 </td>
-   <td style="text-align:right;"> 0.1664464 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC </td>
-   <td style="text-align:right;"> -0.0063108 </td>
-   <td style="text-align:right;"> 0.0151449 </td>
-   <td style="text-align:right;"> -0.4166920 </td>
-   <td style="text-align:right;"> 0.6787613 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA </td>
-   <td style="text-align:right;"> 0.0019179 </td>
-   <td style="text-align:right;"> 0.0216711 </td>
-   <td style="text-align:right;"> 0.0885024 </td>
-   <td style="text-align:right;"> 0.9298456 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF </td>
-   <td style="text-align:right;"> 0.0642845 </td>
-   <td style="text-align:right;"> 0.1133999 </td>
-   <td style="text-align:right;"> 0.5668832 </td>
-   <td style="text-align:right;"> 0.5734351 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD </td>
-   <td style="text-align:right;"> -0.1229621 </td>
-   <td style="text-align:right;"> 0.0856393 </td>
-   <td style="text-align:right;"> -1.4358150 </td>
-   <td style="text-align:right;"> 0.1575402 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI </td>
-   <td style="text-align:right;"> 0.1187188 </td>
-   <td style="text-align:right;"> 0.0786354 </td>
-   <td style="text-align:right;"> 1.5097373 </td>
-   <td style="text-align:right;"> 0.1376657 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Dif.AAOD.hofstetter </td>
-   <td style="text-align:right;"> -0.0071529 </td>
-   <td style="text-align:right;"> 0.0103346 </td>
-   <td style="text-align:right;"> -0.6921274 </td>
-   <td style="text-align:right;"> 0.4921921 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-1.0020651</td>
+<td style="text-align: right;">0.1692587</td>
+<td style="text-align: right;">-5.9203170</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">-0.0047595</td>
+<td style="text-align: right;">0.0051575</td>
+<td style="text-align: right;">-0.9228270</td>
+<td style="text-align: right;">0.3563838</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">-0.0093763</td>
+<td style="text-align: right;">0.0053247</td>
+<td style="text-align: right;">-1.7609041</td>
+<td style="text-align: right;">0.0786480</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">0.0020546</td>
+<td style="text-align: right;">0.0135291</td>
+<td style="text-align: right;">0.1518649</td>
+<td style="text-align: right;">0.8793329</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">0.0048741</td>
+<td style="text-align: right;">0.0142927</td>
+<td style="text-align: right;">0.3410188</td>
+<td style="text-align: right;">0.7331816</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">-0.0037934</td>
+<td style="text-align: right;">0.0035225</td>
+<td style="text-align: right;">-1.0768831</td>
+<td style="text-align: right;">0.2818667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">0.0023768</td>
+<td style="text-align: right;">0.0043664</td>
+<td style="text-align: right;">0.5443408</td>
+<td style="text-align: right;">0.5863631</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">0.0038000</td>
+<td style="text-align: right;">0.0040224</td>
+<td style="text-align: right;">0.9447227</td>
+<td style="text-align: right;">0.3450941</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">0.0003334</td>
+<td style="text-align: right;">0.0041606</td>
+<td style="text-align: right;">0.0801327</td>
+<td style="text-align: right;">0.9361523</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">0.0102888</td>
+<td style="text-align: right;">0.0078662</td>
+<td style="text-align: right;">1.3079773</td>
+<td style="text-align: right;">0.1912678</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">-0.0012966</td>
+<td style="text-align: right;">0.0073464</td>
+<td style="text-align: right;">-0.1765003</td>
+<td style="text-align: right;">0.8599469</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">-0.0182140</td>
+<td style="text-align: right;">0.0273570</td>
+<td style="text-align: right;">-0.6657893</td>
+<td style="text-align: right;">0.5057434</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">0.0619428</td>
+<td style="text-align: right;">0.0303587</td>
+<td style="text-align: right;">2.0403604</td>
+<td style="text-align: right;">0.0416520</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">0.0161276</td>
+<td style="text-align: right;">0.0062343</td>
+<td style="text-align: right;">2.5869310</td>
+<td style="text-align: right;">0.0098641</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">0.0073544</td>
+<td style="text-align: right;">0.0078968</td>
+<td style="text-align: right;">0.9313133</td>
+<td style="text-align: right;">0.3519808</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">0.0935676</td>
+<td style="text-align: right;">0.0332080</td>
+<td style="text-align: right;">2.8176206</td>
+<td style="text-align: right;">0.0049609</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">-0.0071173</td>
+<td style="text-align: right;">0.0491741</td>
+<td style="text-align: right;">-0.1447371</td>
+<td style="text-align: right;">0.8849560</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">0.0332474</td>
+<td style="text-align: right;">0.0512633</td>
+<td style="text-align: right;">0.6485618</td>
+<td style="text-align: right;">0.5168133</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">-0.0130531</td>
+<td style="text-align: right;">0.0389970</td>
+<td style="text-align: right;">-0.3347195</td>
+<td style="text-align: right;">0.7379270</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">-0.0146448</td>
+<td style="text-align: right;">0.0393861</td>
+<td style="text-align: right;">-0.3718269</td>
+<td style="text-align: right;">0.7101231</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.32\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.08\)</span></strong>.</p>
 </section>
 </section>
 <section id="presbicia" class="level3">
 <h3 class="anchored" data-anchor-id="presbicia">Presbicia</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-presbicia_b78e4129d095a160125ff0f133ec9076">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-presbicia-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la presbicia.</figcaption><p></p>
+<figcaption>Rectas de regresión para la presbicia.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <section id="regresión-múltiple-2" class="level4">
 <h4 class="anchored" data-anchor-id="regresión-múltiple-2">Regresión múltiple</h4>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-presbicia_b90d9106ff93a27306ae0c98bef95607">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.2077053 </td>
-   <td style="text-align:right;"> 0.3472646 </td>
-   <td style="text-align:right;"> 0.5981182 </td>
-   <td style="text-align:right;"> 0.5525729 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1 </td>
-   <td style="text-align:right;"> -0.0020291 </td>
-   <td style="text-align:right;"> 0.0099077 </td>
-   <td style="text-align:right;"> -0.2047994 </td>
-   <td style="text-align:right;"> 0.8385948 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2 </td>
-   <td style="text-align:right;"> 0.0064381 </td>
-   <td style="text-align:right;"> 0.0103230 </td>
-   <td style="text-align:right;"> 0.6236663 </td>
-   <td style="text-align:right;"> 0.5357994 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1 </td>
-   <td style="text-align:right;"> 0.0285212 </td>
-   <td style="text-align:right;"> 0.0211286 </td>
-   <td style="text-align:right;"> 1.3498833 </td>
-   <td style="text-align:right;"> 0.1833851 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2 </td>
-   <td style="text-align:right;"> -0.0118645 </td>
-   <td style="text-align:right;"> 0.0231852 </td>
-   <td style="text-align:right;"> -0.5117285 </td>
-   <td style="text-align:right;"> 0.6111873 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1 </td>
-   <td style="text-align:right;"> 0.0186953 </td>
-   <td style="text-align:right;"> 0.0078516 </td>
-   <td style="text-align:right;"> 2.3810714 </td>
-   <td style="text-align:right;"> 0.0212778 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2 </td>
-   <td style="text-align:right;"> 0.0148810 </td>
-   <td style="text-align:right;"> 0.0090428 </td>
-   <td style="text-align:right;"> 1.6456170 </td>
-   <td style="text-align:right;"> 0.1063762 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3 </td>
-   <td style="text-align:right;"> -0.0220968 </td>
-   <td style="text-align:right;"> 0.0087696 </td>
-   <td style="text-align:right;"> -2.5197180 </td>
-   <td style="text-align:right;"> 0.0151267 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1 </td>
-   <td style="text-align:right;"> -0.0313675 </td>
-   <td style="text-align:right;"> 0.0114621 </td>
-   <td style="text-align:right;"> -2.7366275 </td>
-   <td style="text-align:right;"> 0.0086772 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2 </td>
-   <td style="text-align:right;"> -0.0321809 </td>
-   <td style="text-align:right;"> 0.0128054 </td>
-   <td style="text-align:right;"> -2.5130680 </td>
-   <td style="text-align:right;"> 0.0153802 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3 </td>
-   <td style="text-align:right;"> 0.0326449 </td>
-   <td style="text-align:right;"> 0.0126615 </td>
-   <td style="text-align:right;"> 2.5782853 </td>
-   <td style="text-align:right;"> 0.0130527 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL </td>
-   <td style="text-align:right;"> -0.0176976 </td>
-   <td style="text-align:right;"> 0.0363254 </td>
-   <td style="text-align:right;"> -0.4871947 </td>
-   <td style="text-align:right;"> 0.6283380 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC </td>
-   <td style="text-align:right;"> 0.0609642 </td>
-   <td style="text-align:right;"> 0.0453442 </td>
-   <td style="text-align:right;"> 1.3444756 </td>
-   <td style="text-align:right;"> 0.1851142 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC </td>
-   <td style="text-align:right;"> -0.0334165 </td>
-   <td style="text-align:right;"> 0.0114931 </td>
-   <td style="text-align:right;"> -2.9075198 </td>
-   <td style="text-align:right;"> 0.0055009 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA </td>
-   <td style="text-align:right;"> 0.0492999 </td>
-   <td style="text-align:right;"> 0.0164457 </td>
-   <td style="text-align:right;"> 2.9977316 </td>
-   <td style="text-align:right;"> 0.0042985 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF </td>
-   <td style="text-align:right;"> 0.4147968 </td>
-   <td style="text-align:right;"> 0.0860567 </td>
-   <td style="text-align:right;"> 4.8200429 </td>
-   <td style="text-align:right;"> 0.0000148 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD </td>
-   <td style="text-align:right;"> -0.0557579 </td>
-   <td style="text-align:right;"> 0.0649897 </td>
-   <td style="text-align:right;"> -0.8579501 </td>
-   <td style="text-align:right;"> 0.3951838 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI </td>
-   <td style="text-align:right;"> -0.0078846 </td>
-   <td style="text-align:right;"> 0.0596746 </td>
-   <td style="text-align:right;"> -0.1321267 </td>
-   <td style="text-align:right;"> 0.8954364 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Dif.AAOD.hofstetter </td>
-   <td style="text-align:right;"> 0.0585770 </td>
-   <td style="text-align:right;"> 0.0078427 </td>
-   <td style="text-align:right;"> 7.4689825 </td>
-   <td style="text-align:right;"> 0.0000000 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">1.0127506</td>
+<td style="text-align: right;">0.1092303</td>
+<td style="text-align: right;">9.2716973</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">0.0112034</td>
+<td style="text-align: right;">0.0033284</td>
+<td style="text-align: right;">3.3660179</td>
+<td style="text-align: right;">0.0008001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">-0.0053727</td>
+<td style="text-align: right;">0.0034363</td>
+<td style="text-align: right;">-1.5635324</td>
+<td style="text-align: right;">0.1183346</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">0.0127349</td>
+<td style="text-align: right;">0.0087309</td>
+<td style="text-align: right;">1.4585915</td>
+<td style="text-align: right;">0.1450817</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">-0.0156311</td>
+<td style="text-align: right;">0.0092237</td>
+<td style="text-align: right;">-1.6946620</td>
+<td style="text-align: right;">0.0905403</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">-0.0011010</td>
+<td style="text-align: right;">0.0022733</td>
+<td style="text-align: right;">-0.4843103</td>
+<td style="text-align: right;">0.6283021</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">-0.0000874</td>
+<td style="text-align: right;">0.0028179</td>
+<td style="text-align: right;">-0.0310292</td>
+<td style="text-align: right;">0.9752542</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">-0.0091476</td>
+<td style="text-align: right;">0.0025958</td>
+<td style="text-align: right;">-3.5239687</td>
+<td style="text-align: right;">0.0004500</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">-0.0068998</td>
+<td style="text-align: right;">0.0026850</td>
+<td style="text-align: right;">-2.5697279</td>
+<td style="text-align: right;">0.0103632</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">-0.0156978</td>
+<td style="text-align: right;">0.0050764</td>
+<td style="text-align: right;">-3.0922972</td>
+<td style="text-align: right;">0.0020571</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">0.0171884</td>
+<td style="text-align: right;">0.0047410</td>
+<td style="text-align: right;">3.6255095</td>
+<td style="text-align: right;">0.0003072</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">-0.0112158</td>
+<td style="text-align: right;">0.0176547</td>
+<td style="text-align: right;">-0.6352834</td>
+<td style="text-align: right;">0.5254306</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">-0.0210754</td>
+<td style="text-align: right;">0.0195919</td>
+<td style="text-align: right;">-1.0757204</td>
+<td style="text-align: right;">0.2823862</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">-0.0079103</td>
+<td style="text-align: right;">0.0040232</td>
+<td style="text-align: right;">-1.9661537</td>
+<td style="text-align: right;">0.0496365</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">-0.0150944</td>
+<td style="text-align: right;">0.0050962</td>
+<td style="text-align: right;">-2.9619137</td>
+<td style="text-align: right;">0.0031505</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">0.2407466</td>
+<td style="text-align: right;">0.0214306</td>
+<td style="text-align: right;">11.2337537</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">0.0165409</td>
+<td style="text-align: right;">0.0317343</td>
+<td style="text-align: right;">0.5212324</td>
+<td style="text-align: right;">0.6023534</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">-0.0682929</td>
+<td style="text-align: right;">0.0330825</td>
+<td style="text-align: right;">-2.0643202</td>
+<td style="text-align: right;">0.0393188</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">-0.0158120</td>
+<td style="text-align: right;">0.0251666</td>
+<td style="text-align: right;">-0.6282925</td>
+<td style="text-align: right;">0.5299970</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">0.0912798</td>
+<td style="text-align: right;">0.0254176</td>
+<td style="text-align: right;">3.5911990</td>
+<td style="text-align: right;">0.0003499</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.83\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.66\)</span></strong>.</p>
 </section>
 </section>
 <section id="hipermetropía" class="level3">
 <h3 class="anchored" data-anchor-id="hipermetropía">Hipermetropía</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-hipermetropia_945edfc6625416d42f0d79ccd87b1f90">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-hipermetropia-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la hipermetropía.</figcaption><p></p>
+<figcaption>Rectas de regresión para la hipermetropía.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <section id="regresión-múltiple-3" class="level4">
 <h4 class="anchored" data-anchor-id="regresión-múltiple-3">Regresión múltiple</h4>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-hipermetropia_3a964ffd35f690e3a9e1ab471b973904">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.2512529 </td>
-   <td style="text-align:right;"> 0.3271735 </td>
-   <td style="text-align:right;"> 0.7679501 </td>
-   <td style="text-align:right;"> 0.4462784 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1 </td>
-   <td style="text-align:right;"> 0.0093894 </td>
-   <td style="text-align:right;"> 0.0093345 </td>
-   <td style="text-align:right;"> 1.0058820 </td>
-   <td style="text-align:right;"> 0.3195163 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2 </td>
-   <td style="text-align:right;"> -0.0038396 </td>
-   <td style="text-align:right;"> 0.0097258 </td>
-   <td style="text-align:right;"> -0.3947865 </td>
-   <td style="text-align:right;"> 0.6947493 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1 </td>
-   <td style="text-align:right;"> 0.0121246 </td>
-   <td style="text-align:right;"> 0.0199062 </td>
-   <td style="text-align:right;"> 0.6090849 </td>
-   <td style="text-align:right;"> 0.5453403 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2 </td>
-   <td style="text-align:right;"> -0.0131767 </td>
-   <td style="text-align:right;"> 0.0218438 </td>
-   <td style="text-align:right;"> -0.6032250 </td>
-   <td style="text-align:right;"> 0.5491989 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1 </td>
-   <td style="text-align:right;"> 0.0063161 </td>
-   <td style="text-align:right;"> 0.0073974 </td>
-   <td style="text-align:right;"> 0.8538253 </td>
-   <td style="text-align:right;"> 0.3974429 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2 </td>
-   <td style="text-align:right;"> -0.0058262 </td>
-   <td style="text-align:right;"> 0.0085196 </td>
-   <td style="text-align:right;"> -0.6838525 </td>
-   <td style="text-align:right;"> 0.4973566 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3 </td>
-   <td style="text-align:right;"> -0.0095675 </td>
-   <td style="text-align:right;"> 0.0082622 </td>
-   <td style="text-align:right;"> -1.1579829 </td>
-   <td style="text-align:right;"> 0.2526005 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1 </td>
-   <td style="text-align:right;"> -0.0152614 </td>
-   <td style="text-align:right;"> 0.0107990 </td>
-   <td style="text-align:right;"> -1.4132317 </td>
-   <td style="text-align:right;"> 0.1640399 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2 </td>
-   <td style="text-align:right;"> -0.0108875 </td>
-   <td style="text-align:right;"> 0.0120646 </td>
-   <td style="text-align:right;"> -0.9024370 </td>
-   <td style="text-align:right;"> 0.3713312 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3 </td>
-   <td style="text-align:right;"> -0.0047208 </td>
-   <td style="text-align:right;"> 0.0119289 </td>
-   <td style="text-align:right;"> -0.3957431 </td>
-   <td style="text-align:right;"> 0.6940481 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL </td>
-   <td style="text-align:right;"> -0.0251589 </td>
-   <td style="text-align:right;"> 0.0342238 </td>
-   <td style="text-align:right;"> -0.7351281 </td>
-   <td style="text-align:right;"> 0.4658383 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC </td>
-   <td style="text-align:right;"> 0.0603885 </td>
-   <td style="text-align:right;"> 0.0427208 </td>
-   <td style="text-align:right;"> 1.4135616 </td>
-   <td style="text-align:right;"> 0.1639435 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC </td>
-   <td style="text-align:right;"> -0.0182994 </td>
-   <td style="text-align:right;"> 0.0108282 </td>
-   <td style="text-align:right;"> -1.6899812 </td>
-   <td style="text-align:right;"> 0.0975171 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA </td>
-   <td style="text-align:right;"> 0.0155518 </td>
-   <td style="text-align:right;"> 0.0154943 </td>
-   <td style="text-align:right;"> 1.0037118 </td>
-   <td style="text-align:right;"> 0.3205508 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF </td>
-   <td style="text-align:right;"> 0.0792078 </td>
-   <td style="text-align:right;"> 0.0810778 </td>
-   <td style="text-align:right;"> 0.9769353 </td>
-   <td style="text-align:right;"> 0.3334994 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD </td>
-   <td style="text-align:right;"> -0.0178903 </td>
-   <td style="text-align:right;"> 0.0612297 </td>
-   <td style="text-align:right;"> -0.2921834 </td>
-   <td style="text-align:right;"> 0.7714056 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI </td>
-   <td style="text-align:right;"> -0.0134937 </td>
-   <td style="text-align:right;"> 0.0562221 </td>
-   <td style="text-align:right;"> -0.2400062 </td>
-   <td style="text-align:right;"> 0.8113475 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Dif.AAOD.hofstetter </td>
-   <td style="text-align:right;"> 0.0113392 </td>
-   <td style="text-align:right;"> 0.0073890 </td>
-   <td style="text-align:right;"> 1.5346140 </td>
-   <td style="text-align:right;"> 0.1314444 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">1.0064246</td>
+<td style="text-align: right;">0.1989088</td>
+<td style="text-align: right;">5.0597282</td>
+<td style="text-align: right;">0.0000005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">-0.0068103</td>
+<td style="text-align: right;">0.0060610</td>
+<td style="text-align: right;">-1.1236224</td>
+<td style="text-align: right;">0.2615203</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">-0.0018369</td>
+<td style="text-align: right;">0.0062575</td>
+<td style="text-align: right;">-0.2935539</td>
+<td style="text-align: right;">0.7691772</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">0.0070908</td>
+<td style="text-align: right;">0.0158990</td>
+<td style="text-align: right;">0.4459878</td>
+<td style="text-align: right;">0.6557303</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">-0.0121595</td>
+<td style="text-align: right;">0.0167964</td>
+<td style="text-align: right;">-0.7239340</td>
+<td style="text-align: right;">0.4693242</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">0.0108399</td>
+<td style="text-align: right;">0.0041396</td>
+<td style="text-align: right;">2.6185843</td>
+<td style="text-align: right;">0.0090016</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">-0.0180247</td>
+<td style="text-align: right;">0.0051313</td>
+<td style="text-align: right;">-3.5126756</td>
+<td style="text-align: right;">0.0004692</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">-0.0039471</td>
+<td style="text-align: right;">0.0047270</td>
+<td style="text-align: right;">-0.8350137</td>
+<td style="text-align: right;">0.4039667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">-0.0088323</td>
+<td style="text-align: right;">0.0048894</td>
+<td style="text-align: right;">-1.8064043</td>
+<td style="text-align: right;">0.0712420</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">-0.0117189</td>
+<td style="text-align: right;">0.0092442</td>
+<td style="text-align: right;">-1.2677060</td>
+<td style="text-align: right;">0.2052827</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">0.0063286</td>
+<td style="text-align: right;">0.0086333</td>
+<td style="text-align: right;">0.7330429</td>
+<td style="text-align: right;">0.4637533</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">-0.0444928</td>
+<td style="text-align: right;">0.0321493</td>
+<td style="text-align: right;">-1.3839412</td>
+<td style="text-align: right;">0.1667739</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">-0.0294984</td>
+<td style="text-align: right;">0.0356769</td>
+<td style="text-align: right;">-0.8268206</td>
+<td style="text-align: right;">0.4085926</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">-0.0019181</td>
+<td style="text-align: right;">0.0073263</td>
+<td style="text-align: right;">-0.2618076</td>
+<td style="text-align: right;">0.7935392</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">-0.0228224</td>
+<td style="text-align: right;">0.0092802</td>
+<td style="text-align: right;">-2.4592660</td>
+<td style="text-align: right;">0.0141390</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">0.1213077</td>
+<td style="text-align: right;">0.0390253</td>
+<td style="text-align: right;">3.1084398</td>
+<td style="text-align: right;">0.0019493</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">-0.0334291</td>
+<td style="text-align: right;">0.0577883</td>
+<td style="text-align: right;">-0.5784748</td>
+<td style="text-align: right;">0.5631112</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">0.0368411</td>
+<td style="text-align: right;">0.0602434</td>
+<td style="text-align: right;">0.6115383</td>
+<td style="text-align: right;">0.5410221</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">-0.0073529</td>
+<td style="text-align: right;">0.0458284</td>
+<td style="text-align: right;">-0.1604446</td>
+<td style="text-align: right;">0.8725725</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">0.0116850</td>
+<td style="text-align: right;">0.0462856</td>
+<td style="text-align: right;">0.2524552</td>
+<td style="text-align: right;">0.8007560</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.27\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.13\)</span></strong>.</p>
 </section>
 </section>
 </section>
@@ -872,162 +1083,160 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="regresiones-de-las-evoluciones-de-las-variables-clínicas">Regresiones de las evoluciones de las variables clínicas</h2>
 <section id="evolución-miopía" class="level3">
 <h3 class="anchored" data-anchor-id="evolución-miopía">Evolución miopía</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-miopia-evol_df657c7f26103f7c820ea06492e3df06">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-miopia-evol-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la miopía.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución de la miopía.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <section id="regresión-múltiple-4" class="level4">
 <h4 class="anchored" data-anchor-id="regresión-múltiple-4">Regresión múltiple</h4>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-miopia-evol_2116540be86be6481b2a8e71fb5db966">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> -0.1368870 </td>
-   <td style="text-align:right;"> 0.0251249 </td>
-   <td style="text-align:right;"> -5.4482677 </td>
-   <td style="text-align:right;"> 0.0000001 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> 0.0024841 </td>
-   <td style="text-align:right;"> 0.0036005 </td>
-   <td style="text-align:right;"> 0.6899325 </td>
-   <td style="text-align:right;"> 0.4908337 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0004976 </td>
-   <td style="text-align:right;"> 0.0039974 </td>
-   <td style="text-align:right;"> -0.1244932 </td>
-   <td style="text-align:right;"> 0.9010181 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> 0.0289831 </td>
-   <td style="text-align:right;"> 0.0145672 </td>
-   <td style="text-align:right;"> 1.9896219 </td>
-   <td style="text-align:right;"> 0.0476488 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0186585 </td>
-   <td style="text-align:right;"> 0.0120162 </td>
-   <td style="text-align:right;"> -1.5527742 </td>
-   <td style="text-align:right;"> 0.1216572 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0016689 </td>
-   <td style="text-align:right;"> 0.0032515 </td>
-   <td style="text-align:right;"> -0.5132521 </td>
-   <td style="text-align:right;"> 0.6081978 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0023648 </td>
-   <td style="text-align:right;"> 0.0042979 </td>
-   <td style="text-align:right;"> 0.5502096 </td>
-   <td style="text-align:right;"> 0.5826339 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> -0.0037831 </td>
-   <td style="text-align:right;"> 0.0036349 </td>
-   <td style="text-align:right;"> -1.0407768 </td>
-   <td style="text-align:right;"> 0.2989171 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0009444 </td>
-   <td style="text-align:right;"> 0.0049117 </td>
-   <td style="text-align:right;"> -0.1922709 </td>
-   <td style="text-align:right;"> 0.8476756 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0094894 </td>
-   <td style="text-align:right;"> 0.0070315 </td>
-   <td style="text-align:right;"> 1.3495584 </td>
-   <td style="text-align:right;"> 0.1782966 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> -0.0037367 </td>
-   <td style="text-align:right;"> 0.0063236 </td>
-   <td style="text-align:right;"> -0.5909215 </td>
-   <td style="text-align:right;"> 0.5550710 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> -0.0026616 </td>
-   <td style="text-align:right;"> 0.0209052 </td>
-   <td style="text-align:right;"> -0.1273191 </td>
-   <td style="text-align:right;"> 0.8987833 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> 0.0094613 </td>
-   <td style="text-align:right;"> 0.0211083 </td>
-   <td style="text-align:right;"> 0.4482284 </td>
-   <td style="text-align:right;"> 0.6543505 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> -0.0014320 </td>
-   <td style="text-align:right;"> 0.0058257 </td>
-   <td style="text-align:right;"> -0.2458106 </td>
-   <td style="text-align:right;"> 0.8060170 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0037865 </td>
-   <td style="text-align:right;"> 0.0062862 </td>
-   <td style="text-align:right;"> -0.6023526 </td>
-   <td style="text-align:right;"> 0.5474487 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> 0.0526586 </td>
-   <td style="text-align:right;"> 0.0397081 </td>
-   <td style="text-align:right;"> 1.3261437 </td>
-   <td style="text-align:right;"> 0.1859212 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> -0.0513971 </td>
-   <td style="text-align:right;"> 0.0410697 </td>
-   <td style="text-align:right;"> -1.2514615 </td>
-   <td style="text-align:right;"> 0.2118574 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> 0.0392104 </td>
-   <td style="text-align:right;"> 0.0411057 </td>
-   <td style="text-align:right;"> 0.9538910 </td>
-   <td style="text-align:right;"> 0.3409984 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-0.0724576</td>
+<td style="text-align: right;">0.0150617</td>
+<td style="text-align: right;">-4.8107241</td>
+<td style="text-align: right;">0.0000018</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">0.0061697</td>
+<td style="text-align: right;">0.0029713</td>
+<td style="text-align: right;">2.0764058</td>
+<td style="text-align: right;">0.0381842</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">0.0007688</td>
+<td style="text-align: right;">0.0031369</td>
+<td style="text-align: right;">0.2450864</td>
+<td style="text-align: right;">0.8064541</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">-0.0039951</td>
+<td style="text-align: right;">0.0094904</td>
+<td style="text-align: right;">-0.4209656</td>
+<td style="text-align: right;">0.6738965</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">-0.0276144</td>
+<td style="text-align: right;">0.0090578</td>
+<td style="text-align: right;">-3.0486968</td>
+<td style="text-align: right;">0.0023762</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">-0.0004334</td>
+<td style="text-align: right;">0.0020482</td>
+<td style="text-align: right;">-0.2115998</td>
+<td style="text-align: right;">0.8324747</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">0.0023174</td>
+<td style="text-align: right;">0.0029367</td>
+<td style="text-align: right;">0.7891275</td>
+<td style="text-align: right;">0.4302779</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">0.0046599</td>
+<td style="text-align: right;">0.0025648</td>
+<td style="text-align: right;">1.8168290</td>
+<td style="text-align: right;">0.0696279</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">-0.0025940</td>
+<td style="text-align: right;">0.0025893</td>
+<td style="text-align: right;">-1.0018295</td>
+<td style="text-align: right;">0.3167374</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">0.0072104</td>
+<td style="text-align: right;">0.0054086</td>
+<td style="text-align: right;">1.3331229</td>
+<td style="text-align: right;">0.1828817</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">-0.0051380</td>
+<td style="text-align: right;">0.0045513</td>
+<td style="text-align: right;">-1.1289052</td>
+<td style="text-align: right;">0.2592858</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">0.0006867</td>
+<td style="text-align: right;">0.0171237</td>
+<td style="text-align: right;">0.0400997</td>
+<td style="text-align: right;">0.9680240</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">-0.0002492</td>
+<td style="text-align: right;">0.0176719</td>
+<td style="text-align: right;">-0.0141000</td>
+<td style="text-align: right;">0.9887538</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">-0.0051964</td>
+<td style="text-align: right;">0.0041351</td>
+<td style="text-align: right;">-1.2566593</td>
+<td style="text-align: right;">0.2092542</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">-0.0127823</td>
+<td style="text-align: right;">0.0045241</td>
+<td style="text-align: right;">-2.8253489</td>
+<td style="text-align: right;">0.0048439</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">0.0117888</td>
+<td style="text-align: right;">0.0184431</td>
+<td style="text-align: right;">0.6392005</td>
+<td style="text-align: right;">0.5228806</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">-0.0161022</td>
+<td style="text-align: right;">0.0177457</td>
+<td style="text-align: right;">-0.9073835</td>
+<td style="text-align: right;">0.3644850</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">0.0325247</td>
+<td style="text-align: right;">0.0193713</td>
+<td style="text-align: right;">1.6790131</td>
+<td style="text-align: right;">0.0935510</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
 <p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.05\)</span></strong>.</p>
@@ -1035,1127 +1244,1113 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="astigmatismo-1" class="level3">
 <h3 class="anchored" data-anchor-id="astigmatismo-1">Astigmatismo</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-astismatigmo-evol_2bc7db0e61ae994ec7b4ff4463ddc376">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-astismatigmo-evol-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución del astigmatismo.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución del astigmatismo.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-astigmatistmo-evol_1d58cca4682cd53b9a208093c57b2835">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> -0.0377423 </td>
-   <td style="text-align:right;"> 0.0154633 </td>
-   <td style="text-align:right;"> -2.4407697 </td>
-   <td style="text-align:right;"> 0.0153039 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0052778 </td>
-   <td style="text-align:right;"> 0.0022160 </td>
-   <td style="text-align:right;"> -2.3817170 </td>
-   <td style="text-align:right;"> 0.0179305 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0084086 </td>
-   <td style="text-align:right;"> 0.0024602 </td>
-   <td style="text-align:right;"> 3.4178208 </td>
-   <td style="text-align:right;"> 0.0007294 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0348622 </td>
-   <td style="text-align:right;"> 0.0089655 </td>
-   <td style="text-align:right;"> -3.8884924 </td>
-   <td style="text-align:right;"> 0.0001273 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0134031 </td>
-   <td style="text-align:right;"> 0.0073955 </td>
-   <td style="text-align:right;"> 1.8123362 </td>
-   <td style="text-align:right;"> 0.0710533 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> 0.0018858 </td>
-   <td style="text-align:right;"> 0.0020012 </td>
-   <td style="text-align:right;"> 0.9423485 </td>
-   <td style="text-align:right;"> 0.3468629 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0001537 </td>
-   <td style="text-align:right;"> 0.0026452 </td>
-   <td style="text-align:right;"> -0.0581118 </td>
-   <td style="text-align:right;"> 0.9537029 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> 0.0023953 </td>
-   <td style="text-align:right;"> 0.0022371 </td>
-   <td style="text-align:right;"> 1.0707173 </td>
-   <td style="text-align:right;"> 0.2852599 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> 0.0002598 </td>
-   <td style="text-align:right;"> 0.0030230 </td>
-   <td style="text-align:right;"> 0.0859434 </td>
-   <td style="text-align:right;"> 0.9315756 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0014060 </td>
-   <td style="text-align:right;"> 0.0043276 </td>
-   <td style="text-align:right;"> -0.3248926 </td>
-   <td style="text-align:right;"> 0.7455158 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> -0.0038803 </td>
-   <td style="text-align:right;"> 0.0038919 </td>
-   <td style="text-align:right;"> -0.9970343 </td>
-   <td style="text-align:right;"> 0.3196472 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> -0.0427249 </td>
-   <td style="text-align:right;"> 0.0128663 </td>
-   <td style="text-align:right;"> -3.3206881 </td>
-   <td style="text-align:right;"> 0.0010227 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> 0.0014010 </td>
-   <td style="text-align:right;"> 0.0129913 </td>
-   <td style="text-align:right;"> 0.1078400 </td>
-   <td style="text-align:right;"> 0.9142033 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> -0.0001655 </td>
-   <td style="text-align:right;"> 0.0035855 </td>
-   <td style="text-align:right;"> -0.0461637 </td>
-   <td style="text-align:right;"> 0.9632141 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0015960 </td>
-   <td style="text-align:right;"> 0.0038689 </td>
-   <td style="text-align:right;"> -0.4125275 </td>
-   <td style="text-align:right;"> 0.6802826 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> -0.0320031 </td>
-   <td style="text-align:right;"> 0.0244387 </td>
-   <td style="text-align:right;"> -1.3095269 </td>
-   <td style="text-align:right;"> 0.1914775 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> -0.0096222 </td>
-   <td style="text-align:right;"> 0.0252767 </td>
-   <td style="text-align:right;"> -0.3806760 </td>
-   <td style="text-align:right;"> 0.7037452 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> 0.0099389 </td>
-   <td style="text-align:right;"> 0.0252988 </td>
-   <td style="text-align:right;"> 0.3928596 </td>
-   <td style="text-align:right;"> 0.6947355 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-0.0320362</td>
+<td style="text-align: right;">0.0075149</td>
+<td style="text-align: right;">-4.2630365</td>
+<td style="text-align: right;">0.0000226</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">-0.0023190</td>
+<td style="text-align: right;">0.0014825</td>
+<td style="text-align: right;">-1.5642409</td>
+<td style="text-align: right;">0.1181676</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">0.0018611</td>
+<td style="text-align: right;">0.0015651</td>
+<td style="text-align: right;">1.1891159</td>
+<td style="text-align: right;">0.2347569</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">-0.0145650</td>
+<td style="text-align: right;">0.0047352</td>
+<td style="text-align: right;">-3.0759171</td>
+<td style="text-align: right;">0.0021720</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">0.0046748</td>
+<td style="text-align: right;">0.0045193</td>
+<td style="text-align: right;">1.0344054</td>
+<td style="text-align: right;">0.3012681</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">-0.0002940</td>
+<td style="text-align: right;">0.0010220</td>
+<td style="text-align: right;">-0.2876431</td>
+<td style="text-align: right;">0.7736965</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">0.0013748</td>
+<td style="text-align: right;">0.0014652</td>
+<td style="text-align: right;">0.9382551</td>
+<td style="text-align: right;">0.3484045</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">-0.0029406</td>
+<td style="text-align: right;">0.0012797</td>
+<td style="text-align: right;">-2.2978877</td>
+<td style="text-align: right;">0.0218327</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">-0.0008262</td>
+<td style="text-align: right;">0.0012919</td>
+<td style="text-align: right;">-0.6395358</td>
+<td style="text-align: right;">0.5226627</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">0.0045967</td>
+<td style="text-align: right;">0.0026986</td>
+<td style="text-align: right;">1.7033563</td>
+<td style="text-align: right;">0.0889008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">-0.0025354</td>
+<td style="text-align: right;">0.0022708</td>
+<td style="text-align: right;">-1.1164998</td>
+<td style="text-align: right;">0.2645530</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">-0.0138737</td>
+<td style="text-align: right;">0.0085437</td>
+<td style="text-align: right;">-1.6238558</td>
+<td style="text-align: right;">0.1048116</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">0.0153529</td>
+<td style="text-align: right;">0.0088172</td>
+<td style="text-align: right;">1.7412422</td>
+<td style="text-align: right;">0.0820364</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">0.0017144</td>
+<td style="text-align: right;">0.0020632</td>
+<td style="text-align: right;">0.8309442</td>
+<td style="text-align: right;">0.4062601</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">0.0034742</td>
+<td style="text-align: right;">0.0022573</td>
+<td style="text-align: right;">1.5391124</td>
+<td style="text-align: right;">0.1241834</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">-0.0052931</td>
+<td style="text-align: right;">0.0092020</td>
+<td style="text-align: right;">-0.5752124</td>
+<td style="text-align: right;">0.5653140</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">0.0049701</td>
+<td style="text-align: right;">0.0088540</td>
+<td style="text-align: right;">0.5613384</td>
+<td style="text-align: right;">0.5747285</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">0.0081694</td>
+<td style="text-align: right;">0.0096651</td>
+<td style="text-align: right;">0.8452472</td>
+<td style="text-align: right;">0.3982327</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.15\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.04\)</span></strong>.</p>
 </section>
 <section id="presbicia-1" class="level3">
 <h3 class="anchored" data-anchor-id="presbicia-1">Presbicia</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-presbicia-evol_42be27ce561854e96ecd12a7ecd865fe">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-presbicia-evol-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la presbicia.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución de la presbicia.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-presbicia-evol_e4af0028ed7acb4d45d1e44a771ff92b">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.0434523 </td>
-   <td style="text-align:right;"> 0.0122547 </td>
-   <td style="text-align:right;"> 3.5457758 </td>
-   <td style="text-align:right;"> 0.0004619 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0021126 </td>
-   <td style="text-align:right;"> 0.0017561 </td>
-   <td style="text-align:right;"> -1.2029747 </td>
-   <td style="text-align:right;"> 0.2300477 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0015985 </td>
-   <td style="text-align:right;"> 0.0019497 </td>
-   <td style="text-align:right;"> 0.8198725 </td>
-   <td style="text-align:right;"> 0.4130173 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> 0.0125214 </td>
-   <td style="text-align:right;"> 0.0071051 </td>
-   <td style="text-align:right;"> 1.7623072 </td>
-   <td style="text-align:right;"> 0.0791573 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0047080 </td>
-   <td style="text-align:right;"> 0.0058609 </td>
-   <td style="text-align:right;"> 0.8032819 </td>
-   <td style="text-align:right;"> 0.4225237 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0020977 </td>
-   <td style="text-align:right;"> 0.0015859 </td>
-   <td style="text-align:right;"> -1.3226559 </td>
-   <td style="text-align:right;"> 0.1870774 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0008023 </td>
-   <td style="text-align:right;"> 0.0020963 </td>
-   <td style="text-align:right;"> -0.3827401 </td>
-   <td style="text-align:right;"> 0.7022158 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> -0.0009829 </td>
-   <td style="text-align:right;"> 0.0017729 </td>
-   <td style="text-align:right;"> -0.5543917 </td>
-   <td style="text-align:right;"> 0.5797731 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0018887 </td>
-   <td style="text-align:right;"> 0.0023957 </td>
-   <td style="text-align:right;"> -0.7883495 </td>
-   <td style="text-align:right;"> 0.4311891 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0057448 </td>
-   <td style="text-align:right;"> 0.0034296 </td>
-   <td style="text-align:right;"> -1.6750788 </td>
-   <td style="text-align:right;"> 0.0950852 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> 0.0025350 </td>
-   <td style="text-align:right;"> 0.0030843 </td>
-   <td style="text-align:right;"> 0.8218984 </td>
-   <td style="text-align:right;"> 0.4118653 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> -0.0289008 </td>
-   <td style="text-align:right;"> 0.0101965 </td>
-   <td style="text-align:right;"> -2.8343732 </td>
-   <td style="text-align:right;"> 0.0049410 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> 0.0007111 </td>
-   <td style="text-align:right;"> 0.0102956 </td>
-   <td style="text-align:right;"> 0.0690712 </td>
-   <td style="text-align:right;"> 0.9449844 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> -0.0032510 </td>
-   <td style="text-align:right;"> 0.0028415 </td>
-   <td style="text-align:right;"> -1.1441266 </td>
-   <td style="text-align:right;"> 0.2535920 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0040645 </td>
-   <td style="text-align:right;"> 0.0030661 </td>
-   <td style="text-align:right;"> -1.3256193 </td>
-   <td style="text-align:right;"> 0.1860947 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> 0.0432949 </td>
-   <td style="text-align:right;"> 0.0193677 </td>
-   <td style="text-align:right;"> 2.2354247 </td>
-   <td style="text-align:right;"> 0.0262133 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> 0.0126883 </td>
-   <td style="text-align:right;"> 0.0200318 </td>
-   <td style="text-align:right;"> 0.6334105 </td>
-   <td style="text-align:right;"> 0.5270058 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> -0.0123113 </td>
-   <td style="text-align:right;"> 0.0200493 </td>
-   <td style="text-align:right;"> -0.6140517 </td>
-   <td style="text-align:right;"> 0.5397020 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">0.0502879</td>
+<td style="text-align: right;">0.0082754</td>
+<td style="text-align: right;">6.0767578</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">-0.0029729</td>
+<td style="text-align: right;">0.0016326</td>
+<td style="text-align: right;">-1.8210029</td>
+<td style="text-align: right;">0.0689904</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">0.0008721</td>
+<td style="text-align: right;">0.0017235</td>
+<td style="text-align: right;">0.5059747</td>
+<td style="text-align: right;">0.6130177</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">0.0073377</td>
+<td style="text-align: right;">0.0052144</td>
+<td style="text-align: right;">1.4071979</td>
+<td style="text-align: right;">0.1597681</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">0.0002168</td>
+<td style="text-align: right;">0.0049767</td>
+<td style="text-align: right;">0.0435638</td>
+<td style="text-align: right;">0.9652633</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">-0.0007777</td>
+<td style="text-align: right;">0.0011254</td>
+<td style="text-align: right;">-0.6910392</td>
+<td style="text-align: right;">0.4897471</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">0.0017572</td>
+<td style="text-align: right;">0.0016135</td>
+<td style="text-align: right;">1.0890172</td>
+<td style="text-align: right;">0.2764835</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">-0.0023355</td>
+<td style="text-align: right;">0.0014092</td>
+<td style="text-align: right;">-1.6573443</td>
+<td style="text-align: right;">0.0978530</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">-0.0012379</td>
+<td style="text-align: right;">0.0014226</td>
+<td style="text-align: right;">-0.8701506</td>
+<td style="text-align: right;">0.3844865</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">-0.0064854</td>
+<td style="text-align: right;">0.0029717</td>
+<td style="text-align: right;">-2.1823827</td>
+<td style="text-align: right;">0.0293797</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">0.0044433</td>
+<td style="text-align: right;">0.0025006</td>
+<td style="text-align: right;">1.7768618</td>
+<td style="text-align: right;">0.0759816</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">-0.0148627</td>
+<td style="text-align: right;">0.0094084</td>
+<td style="text-align: right;">-1.5797260</td>
+<td style="text-align: right;">0.1145761</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">-0.0094739</td>
+<td style="text-align: right;">0.0097096</td>
+<td style="text-align: right;">-0.9757298</td>
+<td style="text-align: right;">0.3295017</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">-0.0017222</td>
+<td style="text-align: right;">0.0022720</td>
+<td style="text-align: right;">-0.7580124</td>
+<td style="text-align: right;">0.4486731</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">-0.0055707</td>
+<td style="text-align: right;">0.0024857</td>
+<td style="text-align: right;">-2.2410855</td>
+<td style="text-align: right;">0.0253019</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">0.0363748</td>
+<td style="text-align: right;">0.0101333</td>
+<td style="text-align: right;">3.5896218</td>
+<td style="text-align: right;">0.0003519</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">0.0269188</td>
+<td style="text-align: right;">0.0097501</td>
+<td style="text-align: right;">2.7608638</td>
+<td style="text-align: right;">0.0059006</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">-0.0113601</td>
+<td style="text-align: right;">0.0106433</td>
+<td style="text-align: right;">-1.0673467</td>
+<td style="text-align: right;">0.2861464</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.12\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.07\)</span></strong>.</p>
 </section>
 <section id="hipermetropía-1" class="level3">
 <h3 class="anchored" data-anchor-id="hipermetropía-1">Hipermetropía</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-hipermetropia-evol_39b2194af46f3144746a36ea325ef76f">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-hipermetropia-evol-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la hipermetropía.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución de la hipermetropía.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-hipermetropia-evol_f5ef7dbec94411812d45313cd6ccd2d1">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.0065918 </td>
-   <td style="text-align:right;"> 0.0036061 </td>
-   <td style="text-align:right;"> 1.8279695 </td>
-   <td style="text-align:right;"> 0.0686658 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0004203 </td>
-   <td style="text-align:right;"> 0.0005168 </td>
-   <td style="text-align:right;"> -0.8132574 </td>
-   <td style="text-align:right;"> 0.4167924 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0000151 </td>
-   <td style="text-align:right;"> 0.0005737 </td>
-   <td style="text-align:right;"> -0.0263791 </td>
-   <td style="text-align:right;"> 0.9789746 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> 0.0008858 </td>
-   <td style="text-align:right;"> 0.0020908 </td>
-   <td style="text-align:right;"> 0.4236615 </td>
-   <td style="text-align:right;"> 0.6721525 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0010160 </td>
-   <td style="text-align:right;"> 0.0017246 </td>
-   <td style="text-align:right;"> -0.5891189 </td>
-   <td style="text-align:right;"> 0.5562778 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> 0.0005300 </td>
-   <td style="text-align:right;"> 0.0004667 </td>
-   <td style="text-align:right;"> 1.1356636 </td>
-   <td style="text-align:right;"> 0.2571120 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0001607 </td>
-   <td style="text-align:right;"> 0.0006169 </td>
-   <td style="text-align:right;"> 0.2604923 </td>
-   <td style="text-align:right;"> 0.7946841 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> 0.0006084 </td>
-   <td style="text-align:right;"> 0.0005217 </td>
-   <td style="text-align:right;"> 1.1661939 </td>
-   <td style="text-align:right;"> 0.2445728 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0000507 </td>
-   <td style="text-align:right;"> 0.0007050 </td>
-   <td style="text-align:right;"> -0.0719386 </td>
-   <td style="text-align:right;"> 0.9427044 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0004450 </td>
-   <td style="text-align:right;"> 0.0010092 </td>
-   <td style="text-align:right;"> 0.4409169 </td>
-   <td style="text-align:right;"> 0.6596286 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> 0.0009239 </td>
-   <td style="text-align:right;"> 0.0009076 </td>
-   <td style="text-align:right;"> 1.0179716 </td>
-   <td style="text-align:right;"> 0.3096095 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> -0.0002461 </td>
-   <td style="text-align:right;"> 0.0030004 </td>
-   <td style="text-align:right;"> -0.0820191 </td>
-   <td style="text-align:right;"> 0.9346927 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> -0.0041303 </td>
-   <td style="text-align:right;"> 0.0030296 </td>
-   <td style="text-align:right;"> -1.3633168 </td>
-   <td style="text-align:right;"> 0.1739269 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> 0.0004399 </td>
-   <td style="text-align:right;"> 0.0008361 </td>
-   <td style="text-align:right;"> 0.5260859 </td>
-   <td style="text-align:right;"> 0.5992636 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0017923 </td>
-   <td style="text-align:right;"> 0.0009022 </td>
-   <td style="text-align:right;"> -1.9864608 </td>
-   <td style="text-align:right;"> 0.0480006 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> 0.0011371 </td>
-   <td style="text-align:right;"> 0.0056992 </td>
-   <td style="text-align:right;"> 0.1995226 </td>
-   <td style="text-align:right;"> 0.8420053 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> 0.0003781 </td>
-   <td style="text-align:right;"> 0.0058946 </td>
-   <td style="text-align:right;"> 0.0641412 </td>
-   <td style="text-align:right;"> 0.9489056 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> -0.0020301 </td>
-   <td style="text-align:right;"> 0.0058998 </td>
-   <td style="text-align:right;"> -0.3440942 </td>
-   <td style="text-align:right;"> 0.7310453 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">0.0162182</td>
+<td style="text-align: right;">0.0146388</td>
+<td style="text-align: right;">1.1078960</td>
+<td style="text-align: right;">0.2682491</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">-0.0002604</td>
+<td style="text-align: right;">0.0028879</td>
+<td style="text-align: right;">-0.0901679</td>
+<td style="text-align: right;">0.9281770</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">0.0027906</td>
+<td style="text-align: right;">0.0030488</td>
+<td style="text-align: right;">0.9153064</td>
+<td style="text-align: right;">0.3603144</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">-0.0049914</td>
+<td style="text-align: right;">0.0092240</td>
+<td style="text-align: right;">-0.5411318</td>
+<td style="text-align: right;">0.5885717</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">-0.0030191</td>
+<td style="text-align: right;">0.0088034</td>
+<td style="text-align: right;">-0.3429428</td>
+<td style="text-align: right;">0.7317341</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">0.0018871</td>
+<td style="text-align: right;">0.0019907</td>
+<td style="text-align: right;">0.9479659</td>
+<td style="text-align: right;">0.3434412</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">0.0005031</td>
+<td style="text-align: right;">0.0028542</td>
+<td style="text-align: right;">0.1762729</td>
+<td style="text-align: right;">0.8601254</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">0.0024647</td>
+<td style="text-align: right;">0.0024928</td>
+<td style="text-align: right;">0.9887293</td>
+<td style="text-align: right;">0.3231030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">0.0004746</td>
+<td style="text-align: right;">0.0025166</td>
+<td style="text-align: right;">0.1885861</td>
+<td style="text-align: right;">0.8504664</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">-0.0062656</td>
+<td style="text-align: right;">0.0052568</td>
+<td style="text-align: right;">-1.1919121</td>
+<td style="text-align: right;">0.2336592</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">0.0051970</td>
+<td style="text-align: right;">0.0044235</td>
+<td style="text-align: right;">1.1748546</td>
+<td style="text-align: right;">0.2404123</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">-0.0287119</td>
+<td style="text-align: right;">0.0166429</td>
+<td style="text-align: right;">-1.7251783</td>
+<td style="text-align: right;">0.0848925</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">-0.0272938</td>
+<td style="text-align: right;">0.0171757</td>
+<td style="text-align: right;">-1.5890963</td>
+<td style="text-align: right;">0.1124449</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">0.0004513</td>
+<td style="text-align: right;">0.0040190</td>
+<td style="text-align: right;">0.1123032</td>
+<td style="text-align: right;">0.9106120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">-0.0035505</td>
+<td style="text-align: right;">0.0043971</td>
+<td style="text-align: right;">-0.8074702</td>
+<td style="text-align: right;">0.4196424</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">-0.0200188</td>
+<td style="text-align: right;">0.0179252</td>
+<td style="text-align: right;">-1.1167970</td>
+<td style="text-align: right;">0.2644259</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">-0.0004963</td>
+<td style="text-align: right;">0.0172474</td>
+<td style="text-align: right;">-0.0287737</td>
+<td style="text-align: right;">0.9770524</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">0.0019636</td>
+<td style="text-align: right;">0.0188274</td>
+<td style="text-align: right;">0.1042956</td>
+<td style="text-align: right;">0.9169617</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.04\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.02\)</span></strong>.</p>
 </section>
 </section>
 <section id="regresiones-de-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas" class="level2">
 <h2 class="anchored" data-anchor-id="regresiones-de-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas">Regresiones de las evoluciones de las variables clínicas (sin medidas repetidas)</h2>
 <section id="evolución-miopía-1" class="level3">
 <h3 class="anchored" data-anchor-id="evolución-miopía-1">Evolución miopía</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-miopia-evol-no-rep_4fd3d1a49b95292696f79ae310a87af0">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-miopia-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la miopía.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución de la miopía.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-miopia-evol-no-rep_ed2301eeb349c9c7fac1aaef388fb7df">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> -0.3225491 </td>
-   <td style="text-align:right;"> 0.3857038 </td>
-   <td style="text-align:right;"> -0.8362610 </td>
-   <td style="text-align:right;"> 0.4106282 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> 0.0357497 </td>
-   <td style="text-align:right;"> 0.0583508 </td>
-   <td style="text-align:right;"> 0.6126682 </td>
-   <td style="text-align:right;"> 0.5454177 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0073249 </td>
-   <td style="text-align:right;"> 0.0619760 </td>
-   <td style="text-align:right;"> -0.1181896 </td>
-   <td style="text-align:right;"> 0.9068258 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.1347188 </td>
-   <td style="text-align:right;"> 0.1307213 </td>
-   <td style="text-align:right;"> -1.0305798 </td>
-   <td style="text-align:right;"> 0.3122301 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0257018 </td>
-   <td style="text-align:right;"> 0.1309101 </td>
-   <td style="text-align:right;"> 0.1963314 </td>
-   <td style="text-align:right;"> 0.8458773 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> 0.0539925 </td>
-   <td style="text-align:right;"> 0.0340901 </td>
-   <td style="text-align:right;"> 1.5838198 </td>
-   <td style="text-align:right;"> 0.1253242 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0114982 </td>
-   <td style="text-align:right;"> 0.0420693 </td>
-   <td style="text-align:right;"> 0.2733162 </td>
-   <td style="text-align:right;"> 0.7867695 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> 0.0265432 </td>
-   <td style="text-align:right;"> 0.0426851 </td>
-   <td style="text-align:right;"> 0.6218383 </td>
-   <td style="text-align:right;"> 0.5394632 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0694002 </td>
-   <td style="text-align:right;"> 0.0391632 </td>
-   <td style="text-align:right;"> -1.7720766 </td>
-   <td style="text-align:right;"> 0.0881022 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0386440 </td>
-   <td style="text-align:right;"> 0.0703458 </td>
-   <td style="text-align:right;"> 0.5493435 </td>
-   <td style="text-align:right;"> 0.5874575 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> -0.0975412 </td>
-   <td style="text-align:right;"> 0.0676305 </td>
-   <td style="text-align:right;"> -1.4422656 </td>
-   <td style="text-align:right;"> 0.1611664 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> 0.1574028 </td>
-   <td style="text-align:right;"> 0.1898307 </td>
-   <td style="text-align:right;"> 0.8291746 </td>
-   <td style="text-align:right;"> 0.4145535 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> 0.1922919 </td>
-   <td style="text-align:right;"> 0.2458980 </td>
-   <td style="text-align:right;"> 0.7819986 </td>
-   <td style="text-align:right;"> 0.4412792 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> -0.0687054 </td>
-   <td style="text-align:right;"> 0.0572445 </td>
-   <td style="text-align:right;"> -1.2002107 </td>
-   <td style="text-align:right;"> 0.2408795 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0296750 </td>
-   <td style="text-align:right;"> 0.0712271 </td>
-   <td style="text-align:right;"> -0.4166250 </td>
-   <td style="text-align:right;"> 0.6803722 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> 0.3362697 </td>
-   <td style="text-align:right;"> 0.4244878 </td>
-   <td style="text-align:right;"> 0.7921776 </td>
-   <td style="text-align:right;"> 0.4354258 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> 0.0526064 </td>
-   <td style="text-align:right;"> 0.2824861 </td>
-   <td style="text-align:right;"> 0.1862267 </td>
-   <td style="text-align:right;"> 0.8537124 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> 0.1999786 </td>
-   <td style="text-align:right;"> 0.2966586 </td>
-   <td style="text-align:right;"> 0.6741035 </td>
-   <td style="text-align:right;"> 0.5061951 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-0.3390653</td>
+<td style="text-align: right;">0.1084002</td>
+<td style="text-align: right;">-3.1279016</td>
+<td style="text-align: right;">0.0021667</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">0.0358980</td>
+<td style="text-align: right;">0.0175073</td>
+<td style="text-align: right;">2.0504540</td>
+<td style="text-align: right;">0.0422993</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">-0.0171817</td>
+<td style="text-align: right;">0.0154800</td>
+<td style="text-align: right;">-1.1099323</td>
+<td style="text-align: right;">0.2690461</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">-0.1206546</td>
+<td style="text-align: right;">0.0428844</td>
+<td style="text-align: right;">-2.8134851</td>
+<td style="text-align: right;">0.0056505</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">0.0273337</td>
+<td style="text-align: right;">0.0429423</td>
+<td style="text-align: right;">0.6365217</td>
+<td style="text-align: right;">0.5255387</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">-0.0019084</td>
+<td style="text-align: right;">0.0096977</td>
+<td style="text-align: right;">-0.1967852</td>
+<td style="text-align: right;">0.8442983</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">0.0007036</td>
+<td style="text-align: right;">0.0135588</td>
+<td style="text-align: right;">0.0518942</td>
+<td style="text-align: right;">0.9586915</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">0.0221635</td>
+<td style="text-align: right;">0.0126928</td>
+<td style="text-align: right;">1.7461420</td>
+<td style="text-align: right;">0.0831127</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">-0.0148254</td>
+<td style="text-align: right;">0.0116562</td>
+<td style="text-align: right;">-1.2718948</td>
+<td style="text-align: right;">0.2056467</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">0.0218425</td>
+<td style="text-align: right;">0.0260838</td>
+<td style="text-align: right;">0.8373948</td>
+<td style="text-align: right;">0.4038843</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">-0.0243649</td>
+<td style="text-align: right;">0.0213390</td>
+<td style="text-align: right;">-1.1418003</td>
+<td style="text-align: right;">0.2556041</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">0.0145888</td>
+<td style="text-align: right;">0.0682570</td>
+<td style="text-align: right;">0.2137327</td>
+<td style="text-align: right;">0.8310853</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">-0.0434925</td>
+<td style="text-align: right;">0.0885520</td>
+<td style="text-align: right;">-0.4911524</td>
+<td style="text-align: right;">0.6241343</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">-0.0156327</td>
+<td style="text-align: right;">0.0192939</td>
+<td style="text-align: right;">-0.8102405</td>
+<td style="text-align: right;">0.4192603</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">-0.0263130</td>
+<td style="text-align: right;">0.0204686</td>
+<td style="text-align: right;">-1.2855319</td>
+<td style="text-align: right;">0.2008572</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">0.0807536</td>
+<td style="text-align: right;">0.1153881</td>
+<td style="text-align: right;">0.6998431</td>
+<td style="text-align: right;">0.4852568</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">0.1300757</td>
+<td style="text-align: right;">0.0888185</td>
+<td style="text-align: right;">1.4645109</td>
+<td style="text-align: right;">0.1454320</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">0.0081291</td>
+<td style="text-align: right;">0.0966308</td>
+<td style="text-align: right;">0.0841256</td>
+<td style="text-align: right;">0.9330841</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.39\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.24\)</span></strong>.</p>
 </section>
 <section id="astigmatismo-2" class="level3">
 <h3 class="anchored" data-anchor-id="astigmatismo-2">Astigmatismo</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-astismatigmo-evol-no-rep_beee2dbca6b2df27680d60d86e760b0c">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-astismatigmo-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución del astigmatismo.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución del astigmatismo.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-astigmatistmo-evol-no-rep_16e8838dbf35006af1d16c086631d996">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> -0.3651842 </td>
-   <td style="text-align:right;"> 0.1336604 </td>
-   <td style="text-align:right;"> -2.7321801 </td>
-   <td style="text-align:right;"> 0.0111577 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0018497 </td>
-   <td style="text-align:right;"> 0.0202207 </td>
-   <td style="text-align:right;"> -0.0914771 </td>
-   <td style="text-align:right;"> 0.9278146 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0263246 </td>
-   <td style="text-align:right;"> 0.0214769 </td>
-   <td style="text-align:right;"> 1.2257161 </td>
-   <td style="text-align:right;"> 0.2312926 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> 0.0102085 </td>
-   <td style="text-align:right;"> 0.0452997 </td>
-   <td style="text-align:right;"> 0.2253550 </td>
-   <td style="text-align:right;"> 0.8234651 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0136869 </td>
-   <td style="text-align:right;"> 0.0453651 </td>
-   <td style="text-align:right;"> 0.3017047 </td>
-   <td style="text-align:right;"> 0.7652772 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> 0.0100277 </td>
-   <td style="text-align:right;"> 0.0118134 </td>
-   <td style="text-align:right;"> 0.8488359 </td>
-   <td style="text-align:right;"> 0.4037205 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0038666 </td>
-   <td style="text-align:right;"> 0.0145785 </td>
-   <td style="text-align:right;"> -0.2652227 </td>
-   <td style="text-align:right;"> 0.7929294 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> 0.0002703 </td>
-   <td style="text-align:right;"> 0.0147919 </td>
-   <td style="text-align:right;"> 0.0182765 </td>
-   <td style="text-align:right;"> 0.9855578 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0148658 </td>
-   <td style="text-align:right;"> 0.0135715 </td>
-   <td style="text-align:right;"> -1.0953731 </td>
-   <td style="text-align:right;"> 0.2833966 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0169103 </td>
-   <td style="text-align:right;"> 0.0243774 </td>
-   <td style="text-align:right;"> -0.6936889 </td>
-   <td style="text-align:right;"> 0.4940288 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> 0.0294656 </td>
-   <td style="text-align:right;"> 0.0234364 </td>
-   <td style="text-align:right;"> 1.2572551 </td>
-   <td style="text-align:right;"> 0.2198381 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> 0.0486323 </td>
-   <td style="text-align:right;"> 0.0657832 </td>
-   <td style="text-align:right;"> 0.7392815 </td>
-   <td style="text-align:right;"> 0.4663587 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> -0.0522328 </td>
-   <td style="text-align:right;"> 0.0852126 </td>
-   <td style="text-align:right;"> -0.6129704 </td>
-   <td style="text-align:right;"> 0.5452210 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> -0.0015640 </td>
-   <td style="text-align:right;"> 0.0198373 </td>
-   <td style="text-align:right;"> -0.0788437 </td>
-   <td style="text-align:right;"> 0.9377606 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0304353 </td>
-   <td style="text-align:right;"> 0.0246828 </td>
-   <td style="text-align:right;"> -1.2330576 </td>
-   <td style="text-align:right;"> 0.2285870 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> 0.1107254 </td>
-   <td style="text-align:right;"> 0.1471004 </td>
-   <td style="text-align:right;"> 0.7527195 </td>
-   <td style="text-align:right;"> 0.4583800 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> -0.0263633 </td>
-   <td style="text-align:right;"> 0.0978917 </td>
-   <td style="text-align:right;"> -0.2693107 </td>
-   <td style="text-align:right;"> 0.7898164 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> 0.0189549 </td>
-   <td style="text-align:right;"> 0.1028030 </td>
-   <td style="text-align:right;"> 0.1843807 </td>
-   <td style="text-align:right;"> 0.8551454 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">-0.1210638</td>
+<td style="text-align: right;">0.0396070</td>
+<td style="text-align: right;">-3.0566235</td>
+<td style="text-align: right;">0.0027099</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">-0.0068501</td>
+<td style="text-align: right;">0.0063968</td>
+<td style="text-align: right;">-1.0708648</td>
+<td style="text-align: right;">0.2861843</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">0.0000648</td>
+<td style="text-align: right;">0.0056560</td>
+<td style="text-align: right;">0.0114533</td>
+<td style="text-align: right;">0.9908791</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">0.0363878</td>
+<td style="text-align: right;">0.0156690</td>
+<td style="text-align: right;">2.3222784</td>
+<td style="text-align: right;">0.0217484</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">-0.0180166</td>
+<td style="text-align: right;">0.0156902</td>
+<td style="text-align: right;">-1.1482711</td>
+<td style="text-align: right;">0.2529333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">0.0038661</td>
+<td style="text-align: right;">0.0035433</td>
+<td style="text-align: right;">1.0910936</td>
+<td style="text-align: right;">0.2772193</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">0.0018296</td>
+<td style="text-align: right;">0.0049541</td>
+<td style="text-align: right;">0.3693152</td>
+<td style="text-align: right;">0.7124846</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">-0.0035785</td>
+<td style="text-align: right;">0.0046377</td>
+<td style="text-align: right;">-0.7716213</td>
+<td style="text-align: right;">0.4417179</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">-0.0032742</td>
+<td style="text-align: right;">0.0042589</td>
+<td style="text-align: right;">-0.7687980</td>
+<td style="text-align: right;">0.4433866</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">0.0147410</td>
+<td style="text-align: right;">0.0095305</td>
+<td style="text-align: right;">1.5467273</td>
+<td style="text-align: right;">0.1243232</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">-0.0025570</td>
+<td style="text-align: right;">0.0077968</td>
+<td style="text-align: right;">-0.3279574</td>
+<td style="text-align: right;">0.7434635</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">0.0124612</td>
+<td style="text-align: right;">0.0249396</td>
+<td style="text-align: right;">0.4996549</td>
+<td style="text-align: right;">0.6181499</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">0.0212548</td>
+<td style="text-align: right;">0.0323549</td>
+<td style="text-align: right;">0.6569266</td>
+<td style="text-align: right;">0.5123718</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">0.0033531</td>
+<td style="text-align: right;">0.0070496</td>
+<td style="text-align: right;">0.4756402</td>
+<td style="text-align: right;">0.6351169</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">0.0072582</td>
+<td style="text-align: right;">0.0074788</td>
+<td style="text-align: right;">0.9705082</td>
+<td style="text-align: right;">0.3335682</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">0.0251233</td>
+<td style="text-align: right;">0.0421603</td>
+<td style="text-align: right;">0.5959011</td>
+<td style="text-align: right;">0.5522617</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">0.0584192</td>
+<td style="text-align: right;">0.0324523</td>
+<td style="text-align: right;">1.8001564</td>
+<td style="text-align: right;">0.0741197</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">-0.0425906</td>
+<td style="text-align: right;">0.0353068</td>
+<td style="text-align: right;">-1.2063024</td>
+<td style="text-align: right;">0.2298585</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.31\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.12\)</span></strong>.</p>
 </section>
 <section id="presbicia-2" class="level3">
 <h3 class="anchored" data-anchor-id="presbicia-2">Presbicia</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-presbicia-evol-no-rep_f0aee843f6bfb6bdbf50f91dde839706">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-presbicia-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la presbicia.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución de la presbicia.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-presbicia-evol-no-rep_f38b6bd0e599ec08df14ac153a3062e3">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.1426939 </td>
-   <td style="text-align:right;"> 0.1176630 </td>
-   <td style="text-align:right;"> 1.2127345 </td>
-   <td style="text-align:right;"> 0.2361357 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> 0.0515207 </td>
-   <td style="text-align:right;"> 0.0178005 </td>
-   <td style="text-align:right;"> 2.8943365 </td>
-   <td style="text-align:right;"> 0.0075945 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0037827 </td>
-   <td style="text-align:right;"> 0.0189064 </td>
-   <td style="text-align:right;"> -0.2000771 </td>
-   <td style="text-align:right;"> 0.8429770 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> 0.0403094 </td>
-   <td style="text-align:right;"> 0.0398779 </td>
-   <td style="text-align:right;"> 1.0108195 </td>
-   <td style="text-align:right;"> 0.3214179 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> 0.0354588 </td>
-   <td style="text-align:right;"> 0.0399355 </td>
-   <td style="text-align:right;"> 0.8879024 </td>
-   <td style="text-align:right;"> 0.3827339 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0039785 </td>
-   <td style="text-align:right;"> 0.0103995 </td>
-   <td style="text-align:right;"> -0.3825646 </td>
-   <td style="text-align:right;"> 0.7051522 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> -0.0037017 </td>
-   <td style="text-align:right;"> 0.0128337 </td>
-   <td style="text-align:right;"> -0.2884405 </td>
-   <td style="text-align:right;"> 0.7752967 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> -0.0073431 </td>
-   <td style="text-align:right;"> 0.0130215 </td>
-   <td style="text-align:right;"> -0.5639185 </td>
-   <td style="text-align:right;"> 0.5776419 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0075837 </td>
-   <td style="text-align:right;"> 0.0119472 </td>
-   <td style="text-align:right;"> -0.6347694 </td>
-   <td style="text-align:right;"> 0.5311255 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0466760 </td>
-   <td style="text-align:right;"> 0.0214597 </td>
-   <td style="text-align:right;"> -2.1750524 </td>
-   <td style="text-align:right;"> 0.0389091 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> 0.0454359 </td>
-   <td style="text-align:right;"> 0.0206314 </td>
-   <td style="text-align:right;"> 2.2022685 </td>
-   <td style="text-align:right;"> 0.0367153 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> -0.0974654 </td>
-   <td style="text-align:right;"> 0.0579098 </td>
-   <td style="text-align:right;"> -1.6830541 </td>
-   <td style="text-align:right;"> 0.1043366 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> -0.1610219 </td>
-   <td style="text-align:right;"> 0.0750137 </td>
-   <td style="text-align:right;"> -2.1465657 </td>
-   <td style="text-align:right;"> 0.0413308 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> -0.0141630 </td>
-   <td style="text-align:right;"> 0.0174630 </td>
-   <td style="text-align:right;"> -0.8110266 </td>
-   <td style="text-align:right;"> 0.4247128 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0017190 </td>
-   <td style="text-align:right;"> 0.0217286 </td>
-   <td style="text-align:right;"> -0.0791109 </td>
-   <td style="text-align:right;"> 0.9375501 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> 0.1155597 </td>
-   <td style="text-align:right;"> 0.1294944 </td>
-   <td style="text-align:right;"> 0.8923910 </td>
-   <td style="text-align:right;"> 0.3803687 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> 0.0631726 </td>
-   <td style="text-align:right;"> 0.0861753 </td>
-   <td style="text-align:right;"> 0.7330707 </td>
-   <td style="text-align:right;"> 0.4700736 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> -0.0730697 </td>
-   <td style="text-align:right;"> 0.0904988 </td>
-   <td style="text-align:right;"> -0.8074112 </td>
-   <td style="text-align:right;"> 0.4267549 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">0.1973960</td>
+<td style="text-align: right;">0.0471459</td>
+<td style="text-align: right;">4.1869159</td>
+<td style="text-align: right;">0.0000513</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">0.0114732</td>
+<td style="text-align: right;">0.0076144</td>
+<td style="text-align: right;">1.5067876</td>
+<td style="text-align: right;">0.1342546</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">-0.0003086</td>
+<td style="text-align: right;">0.0067326</td>
+<td style="text-align: right;">-0.0458394</td>
+<td style="text-align: right;">0.9635075</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">0.0177805</td>
+<td style="text-align: right;">0.0186515</td>
+<td style="text-align: right;">0.9533048</td>
+<td style="text-align: right;">0.3421781</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">0.0042752</td>
+<td style="text-align: right;">0.0186767</td>
+<td style="text-align: right;">0.2289036</td>
+<td style="text-align: right;">0.8192981</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">-0.0019023</td>
+<td style="text-align: right;">0.0042178</td>
+<td style="text-align: right;">-0.4510199</td>
+<td style="text-align: right;">0.6527153</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">0.0018043</td>
+<td style="text-align: right;">0.0058971</td>
+<td style="text-align: right;">0.3059598</td>
+<td style="text-align: right;">0.7601173</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">-0.0034691</td>
+<td style="text-align: right;">0.0055204</td>
+<td style="text-align: right;">-0.6284209</td>
+<td style="text-align: right;">0.5308141</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">-0.0014246</td>
+<td style="text-align: right;">0.0050696</td>
+<td style="text-align: right;">-0.2810194</td>
+<td style="text-align: right;">0.7791355</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">-0.0177519</td>
+<td style="text-align: right;">0.0113445</td>
+<td style="text-align: right;">-1.5648066</td>
+<td style="text-align: right;">0.1200225</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">0.0225198</td>
+<td style="text-align: right;">0.0092809</td>
+<td style="text-align: right;">2.4264751</td>
+<td style="text-align: right;">0.0165965</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">-0.0338959</td>
+<td style="text-align: right;">0.0296866</td>
+<td style="text-align: right;">-1.1417905</td>
+<td style="text-align: right;">0.2556081</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">-0.1115407</td>
+<td style="text-align: right;">0.0385134</td>
+<td style="text-align: right;">-2.8961512</td>
+<td style="text-align: right;">0.0044231</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">-0.0113676</td>
+<td style="text-align: right;">0.0083914</td>
+<td style="text-align: right;">-1.3546677</td>
+<td style="text-align: right;">0.1778376</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">-0.0060265</td>
+<td style="text-align: right;">0.0089023</td>
+<td style="text-align: right;">-0.6769663</td>
+<td style="text-align: right;">0.4996120</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">0.2267329</td>
+<td style="text-align: right;">0.0501851</td>
+<td style="text-align: right;">4.5179321</td>
+<td style="text-align: right;">0.0000137</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">0.0654231</td>
+<td style="text-align: right;">0.0386293</td>
+<td style="text-align: right;">1.6936109</td>
+<td style="text-align: right;">0.0926977</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">-0.0537931</td>
+<td style="text-align: right;">0.0420271</td>
+<td style="text-align: right;">-1.2799624</td>
+<td style="text-align: right;">0.2028033</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.64\)</span></strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.33\)</span></strong>.</p>
 </section>
 <section id="hipermetropía-2" class="level3">
 <h3 class="anchored" data-anchor-id="hipermetropía-2">Hipermetropía</h3>
-<div class="cell" data-hash="regresion_cache/html/regresion-hipermetropia-evol-no-rep_22147897550b03b8520d96ee0e819e3b">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="regresion_files/figure-html/regresion-hipermetropia-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Rectas de regresión para la evolución de la hipermetropía.</figcaption><p></p>
+<figcaption>Rectas de regresión para la evolución de la hipermetropía.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="regresion_cache/html/regresion-mult-hipermetropia-evol-no-rep_3137b893a8c72638d9d67a955fffbcfb">
+<div class="cell">
 <div class="cell-output-display">
-
-<table class="table table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<table class="table table-hover caption-top table-sm table-striped small">
 <caption>Coeficientes de regresión lineal múltiple.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Coeficiente </th>
-   <th style="text-align:right;"> Error Estandar </th>
-   <th style="text-align:right;"> Estadístico </th>
-   <th style="text-align:right;"> p-valor </th>
-  </tr>
- </thead>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Coeficiente</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Error Estandar</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estadístico</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p-valor</th>
+</tr>
+</thead>
 <tbody>
-  <tr>
-   <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 0.0477880 </td>
-   <td style="text-align:right;"> 0.0393175 </td>
-   <td style="text-align:right;"> 1.2154372 </td>
-   <td style="text-align:right;"> 0.2351212 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0042557 </td>
-   <td style="text-align:right;"> 0.0059481 </td>
-   <td style="text-align:right;"> -0.7154681 </td>
-   <td style="text-align:right;"> 0.4806962 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0036973 </td>
-   <td style="text-align:right;"> 0.0063176 </td>
-   <td style="text-align:right;"> 0.5852283 </td>
-   <td style="text-align:right;"> 0.5634395 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN1.EVOL </td>
-   <td style="text-align:right;"> 0.0237100 </td>
-   <td style="text-align:right;"> 0.0133253 </td>
-   <td style="text-align:right;"> 1.7793152 </td>
-   <td style="text-align:right;"> 0.0868823 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHL.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0323155 </td>
-   <td style="text-align:right;"> 0.0133446 </td>
-   <td style="text-align:right;"> -2.4216207 </td>
-   <td style="text-align:right;"> 0.0227288 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT1.EVOL </td>
-   <td style="text-align:right;"> -0.0003218 </td>
-   <td style="text-align:right;"> 0.0034750 </td>
-   <td style="text-align:right;"> -0.0926086 </td>
-   <td style="text-align:right;"> 0.9269244 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT2.EVOL </td>
-   <td style="text-align:right;"> 0.0078754 </td>
-   <td style="text-align:right;"> 0.0042884 </td>
-   <td style="text-align:right;"> 1.8364364 </td>
-   <td style="text-align:right;"> 0.0777531 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BT3.EVOL </td>
-   <td style="text-align:right;"> -0.0019797 </td>
-   <td style="text-align:right;"> 0.0043512 </td>
-   <td style="text-align:right;"> -0.4549746 </td>
-   <td style="text-align:right;"> 0.6529039 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN1.EVOL </td>
-   <td style="text-align:right;"> -0.0009964 </td>
-   <td style="text-align:right;"> 0.0039922 </td>
-   <td style="text-align:right;"> -0.2495956 </td>
-   <td style="text-align:right;"> 0.8048616 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN2.EVOL </td>
-   <td style="text-align:right;"> -0.0016333 </td>
-   <td style="text-align:right;"> 0.0071708 </td>
-   <td style="text-align:right;"> -0.2277717 </td>
-   <td style="text-align:right;"> 0.8216054 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> VHC.BN3.EVOL </td>
-   <td style="text-align:right;"> 0.0101114 </td>
-   <td style="text-align:right;"> 0.0068941 </td>
-   <td style="text-align:right;"> 1.4666845 </td>
-   <td style="text-align:right;"> 0.1544540 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVL.EVOL </td>
-   <td style="text-align:right;"> 0.0231999 </td>
-   <td style="text-align:right;"> 0.0193508 </td>
-   <td style="text-align:right;"> 1.1989126 </td>
-   <td style="text-align:right;"> 0.2413753 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FVC.EVOL </td>
-   <td style="text-align:right;"> -0.0238086 </td>
-   <td style="text-align:right;"> 0.0250661 </td>
-   <td style="text-align:right;"> -0.9498332 </td>
-   <td style="text-align:right;"> 0.3509433 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> FLC.EVOL </td>
-   <td style="text-align:right;"> 0.0064309 </td>
-   <td style="text-align:right;"> 0.0058353 </td>
-   <td style="text-align:right;"> 1.1020574 </td>
-   <td style="text-align:right;"> 0.2805342 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ACA.EVOL </td>
-   <td style="text-align:right;"> -0.0123697 </td>
-   <td style="text-align:right;"> 0.0072607 </td>
-   <td style="text-align:right;"> -1.7036490 </td>
-   <td style="text-align:right;"> 0.1003723 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> CCF.EVOL </td>
-   <td style="text-align:right;"> 0.0675507 </td>
-   <td style="text-align:right;"> 0.0432710 </td>
-   <td style="text-align:right;"> 1.5611077 </td>
-   <td style="text-align:right;"> 0.1305892 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOD.EVOL </td>
-   <td style="text-align:right;"> -0.0013409 </td>
-   <td style="text-align:right;"> 0.0287958 </td>
-   <td style="text-align:right;"> -0.0465651 </td>
-   <td style="text-align:right;"> 0.9632157 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> AAOI.EVOL </td>
-   <td style="text-align:right;"> -0.0103127 </td>
-   <td style="text-align:right;"> 0.0302405 </td>
-   <td style="text-align:right;"> -0.3410239 </td>
-   <td style="text-align:right;"> 0.7358261 </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">0.0959362</td>
+<td style="text-align: right;">0.0988088</td>
+<td style="text-align: right;">0.9709282</td>
+<td style="text-align: right;">0.3333598</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1.EVOL</td>
+<td style="text-align: right;">0.0112392</td>
+<td style="text-align: right;">0.0159583</td>
+<td style="text-align: right;">0.7042874</td>
+<td style="text-align: right;">0.4824945</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2.EVOL</td>
+<td style="text-align: right;">-0.0113563</td>
+<td style="text-align: right;">0.0141103</td>
+<td style="text-align: right;">-0.8048210</td>
+<td style="text-align: right;">0.4223702</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1.EVOL</td>
+<td style="text-align: right;">-0.0053505</td>
+<td style="text-align: right;">0.0390899</td>
+<td style="text-align: right;">-0.1368759</td>
+<td style="text-align: right;">0.8913374</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2.EVOL</td>
+<td style="text-align: right;">0.0512749</td>
+<td style="text-align: right;">0.0391427</td>
+<td style="text-align: right;">1.3099478</td>
+<td style="text-align: right;">0.1924886</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1.EVOL</td>
+<td style="text-align: right;">0.0008244</td>
+<td style="text-align: right;">0.0088396</td>
+<td style="text-align: right;">0.0932601</td>
+<td style="text-align: right;">0.9258383</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2.EVOL</td>
+<td style="text-align: right;">-0.0124722</td>
+<td style="text-align: right;">0.0123591</td>
+<td style="text-align: right;">-1.0091486</td>
+<td style="text-align: right;">0.3147496</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3.EVOL</td>
+<td style="text-align: right;">0.0200055</td>
+<td style="text-align: right;">0.0115697</td>
+<td style="text-align: right;">1.7291199</td>
+<td style="text-align: right;">0.0861255</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1.EVOL</td>
+<td style="text-align: right;">0.0011811</td>
+<td style="text-align: right;">0.0106248</td>
+<td style="text-align: right;">0.1111622</td>
+<td style="text-align: right;">0.9116566</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2.EVOL</td>
+<td style="text-align: right;">0.0060951</td>
+<td style="text-align: right;">0.0237759</td>
+<td style="text-align: right;">0.2563572</td>
+<td style="text-align: right;">0.7980741</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3.EVOL</td>
+<td style="text-align: right;">0.0049194</td>
+<td style="text-align: right;">0.0194509</td>
+<td style="text-align: right;">0.2529134</td>
+<td style="text-align: right;">0.8007285</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL.EVOL</td>
+<td style="text-align: right;">0.0440867</td>
+<td style="text-align: right;">0.0622175</td>
+<td style="text-align: right;">0.7085906</td>
+<td style="text-align: right;">0.4798281</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC.EVOL</td>
+<td style="text-align: right;">-0.1101328</td>
+<td style="text-align: right;">0.0807167</td>
+<td style="text-align: right;">-1.3644354</td>
+<td style="text-align: right;">0.1747522</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC.EVOL</td>
+<td style="text-align: right;">0.0055316</td>
+<td style="text-align: right;">0.0175868</td>
+<td style="text-align: right;">0.3145316</td>
+<td style="text-align: right;">0.7536139</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA.EVOL</td>
+<td style="text-align: right;">-0.0174470</td>
+<td style="text-align: right;">0.0186575</td>
+<td style="text-align: right;">-0.9351220</td>
+<td style="text-align: right;">0.3514330</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF.EVOL</td>
+<td style="text-align: right;">-0.1642345</td>
+<td style="text-align: right;">0.1051783</td>
+<td style="text-align: right;">-1.5614866</td>
+<td style="text-align: right;">0.1208033</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD.EVOL</td>
+<td style="text-align: right;">-0.0973203</td>
+<td style="text-align: right;">0.0809597</td>
+<td style="text-align: right;">-1.2020837</td>
+<td style="text-align: right;">0.2314832</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI.EVOL</td>
+<td style="text-align: right;">0.1341738</td>
+<td style="text-align: right;">0.0880808</td>
+<td style="text-align: right;">1.5233042</td>
+<td style="text-align: right;">0.1300748</td>
+</tr>
 </tbody>
 </table>
-
 </div>
 </div>
-<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.44\)</span></strong>.<br>
-<strong>AIC = -17.9725426</strong>.</p>
+<p><strong>Coeficiente de determinación: <span class="math inline">\(R^2 = 0.09\)</span></strong>.<br>
+<strong>AIC = 436.3886497</strong>.</p>
 
 
 </section>
@@ -2163,254 +2358,420 @@ ul.task-list li input[type="checkbox"] {
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
     }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-    // Hack to workaround the fact that safari doesn't
-    // properly recolor the scrollbar when toggling (#1455)
-    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-      manageTransitions("body", false);
-      window.scrollTo(0, 1);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        manageTransitions("body", true);
-      }, 40);  
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
       return false;
     }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  let localAlternateSentinel = 'alternate';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } else {
-    toggleColorMode(false);
-  }
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copiado");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copiado");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-  }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
       });
     }
-  }
-});
-</script>
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
+
 
 
 

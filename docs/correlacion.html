@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Vergencias - Correlación</title>
+<title>Correlación (última revisión) – Vergencias</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -17,7 +20,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -31,86 +34,260 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./img/logos/favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-27b9f889d6e109d015426ac4f274b7e7.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-1242ccc02940432acd87c1b818d9cd49.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
-    "search-no-results-text": "Sin resultados",
+    "search-no-results-text": "No se han encontrado resultados",
     "search-matching-documents-text": "documentos encontrados",
     "search-copy-link-title": "Copiar el enlace en la búsqueda",
     "search-hide-matches-text": "Ocultar resultados adicionales",
     "search-more-match-text": "resultado adicional en este documento",
     "search-more-matches-text": "resultados adicionales en este documento",
     "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancelar",
-    "search-submit-button-title": "Enviar"
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
   }
 }</script>
-
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = true;
+    const darkModeDefault = authorPrefersDark;
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Vergencias</span>
     </a>
   </div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html">
- <span class="menu-text">Introducción</span></a>
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Introducción</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./descriptiva.html">
- <span class="menu-text">Estadística Descriptiva</span></a>
+    <a class="nav-link" href="./descriptiva.html"> 
+<span class="menu-text">Estadística Descriptiva</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./correlacion.html" aria-current="page">
- <span class="menu-text">Correlación</span></a>
+    <a class="nav-link active" href="./correlacion.html" aria-current="page"> 
+<span class="menu-text">Correlación (última revisión)</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./regresion.html">
- <span class="menu-text">Regresión</span></a>
+    <a class="nav-link" href="./correlacion-medidas-repetidas.html"> 
+<span class="menu-text">Correlación con medidas repetidas</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./regresion.html"> 
+<span class="menu-text">Regresión</span></a>
   </li>  
 </ul>
-              <div class="quarto-toggle-container">
-                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
   </div>
 </a>
-              </div>
-              <div id="quarto-search" class="" title="Search"></div>
-          </div> <!-- /navcollapse -->
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -124,17 +301,27 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#correlaciones-entre-variables-clínicas" id="toc-correlaciones-entre-variables-clínicas" class="nav-link active" data-scroll-target="#correlaciones-entre-variables-clínicas">Correlaciones entre variables clínicas</a></li>
-  <li><a href="#correlaciones-entre-las-evoluciones-de-las-variables-clínicas" id="toc-correlaciones-entre-las-evoluciones-de-las-variables-clínicas" class="nav-link" data-scroll-target="#correlaciones-entre-las-evoluciones-de-las-variables-clínicas">Correlaciones entre las evoluciones de las variables clínicas</a></li>
-  <li><a href="#correlaciones-entre-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas" id="toc-correlaciones-entre-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas" class="nav-link" data-scroll-target="#correlaciones-entre-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas">Correlaciones entre las evoluciones de las variables clínicas (sin medidas repetidas)</a></li>
+  <li><a href="#correlación-con-variables-de-baja-variabilidad-o-muy-asimétricas-hip.d-hip.i-mio.d-mio.i-ast.d-ast.i-pre.d-pre.i" id="toc-correlación-con-variables-de-baja-variabilidad-o-muy-asimétricas-hip.d-hip.i-mio.d-mio.i-ast.d-ast.i-pre.d-pre.i" class="nav-link" data-scroll-target="#correlación-con-variables-de-baja-variabilidad-o-muy-asimétricas-hip.d-hip.i-mio.d-mio.i-ast.d-ast.i-pre.d-pre.i">Correlación con variables de baja variabilidad o muy asimétricas (HIP.D, HIP.I, MIO.D, MIO.I, AST.D, AST.I, PRE.D, PRE.I)</a>
+  <ul class="collapse">
+  <li><a href="#hip.d" id="toc-hip.d" class="nav-link" data-scroll-target="#hip.d">HIP.D</a></li>
+  <li><a href="#hip.i" id="toc-hip.i" class="nav-link" data-scroll-target="#hip.i">HIP.I</a></li>
+  <li><a href="#mio.d" id="toc-mio.d" class="nav-link" data-scroll-target="#mio.d">MIO.D</a></li>
+  <li><a href="#mio.i" id="toc-mio.i" class="nav-link" data-scroll-target="#mio.i">MIO.I</a></li>
+  <li><a href="#ast.d" id="toc-ast.d" class="nav-link" data-scroll-target="#ast.d">AST.D</a></li>
+  <li><a href="#ast.i" id="toc-ast.i" class="nav-link" data-scroll-target="#ast.i">AST.I</a></li>
+  <li><a href="#pre.d" id="toc-pre.d" class="nav-link" data-scroll-target="#pre.d">PRE.D</a></li>
+  <li><a href="#pre.i" id="toc-pre.i" class="nav-link" data-scroll-target="#pre.i">PRE.I</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Correlación</h1>
+<h1 class="title">Correlación (última revisión)</h1>
 </div>
 
 
@@ -147,375 +334,2914 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
+
 </header>
 
-<div class="cell" data-hash="correlacion_cache/html/libraries_30c7f31bb9e47341a55b3bcc0bf33225">
 
-</div>
-<div class="cell" data-hash="correlacion_cache/html/colores_da7bbbe1161179b08e6eb12c22254901">
-
-</div>
-<div class="cell" data-hash="correlacion_cache/html/carga datos_18d8e527f1d95064d5b3ee01fde76b0e">
-
-</div>
-<div class="cell" data-hash="correlacion_cache/html/conjuntos-variables_0cf5f4d438675f3be130e49572cc28af">
-
-</div>
-<div class="cell" data-hash="correlacion_cache/html/funciones_aeab8ec3a0b6b2b722e70b8709b06e38">
-
-</div>
+<p>Los pacientes con varias revisiones aportan mediciones que no son independientes entre sí, lo que invalida los contrastes de hipótesis habituales. Para evitarlo, este documento repite los análisis de correlación tomando <strong>una única revisión por paciente</strong>: la más reciente con fecha válida. Se descartan las fechas incoherentes (revisión anterior o igual a la fecha de nacimiento, o posterior a la fecha actual), y en los pacientes cuya única revisión tiene una fecha incoherente se mantiene esa revisión.</p>
+<p>De este modo se pasa de 807 revisiones a 309 pacientes, cada uno con una sola observación, de manera que todas las observaciones son independientes. Como contrapartida, se descarta información: los pacientes con seguimiento aportan lo mismo que los que solo tienen una revisión, y no se puede estudiar la evolución de las variables. El documento de correlación con medidas repetidas aprovecha todas las revisiones mediante modelos que tienen en cuenta esa dependencia.</p>
 <section id="correlaciones-entre-variables-clínicas" class="level2">
 <h2 class="anchored" data-anchor-id="correlaciones-entre-variables-clínicas">Correlaciones entre variables clínicas</h2>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-pearson_b900b559e86d8c1bb9c71dbdb5bdcffb">
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="correlacion_files/figure-html/matriz-correlaciones-pearson-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Pearson.</figcaption><p></p>
+<figcaption>Matriz de correlaciones de Pearson.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-spearman_22f7a1b06c74917bace5602df03fc2cd">
-
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="correlacion_files/figure-html/matriz-correlaciones-spearman-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Matriz de correlaciones de Spearman.</figcaption>
+</figure>
 </div>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-kendall_50d7a4379ce4ac49e3904c6f4db6ceba">
+</div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="correlacion_files/figure-html/matriz-correlaciones-kendall-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Kendall</figcaption><p></p>
+<figcaption>Matriz de correlaciones de Kendall.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la miopía son VHC.BN2 y VHC.BN3. Las variables más correlacionadas con la presbicia son Dif.AAOI.hofstetter, Dif.AAOD.hofstetter, AAOI, AAOD, CCF, ACA, VHC.BT3, FLC y VHC.BN3.</p>
 </section>
-<section id="correlaciones-entre-las-evoluciones-de-las-variables-clínicas" class="level2">
-<h2 class="anchored" data-anchor-id="correlaciones-entre-las-evoluciones-de-las-variables-clínicas">Correlaciones entre las evoluciones de las variables clínicas</h2>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-pearson-evol_a974cbcb71c3a8f4aee4b9d6f0fcf00e">
+<section id="correlación-con-variables-de-baja-variabilidad-o-muy-asimétricas-hip.d-hip.i-mio.d-mio.i-ast.d-ast.i-pre.d-pre.i" class="level2">
+<h2 class="anchored" data-anchor-id="correlación-con-variables-de-baja-variabilidad-o-muy-asimétricas-hip.d-hip.i-mio.d-mio.i-ast.d-ast.i-pre.d-pre.i">Correlación con variables de baja variabilidad o muy asimétricas (HIP.D, HIP.I, MIO.D, MIO.I, AST.D, AST.I, PRE.D, PRE.I)</h2>
+<p>Los defectos visuales tienen una gran proporción de ceros, que indican ausencia del defecto, por lo que los coeficientes de correlación habituales (Pearson, Spearman, Kendall) tienen poca potencia y son poco fiables para estas variables. Por eso se analizan en dos partes:</p>
+<ol type="1">
+<li><strong>Presencia del defecto</strong>: se dicotomiza la variable (sin defecto / con defecto) y se compara la distribución de cada variable independiente entre ambos grupos mediante el test de Wilcoxon-Mann-Whitney, con el coeficiente de correlación biserial por rangos como tamaño del efecto.</li>
+<li><strong>Magnitud del defecto</strong>: restringido a los pacientes que presentan el defecto, se calcula la correlación de Kendall entre la magnitud del defecto y cada variable independiente.</li>
+</ol>
+<p>HIP.D, HIP.I, PRE.D y PRE.I se codifican como defecto presente cuando el valor es mayor que 0. MIO.D, MIO.I, AST.D y AST.I (dioptrías negativas) se codifican como defecto presente cuando el valor es menor que 0.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Número de pacientes con y sin cada defecto en su última revisión (n = 309).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Defecto</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Sin defecto</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Con defecto</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">% con defecto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">HIP.D</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">27.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HIP.I</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">26.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MIO.D</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">51.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MIO.I</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">51.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AST.D</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">51.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AST.I</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">49.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PRE.D</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">31.7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PRE.I</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">31.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="hip.d" class="level3">
+<h3 class="anchored" data-anchor-id="hip.d">HIP.D</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de hipermetropía (HIP.D) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de hipermetropía (HIP.D) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.419</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.402</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.372</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.340</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.288</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.277</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.253</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.243</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.209</td>
+<td style="text-align: right;">0.004</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.206</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.203</td>
+<td style="text-align: right;">0.006</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.170</td>
+<td style="text-align: right;">0.009</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.172</td>
+<td style="text-align: right;">0.019</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: right;">-0.115</td>
+<td style="text-align: right;">0.111</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">223</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">-0.079</td>
+<td style="text-align: right;">0.277</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.057</td>
+<td style="text-align: right;">0.298</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.041</td>
+<td style="text-align: right;">0.406</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.043</td>
+<td style="text-align: right;">0.441</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.032</td>
+<td style="text-align: right;">0.666</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 13 de las 19 variables independientes entre los grupos con y sin HIP.D. Las asociaciones más fuertes (mayor |r biserial|) son: VHC.BT3 (r biserial = -0.42, p &lt; 0.001); ACA (r biserial = -0.4, p &lt; 0.001); FLC (r biserial = -0.37, p &lt; 0.001).</p>
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="correlacion_files/figure-html/matriz-correlaciones-pearson-evol-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Pearson.</figcaption><p></p>
+<p><img src="correlacion_files/figure-html/boxplot-hip-d-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de hipermetropía (HIP.D).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-spearman-evol_a1d233290cc762b81d543d2d1e41da44">
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de HIP.D y las variables independientes (solo pacientes con hipermetropía).">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="correlacion_files/figure-html/matriz-correlaciones-spearman-evol-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Spearman.</figcaption><p></p>
-</figure>
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de HIP.D y las variables independientes (solo pacientes con hipermetropía).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.170</td>
+<td style="text-align: right;">0.033</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.160</td>
+<td style="text-align: right;">0.045</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.157</td>
+<td style="text-align: right;">0.054</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.139</td>
+<td style="text-align: right;">0.074</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.136</td>
+<td style="text-align: right;">0.090</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.142</td>
+<td style="text-align: right;">0.091</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.134</td>
+<td style="text-align: right;">0.094</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.127</td>
+<td style="text-align: right;">0.111</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.122</td>
+<td style="text-align: right;">0.118</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.120</td>
+<td style="text-align: right;">0.132</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.087</td>
+<td style="text-align: right;">0.330</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.087</td>
+<td style="text-align: right;">0.340</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.084</td>
+<td style="text-align: right;">0.354</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.055</td>
+<td style="text-align: right;">0.495</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.046</td>
+<td style="text-align: right;">0.585</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.028</td>
+<td style="text-align: right;">0.725</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.027</td>
+<td style="text-align: right;">0.734</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">-0.004</td>
+<td style="text-align: right;">0.963</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.981</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-</div>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-kendall-evol_a8433dd0fa1a75dbf251f558c51e4620">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="correlacion_files/figure-html/matriz-correlaciones-kendall-evol-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Kendall</figcaption><p></p>
-</figure>
-</div>
-</div>
-</div>
-<p>En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables.</p>
+<p>Entre los pacientes con HIP.D (n = 85), la correlación de Kendall muestra 2 asociaciones estadísticamente significativas (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Las más destacadas (mayor |tau|) son: VHL.BT1 (tau = -0.17, p = 0.033); VHC.BT2 (tau = -0.16, p = 0.045).</p>
 </section>
-<section id="correlaciones-entre-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas" class="level2">
-<h2 class="anchored" data-anchor-id="correlaciones-entre-las-evoluciones-de-las-variables-clínicas-sin-medidas-repetidas">Correlaciones entre las evoluciones de las variables clínicas (sin medidas repetidas)</h2>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-pearson-evol-no-rep_10b68bee0f541f501ccdf6cd1d05940f">
+<section id="hip.i" class="level3">
+<h3 class="anchored" data-anchor-id="hip.i">HIP.I</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de hipermetropía (HIP.I) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de hipermetropía (HIP.I) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.373</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.362</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.345</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.324</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.314</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.259</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.236</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.226</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.204</td>
+<td style="text-align: right;">0.006</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.195</td>
+<td style="text-align: right;">0.009</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.157</td>
+<td style="text-align: right;">0.017</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.165</td>
+<td style="text-align: right;">0.027</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.130</td>
+<td style="text-align: right;">0.081</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.082</td>
+<td style="text-align: right;">0.145</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">-0.107</td>
+<td style="text-align: right;">0.148</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.066</td>
+<td style="text-align: right;">0.239</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.048</td>
+<td style="text-align: right;">0.334</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">227</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">-0.050</td>
+<td style="text-align: right;">0.499</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">228</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">0.637</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 12 de las 19 variables independientes entre los grupos con y sin HIP.I. Las asociaciones más fuertes (mayor |r biserial|) son: CCF (r biserial = 0.37, p &lt; 0.001); VHC.BT3 (r biserial = -0.36, p &lt; 0.001); FLC (r biserial = -0.34, p &lt; 0.001).</p>
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="correlacion_files/figure-html/matriz-correlaciones-pearson-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Pearson.</figcaption><p></p>
+<p><img src="correlacion_files/figure-html/boxplot-hip-i-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de hipermetropía (HIP.I).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-spearman-evol-no-rep_4b3525d3eedaf89ec97236251610dd9e">
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de HIP.I y las variables independientes (solo pacientes con hipermetropía).">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de HIP.I y las variables independientes (solo pacientes con hipermetropía).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.169</td>
+<td style="text-align: right;">0.038</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.152</td>
+<td style="text-align: right;">0.063</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.124</td>
+<td style="text-align: right;">0.135</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.112</td>
+<td style="text-align: right;">0.175</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">0.341</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">0.352</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.073</td>
+<td style="text-align: right;">0.366</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.069</td>
+<td style="text-align: right;">0.401</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.073</td>
+<td style="text-align: right;">0.431</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.060</td>
+<td style="text-align: right;">0.449</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.063</td>
+<td style="text-align: right;">0.450</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.058</td>
+<td style="text-align: right;">0.499</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.049</td>
+<td style="text-align: right;">0.596</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.044</td>
+<td style="text-align: right;">0.626</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.033</td>
+<td style="text-align: right;">0.687</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.015</td>
+<td style="text-align: right;">0.855</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.015</td>
+<td style="text-align: right;">0.867</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">-0.014</td>
+<td style="text-align: right;">0.874</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">0.012</td>
+<td style="text-align: right;">0.884</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Entre los pacientes con HIP.I (n = 81), la correlación de Kendall muestra 1 asociación estadísticamente significativa (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Se trata de: VHL.BT1 (tau = -0.17, p = 0.038).</p>
+</section>
+<section id="mio.d" class="level3">
+<h3 class="anchored" data-anchor-id="mio.d">MIO.D</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de miopía (MIO.D) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de miopía (MIO.D) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.266</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.257</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.247</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.243</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.240</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.229</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.210</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.206</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.176</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.167</td>
+<td style="text-align: right;">0.011</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.156</td>
+<td style="text-align: right;">0.016</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.141</td>
+<td style="text-align: right;">0.032</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">157</td>
+<td style="text-align: right;">0.130</td>
+<td style="text-align: right;">0.044</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.105</td>
+<td style="text-align: right;">0.110</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.075</td>
+<td style="text-align: right;">0.129</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">0.222</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.075</td>
+<td style="text-align: right;">0.253</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.038</td>
+<td style="text-align: right;">0.447</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.012</td>
+<td style="text-align: right;">0.777</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 13 de las 19 variables independientes entre los grupos con y sin MIO.D. Las asociaciones más fuertes (mayor |r biserial|) son: VHC.BT3 (r biserial = 0.27, p &lt; 0.001); AAOI (r biserial = -0.26, p &lt; 0.001); ACA (r biserial = 0.25, p &lt; 0.001).</p>
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="correlacion_files/figure-html/matriz-correlaciones-spearman-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Spearman.</figcaption><p></p>
+<p><img src="correlacion_files/figure-html/boxplot-mio-d-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de miopía (MIO.D).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-hash="correlacion_cache/html/matriz-correlaciones-kendall-evol-no-rep_c63481a43312b969fd0a16f933fe9fcc">
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de MIO.D y las variables independientes (solo pacientes con miopía).">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de MIO.D y las variables independientes (solo pacientes con miopía).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.161</td>
+<td style="text-align: right;">0.012</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.131</td>
+<td style="text-align: right;">0.019</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.112</td>
+<td style="text-align: right;">0.047</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.114</td>
+<td style="text-align: right;">0.051</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.106</td>
+<td style="text-align: right;">0.062</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.112</td>
+<td style="text-align: right;">0.065</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.087</td>
+<td style="text-align: right;">0.168</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.059</td>
+<td style="text-align: right;">0.281</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.057</td>
+<td style="text-align: right;">0.297</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.054</td>
+<td style="text-align: right;">0.328</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.053</td>
+<td style="text-align: right;">0.347</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.048</td>
+<td style="text-align: right;">0.454</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.038</td>
+<td style="text-align: right;">0.496</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.033</td>
+<td style="text-align: right;">0.564</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.030</td>
+<td style="text-align: right;">0.592</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.028</td>
+<td style="text-align: right;">0.615</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.021</td>
+<td style="text-align: right;">0.713</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.018</td>
+<td style="text-align: right;">0.754</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.017</td>
+<td style="text-align: right;">0.767</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Entre los pacientes con MIO.D (n = 158), la correlación de Kendall muestra 3 asociaciones estadísticamente significativas (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Las más destacadas (mayor |tau|) son: VHC.BT1 (tau = 0.16, p = 0.012); FLC (tau = 0.13, p = 0.019); VHC.BN3 (tau = -0.11, p = 0.047).</p>
+</section>
+<section id="mio.i" class="level3">
+<h3 class="anchored" data-anchor-id="mio.i">MIO.I</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de miopía (MIO.I) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de miopía (MIO.I) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.275</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.236</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.236</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.229</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.206</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.198</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.198</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.196</td>
+<td style="text-align: right;">0.003</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.137</td>
+<td style="text-align: right;">0.038</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.129</td>
+<td style="text-align: right;">0.045</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.126</td>
+<td style="text-align: right;">0.056</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.123</td>
+<td style="text-align: right;">0.062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">157</td>
+<td style="text-align: right;">0.100</td>
+<td style="text-align: right;">0.121</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.075</td>
+<td style="text-align: right;">0.129</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.089</td>
+<td style="text-align: right;">0.177</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.077</td>
+<td style="text-align: right;">0.186</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.054</td>
+<td style="text-align: right;">0.275</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.025</td>
+<td style="text-align: right;">0.698</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.012</td>
+<td style="text-align: right;">0.777</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 10 de las 19 variables independientes entre los grupos con y sin MIO.I. Las asociaciones más fuertes (mayor |r biserial|) son: VHC.BT3 (r biserial = 0.27, p &lt; 0.001); AAOI (r biserial = -0.24, p &lt; 0.001); CCF (r biserial = -0.24, p &lt; 0.001).</p>
+<div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="correlacion_files/figure-html/matriz-correlaciones-kendall-evol-no-rep-1.png" class="img-fluid figure-img" width="960"></p>
-<p></p><figcaption class="figure-caption">Matriz de correlaciones de Kendall</figcaption><p></p>
+<p><img src="correlacion_files/figure-html/boxplot-mio-i-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de miopía (MIO.I).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>En general se observan correlaciones muy bajas y estadísticamente no significativas entre casi todos los pares de variables. Las variables más correlacionadas con la evolución de la miopía son AAOI.EVOL, AAOD.EVOL, VHC.BT1.EVOL y VHC.BN1.EVOL. Las variables más correlacionadas con el astigmatismo son FLC.EVOL, VHL.BN1.EVOL y VHC.BN2.EVOL. Las variables más correlacionadas con la presbicia son CCF.EVOL, ACA.EVOL, AAOD.EVOL, AAOI.EVOL, VHL.BT1.EVOL (única significativa), FVC.EVOL, VHL.BN2.EVOL y VHL.BT2.EVOL.</p>
-<!-- ```{r} -->
-<!-- df.tmp <- select(df2, vars.evol) -->
-<!-- rcorr(as.matrix(df.tmp), type = "spearman") -->
-<!-- ``` -->
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de MIO.I y las variables independientes (solo pacientes con miopía).">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de MIO.I y las variables independientes (solo pacientes con miopía).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: right;">0.025</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.121</td>
+<td style="text-align: right;">0.038</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.106</td>
+<td style="text-align: right;">0.060</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.087</td>
+<td style="text-align: right;">0.149</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.086</td>
+<td style="text-align: right;">0.173</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.069</td>
+<td style="text-align: right;">0.217</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.068</td>
+<td style="text-align: right;">0.230</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.065</td>
+<td style="text-align: right;">0.243</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.065</td>
+<td style="text-align: right;">0.260</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.057</td>
+<td style="text-align: right;">0.317</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.064</td>
+<td style="text-align: right;">0.319</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.051</td>
+<td style="text-align: right;">0.363</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.041</td>
+<td style="text-align: right;">0.489</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.035</td>
+<td style="text-align: right;">0.530</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">0.533</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.033</td>
+<td style="text-align: right;">0.551</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.032</td>
+<td style="text-align: right;">0.555</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">158</td>
+<td style="text-align: right;">-0.025</td>
+<td style="text-align: right;">0.654</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Entre los pacientes con MIO.I (n = 158), la correlación de Kendall muestra 2 asociaciones estadísticamente significativas (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Las más destacadas (mayor |tau|) son: FLC (tau = 0.12, p = 0.025); VHL.BN2 (tau = -0.12, p = 0.038).</p>
+</section>
+<section id="ast.d" class="level3">
+<h3 class="anchored" data-anchor-id="ast.d">AST.D</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de astigmatismo (AST.D) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de astigmatismo (AST.D) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">148</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.179</td>
+<td style="text-align: right;">0.006</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.153</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.088</td>
+<td style="text-align: right;">0.044</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.122</td>
+<td style="text-align: right;">0.064</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.114</td>
+<td style="text-align: right;">0.083</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.088</td>
+<td style="text-align: right;">0.182</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.085</td>
+<td style="text-align: right;">0.195</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.070</td>
+<td style="text-align: right;">0.290</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.069</td>
+<td style="text-align: right;">0.297</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">147</td>
+<td style="text-align: right;">159</td>
+<td style="text-align: right;">0.057</td>
+<td style="text-align: right;">0.378</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.046</td>
+<td style="text-align: right;">0.484</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.014</td>
+<td style="text-align: right;">0.779</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.017</td>
+<td style="text-align: right;">0.794</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.012</td>
+<td style="text-align: right;">0.808</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.016</td>
+<td style="text-align: right;">0.809</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.014</td>
+<td style="text-align: right;">0.812</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.015</td>
+<td style="text-align: right;">0.818</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.012</td>
+<td style="text-align: right;">0.854</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.012</td>
+<td style="text-align: right;">0.854</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 3 de las 19 variables independientes entre los grupos con y sin AST.D. Las asociaciones más fuertes (mayor |r biserial|) son: VHL.BN2 (r biserial = 0.18, p = 0.006); CCF (r biserial = -0.15, p = 0.02); FVC (r biserial = -0.09, p = 0.044).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="correlacion_files/figure-html/boxplot-ast-d-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de astigmatismo (AST.D).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de AST.D y las variables independientes (solo pacientes con astigmatismo).">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de AST.D y las variables independientes (solo pacientes con astigmatismo).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.144</td>
+<td style="text-align: right;">0.012</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.134</td>
+<td style="text-align: right;">0.019</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.114</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.115</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.111</td>
+<td style="text-align: right;">0.061</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.101</td>
+<td style="text-align: right;">0.081</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.097</td>
+<td style="text-align: right;">0.103</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.094</td>
+<td style="text-align: right;">0.107</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.060</td>
+<td style="text-align: right;">0.309</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.062</td>
+<td style="text-align: right;">0.359</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">0.370</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">-0.031</td>
+<td style="text-align: right;">0.599</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.031</td>
+<td style="text-align: right;">0.615</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.025</td>
+<td style="text-align: right;">0.702</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.022</td>
+<td style="text-align: right;">0.725</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">0.733</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.018</td>
+<td style="text-align: right;">0.789</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.013</td>
+<td style="text-align: right;">0.819</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">160</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.887</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Entre los pacientes con AST.D (n = 160), la correlación de Kendall muestra 3 asociaciones estadísticamente significativas (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Las más destacadas (mayor |tau|) son: Dif.AAOI.hofstetter (tau = -0.14, p = 0.012); Dif.AAOD.hofstetter (tau = -0.13, p = 0.019); VHC.BT3 (tau = 0.11, p = 0.05).</p>
+</section>
+<section id="ast.i" class="level3">
+<h3 class="anchored" data-anchor-id="ast.i">AST.I</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de astigmatismo (AST.I) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de astigmatismo (AST.I) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.162</td>
+<td style="text-align: right;">0.012</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.139</td>
+<td style="text-align: right;">0.034</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.125</td>
+<td style="text-align: right;">0.057</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.117</td>
+<td style="text-align: right;">0.076</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.095</td>
+<td style="text-align: right;">0.147</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.093</td>
+<td style="text-align: right;">0.155</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.092</td>
+<td style="text-align: right;">0.162</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.059</td>
+<td style="text-align: right;">0.178</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.082</td>
+<td style="text-align: right;">0.213</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.072</td>
+<td style="text-align: right;">0.271</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.064</td>
+<td style="text-align: right;">0.329</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">0.411</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.046</td>
+<td style="text-align: right;">0.482</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.034</td>
+<td style="text-align: right;">0.605</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">0.738</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.016</td>
+<td style="text-align: right;">0.750</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.015</td>
+<td style="text-align: right;">0.761</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.012</td>
+<td style="text-align: right;">0.852</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 2 de las 19 variables independientes entre los grupos con y sin AST.I. Las asociaciones más fuertes (mayor |r biserial|) son: VHL.BN2 (r biserial = 0.16, p = 0.012); CCF (r biserial = -0.14, p = 0.034).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="correlacion_files/figure-html/boxplot-ast-i-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de astigmatismo (AST.I).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de AST.I y las variables independientes (solo pacientes con astigmatismo).">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de AST.I y las variables independientes (solo pacientes con astigmatismo).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.135</td>
+<td style="text-align: right;">0.021</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.133</td>
+<td style="text-align: right;">0.022</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.113</td>
+<td style="text-align: right;">0.056</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.112</td>
+<td style="text-align: right;">0.061</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.107</td>
+<td style="text-align: right;">0.070</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.084</td>
+<td style="text-align: right;">0.164</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.096</td>
+<td style="text-align: right;">0.165</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.079</td>
+<td style="text-align: right;">0.203</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">0.230</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.061</td>
+<td style="text-align: right;">0.301</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.060</td>
+<td style="text-align: right;">0.313</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.051</td>
+<td style="text-align: right;">0.389</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.038</td>
+<td style="text-align: right;">0.575</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.033</td>
+<td style="text-align: right;">0.590</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.030</td>
+<td style="text-align: right;">0.627</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.021</td>
+<td style="text-align: right;">0.732</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">-0.013</td>
+<td style="text-align: right;">0.823</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.008</td>
+<td style="text-align: right;">0.906</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">154</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.970</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Entre los pacientes con AST.I (n = 154), la correlación de Kendall muestra 2 asociaciones estadísticamente significativas (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Las más destacadas (mayor |tau|) son: Dif.AAOI.hofstetter (tau = -0.13, p = 0.021); Dif.AAOD.hofstetter (tau = -0.13, p = 0.022).</p>
+</section>
+<section id="pre.d" class="level3">
+<h3 class="anchored" data-anchor-id="pre.d">PRE.D</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de presbicia (PRE.D) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de presbicia (PRE.D) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.919</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.917</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.784</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.770</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.704</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.492</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.389</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.365</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.297</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.235</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.185</td>
+<td style="text-align: right;">0.009</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.163</td>
+<td style="text-align: right;">0.021</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.112</td>
+<td style="text-align: right;">0.034</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">97</td>
+<td style="text-align: right;">-0.123</td>
+<td style="text-align: right;">0.078</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">-0.116</td>
+<td style="text-align: right;">0.096</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.066</td>
+<td style="text-align: right;">0.156</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.033</td>
+<td style="text-align: right;">0.532</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.037</td>
+<td style="text-align: right;">0.556</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.031</td>
+<td style="text-align: right;">0.657</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 13 de las 19 variables independientes entre los grupos con y sin PRE.D. Las asociaciones más fuertes (mayor |r biserial|) son: Dif.AAOI.hofstetter (r biserial = 0.92, p &lt; 0.001); Dif.AAOD.hofstetter (r biserial = 0.92, p &lt; 0.001); AAOD (r biserial = 0.78, p &lt; 0.001).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="correlacion_files/figure-html/boxplot-pre-d-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de presbicia (PRE.D).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de PRE.D y las variables independientes (solo pacientes con presbicia).">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de PRE.D y las variables independientes (solo pacientes con presbicia).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.706</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.670</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.666</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.291</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.258</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.240</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.209</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.213</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.203</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.223</td>
+<td style="text-align: right;">0.006</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.222</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.193</td>
+<td style="text-align: right;">0.018</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.169</td>
+<td style="text-align: right;">0.028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.154</td>
+<td style="text-align: right;">0.036</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.129</td>
+<td style="text-align: right;">0.097</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.113</td>
+<td style="text-align: right;">0.129</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.028</td>
+<td style="text-align: right;">0.703</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.009</td>
+<td style="text-align: right;">0.897</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.002</td>
+<td style="text-align: right;">0.982</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Entre los pacientes con PRE.D (n = 98), la correlación de Kendall muestra 14 asociaciones estadísticamente significativas (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Las más destacadas (mayor |tau|) son: CCF (tau = 0.71, p &lt; 0.001); Dif.AAOI.hofstetter (tau = 0.67, p &lt; 0.001); Dif.AAOD.hofstetter (tau = 0.67, p &lt; 0.001).</p>
+</section>
+<section id="pre.i" class="level3">
+<h3 class="anchored" data-anchor-id="pre.i">PRE.I</h3>
+<div class="cell" data-tbl-cap="Test de Wilcoxon y correlación biserial por rangos entre la presencia de presbicia (PRE.I) y las variables independientes.">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Test de Wilcoxon y correlación biserial por rangos entre la presencia de presbicia (PRE.I) y las variables independientes.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.no</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n.si</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">r.biserial</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.919</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.917</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.784</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.770</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.704</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.492</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.389</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.365</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.297</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.235</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.185</td>
+<td style="text-align: right;">0.009</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.163</td>
+<td style="text-align: right;">0.021</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.112</td>
+<td style="text-align: right;">0.034</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">97</td>
+<td style="text-align: right;">-0.123</td>
+<td style="text-align: right;">0.078</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">-0.116</td>
+<td style="text-align: right;">0.096</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.066</td>
+<td style="text-align: right;">0.156</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.033</td>
+<td style="text-align: right;">0.532</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.037</td>
+<td style="text-align: right;">0.556</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">211</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.031</td>
+<td style="text-align: right;">0.657</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>El test de Wilcoxon-Mann-Whitney encuentra diferencias estadísticamente significativas (p &lt; 0.05) en 13 de las 19 variables independientes entre los grupos con y sin PRE.I. Las asociaciones más fuertes (mayor |r biserial|) son: Dif.AAOI.hofstetter (r biserial = 0.92, p &lt; 0.001); Dif.AAOD.hofstetter (r biserial = 0.92, p &lt; 0.001); AAOD (r biserial = 0.78, p &lt; 0.001).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="correlacion_files/figure-html/boxplot-pre-i-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption>Distribución de las variables independientes según presencia de presbicia (PRE.I).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap="Correlación de Kendall entre la magnitud de PRE.I y las variables independientes (solo pacientes con presbicia).">
+<div class="cell-output-display">
+<table class="table table-hover table-striped caption-top table-sm small">
+<caption>Correlación de Kendall entre la magnitud de PRE.I y las variables independientes (solo pacientes con presbicia).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">variable</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">tau</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p.valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CCF</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.706</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dif.AAOI.hofstetter</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.670</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dif.AAOD.hofstetter</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.666</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FLC</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.291</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ACA</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.258</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOD</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.240</td>
+<td style="text-align: right;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BN3</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.209</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AAOI</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.213</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT3</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.203</td>
+<td style="text-align: right;">0.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.223</td>
+<td style="text-align: right;">0.006</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHC.BT1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.222</td>
+<td style="text-align: right;">0.008</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FVL</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.193</td>
+<td style="text-align: right;">0.018</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.169</td>
+<td style="text-align: right;">0.028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHL.BT2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.154</td>
+<td style="text-align: right;">0.036</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BN1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.129</td>
+<td style="text-align: right;">0.097</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BN2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">0.113</td>
+<td style="text-align: right;">0.129</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">VHL.BT1</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.028</td>
+<td style="text-align: right;">0.703</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VHC.BT2</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.009</td>
+<td style="text-align: right;">0.897</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FVC</td>
+<td style="text-align: right;">98</td>
+<td style="text-align: right;">-0.002</td>
+<td style="text-align: right;">0.982</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Entre los pacientes con PRE.I (n = 98), la correlación de Kendall muestra 14 asociaciones estadísticamente significativas (p &lt; 0.05) con la magnitud del defecto, de un total de 19 variables independientes. Las más destacadas (mayor |tau|) son: CCF (tau = 0.71, p &lt; 0.001); Dif.AAOI.hofstetter (tau = 0.67, p &lt; 0.001); Dif.AAOD.hofstetter (tau = 0.67, p &lt; 0.001).</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
     }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-    // Hack to workaround the fact that safari doesn't
-    // properly recolor the scrollbar when toggling (#1455)
-    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-      manageTransitions("body", false);
-      window.scrollTo(0, 1);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        manageTransitions("body", true);
-      }, 40);  
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
       return false;
     }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  let localAlternateSentinel = 'alternate';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } else {
-    toggleColorMode(false);
-  }
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copiado");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copiado");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-  }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
       });
     }
-  }
-});
-</script>
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 </div> <!-- /content -->
+
 
 
 

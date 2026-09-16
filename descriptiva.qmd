@@ -24,14 +24,14 @@ color4 <- "#C77CFF"
 
 ```{r carga datos}
 # Carga de datos preprocesados (con medidas repetidas)
-df <- read_csv("data/datos.preprocesados.csv") %>%
+df <- read_csv("data/datos.preprocesados.csv") |>
   mutate(ID = as.factor(ID)) 
 # Carga de datos sin medidas repetidas
-df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") %>% 
+df2 <- read_csv("data/datos.preprocesados.sin.medidas.repetidas.csv") |> 
   mutate(ID = as.factor(ID)) 
 # Pacientes con 3 o más revisones
-ids <- df %>% 
-  filter(REVISION == 3) %>% 
+ids <- df |> 
+  filter(REVISION == 3) |> 
   pull(ID)
 ```
 
@@ -39,7 +39,7 @@ ids <- df %>%
 vars.vergencias <- c("VHL.BT1", "VHL.BT2", "VHL.BN1", "VHL.BN2", "VHC.BT1", "VHC.BT2", "VHC.BT3", "VHC.BN1", "VHC.BN2", "VHC.BN3")
 vars.forias <- c("FVL", "FVC", "FLC")
 vars.otras <- c("ACA", "CCF", "AAOD", "AAOI", "Dif.AAOD.hofstetter", "Dif.AAOI.hofstetter")
-vars.dep <- c("EME.D", "EME.I", "HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
+vars.dep <- c("HIP.D", "HIP.I", "MIO.D", "MIO.I", "AST.D", "AST.I", "PRE.D", "PRE.I")
 vars.ind <- c(vars.vergencias, vars.forias, vars.otras)
 vars.ind.evol <- paste0(vars.ind, ".EVOL")
 vars.dep.evol <- paste0(vars.dep, ".EVOL")
@@ -49,23 +49,23 @@ vars.evol <- c(vars.ind.evol, vars.dep.evol)
 
 ```{r funciones}
 tabla.freq <- function(var) {
-  tabla <- df %>%
-    count(get(var)) %>%
-    kable(caption = paste0("Distribución según ", var, ".")) %>%
+  tabla <- df |>
+    count(get(var)) |>
+    kable(caption = paste0("Distribución según ", var, ".")) |>
     kable_styling(bootstrap_options = "hover", full_width = F)
   return(tabla)
 }
 
 resumen.des <- function(var) {
-  resumen <- df %>%
-    summarise(Media = mean(get(var), na.rm = TRUE), "Desviación Típica" = sd(get(var), na.rm = TRUE), Mínimo = min(get(var), na.rm = TRUE), Máximo = max(get(var), na.rm = TRUE)) %>%
-    kable(caption = paste0("Estadísticos descriptivos de ", var, ".")) %>%
+  resumen <- df |>
+    summarise(Media = mean(get(var), na.rm = TRUE), "Desviación Típica" = sd(get(var), na.rm = TRUE), Mínimo = min(get(var), na.rm = TRUE), Máximo = max(get(var), na.rm = TRUE)) |>
+    kable(caption = paste0("Estadísticos descriptivos de ", var, ".")) |>
     kable_styling(bootstrap_options = "hover", full_width = F)
   return(resumen)
 }
 
 dist.hist <- function(var) {
-  plot <- df %>%
+  plot <- df |>
     ggplot(aes_string(var)) +
     geom_histogram(binwidth = 1, col = "white", fill = color1) +
     ylab("Número de pacientes")
@@ -76,12 +76,12 @@ dist.hist <- function(var) {
 ## Distribución del número de revisiones
 
 ```{r frecuencias-revisiones}
-count(df, REVISION) %>%
-  kable(caption = paste0("Distribución según número de revisiones.")) %>%
+count(df, REVISION) |>
+  kable(caption = paste0("Distribución según número de revisiones.")) |>
   kable_styling(bootstrap_options = "hover", full_width = F)
 
-n2 <- count(df, ID) %>%
-  filter(n > 1) %>%
+n2 <- count(df, ID) |>
+  filter(n > 1) |>
   pull(ID)
 ```
 
@@ -90,18 +90,18 @@ Número de pacientes con más de una revisión: `r length(n2)`.
 ## Distribución por sexo
 
 ```{r frecuencias-sexo}
-df %>%
-  distinct(ID, SEXO) %>%
-  count(SEXO) %>%
-  kable(caption = paste0("Distribución según sexo.")) %>%
+df |>
+  distinct(ID, SEXO) |>
+  count(SEXO) |>
+  kable(caption = paste0("Distribución según sexo.")) |>
   kable_styling(bootstrap_options = "hover", full_width = F)
 ```
 
 ```{r distribucion-sexo}
 #| fig-cap: "Distribución de pacientes según sexo."
-df %>%
-  distinct(ID, SEXO) %>%
-  count(SEXO) %>%
+df |>
+  distinct(ID, SEXO) |>
+  count(SEXO) |>
   ggplot(aes(SEXO, fill = SEXO)) +
   geom_bar(aes(weight = n)) +
   ylab("Número de pacientes")
@@ -115,7 +115,7 @@ resumen.des("EDAD")
 
 ```{r distribucion-edad, fig.cap=""}
 #| fig-cap: "Distribución de la edad."
-df %>%
+df |>
   ggplot(aes(x = EDAD, fill = SEXO)) +
   geom_histogram(breaks = seq(0, 100, by = 10), alpha = 0.8, col = "white") +
   scale_x_continuous(breaks = seq(0, 100, by = 10)) +
@@ -125,18 +125,18 @@ df %>%
 ## Distribución por ojo dominante
 
 ```{r frecuencias-ojo-dominante}
-df %>%
-  distinct(ID, OJO.DOMINANTE) %>%
-  count(OJO.DOMINANTE) %>%
-  kable(caption = "Distribución según ojo dominante.") %>%
+df |>
+  distinct(ID, OJO.DOMINANTE) |>
+  count(OJO.DOMINANTE) |>
+  kable(caption = "Distribución según ojo dominante.") |>
   kable_styling(bootstrap_options = "hover", full_width = F)
 ```
 
 ```{r distribucion-ojo-dominante}
 #| fig-cap: "Distribución de pacientes según ojo dominante."
-df %>%
-  distinct(ID, OJO.DOMINANTE) %>%
-  count(OJO.DOMINANTE) %>%
+df |>
+  distinct(ID, OJO.DOMINANTE) |>
+  count(OJO.DOMINANTE) |>
   ggplot(aes(OJO.DOMINANTE, fill = OJO.DOMINANTE)) +
   geom_bar(aes(weight = n)) +
   ylab("Número de pacientes")
@@ -145,18 +145,18 @@ df %>%
 ## Distribución por mano dominante
 
 ```{r frecuencias-mano-dominante}
-df %>%
-  distinct(ID, MANO.DOMINANTE) %>%
-  count(MANO.DOMINANTE) %>%
-  kable(caption = "Distribución según mano dominante.") %>%
+df |>
+  distinct(ID, MANO.DOMINANTE) |>
+  count(MANO.DOMINANTE) |>
+  kable(caption = "Distribución según mano dominante.") |>
   kable_styling(bootstrap_options = "hover", full_width = F)
 ```
 
 ```{r distribucion-mano-dominante}
 #| fig-cap: "Distribución de pacientes según mano dominante."
-df %>%
-  distinct(ID, MANO.DOMINANTE) %>%
-  count(MANO.DOMINANTE) %>%
+df |>
+  distinct(ID, MANO.DOMINANTE) |>
+  count(MANO.DOMINANTE) |>
   ggplot(aes(MANO.DOMINANTE, fill = MANO.DOMINANTE)) +
   geom_bar(aes(weight = n)) +
   ylab("Número de pacientes")
@@ -165,18 +165,18 @@ df %>%
 ## Distribución por concordancia mano-ojo dominante
 
 ```{r frecuencias-mano-ojo-dominante}
-df %>%
-  distinct(ID, DOMINANCIA.OJO.MANO) %>%
-  count(DOMINANCIA.OJO.MANO) %>%
-  kable(caption = "Distribución según concordancia ojo-mano dominante.") %>%
+df |>
+  distinct(ID, DOMINANCIA.OJO.MANO) |>
+  count(DOMINANCIA.OJO.MANO) |>
+  kable(caption = "Distribución según concordancia ojo-mano dominante.") |>
   kable_styling(bootstrap_options = "hover", full_width = F)
 ```
 
 ```{r distribucion-mano-ojo-dominante}
 #| fig-cap: "Distribución de pacientes según concordancia mano-ojo dominante."
-df %>%
-  distinct(ID, DOMINANCIA.OJO.MANO) %>%
-  count(DOMINANCIA.OJO.MANO) %>%
+df |>
+  distinct(ID, DOMINANCIA.OJO.MANO) |>
+  count(DOMINANCIA.OJO.MANO) |>
   ggplot(aes(DOMINANCIA.OJO.MANO, fill = DOMINANCIA.OJO.MANO)) +
   geom_bar(aes(weight = n)) +
   ylab("Número de pacientes")
@@ -190,9 +190,9 @@ df %>%
 #| fig-cap: "Distribuciones de las vergencias y las forias."
 #| fig-width: 10
 #| fig-height: 8
-df %>% 
-  select(all_of(vars.ind)) %>% 
-  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>% 
+df |> 
+  select(all_of(vars.ind)) |> 
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |> 
   ggplot(aes(x = Valor)) +
   geom_histogram(fill= color1, bins = 15, col= "white") +
   facet_wrap(vars(Variable), scales = "free")+
@@ -208,9 +208,9 @@ Se observa que VHC.BN1 y VHC.BT1 apenas tienen variabilidad, por lo que conviene
 #| fig-cap: "Distribuciones de los defectos visuales."
 #| fig-width: 10
 #| fig-height: 8
-df %>% 
-  select(all_of(vars.dep)) %>% 
-  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>% 
+df |> 
+  select(all_of(vars.dep)) |> 
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |> 
   ggplot(aes(x = Valor)) +
   geom_histogram(fill= color1, bins = 15, col= "white") +
   facet_wrap(vars(Variable), scales = "free") +
@@ -218,31 +218,62 @@ df %>%
   ylab("Frecuencia")
 ```
 
-Se observa que EME.D y EME.I tienen una variabilidad nula, y HIP.D, HIP.I, PRE.D y PRE.I apenas tienen variabilidad, por lo que deben descartarse del estudio.
+Se observa que HIP.D, HIP.I, PRE.D y PRE.I apenas tienen variabilidad.
 
 ## Prueba de normalidad (Shapiro-Wilks)
 
-```{r normalidad}
-df %>%
-  select(all_of(vars)) %>%
-  pivot_longer(-c(EME.D, EME.I), names_to = "Variable", values_to = "Valor") %>%
-  group_by(Variable) %>%
-  summarise(p.valor = shapiro.test(Valor)$p.value) %>%
-  kable(caption = paste0("p-valores del contraste de normalidad de Shapiro-Wilks")) %>%
+### Variables clínicas
+
+```{r normalidad-ind}
+df |>
+  select(all_of(vars.ind)) |>
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |>
+  group_by(Variable) |>
+  summarise(p.valor = shapiro.test(Valor)$p.value) |>
+  kable(caption = paste0("p-valores del contraste de normalidad de Shapiro-Wilks")) |>
   kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
 ```
 
 Prácticamente todas las variables presentan una distribución no normal.
 
+### Defectos visuales
+
+```{r normalidad-dep}
+df |>
+  select(all_of(vars.dep)) |>
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |>
+  group_by(Variable) |>
+  summarise(p.valor = shapiro.test(Valor)$p.value) |>
+  kable(caption = paste0("p-valores del contraste de normalidad de Shapiro-Wilks")) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+Se observa que todas las variables presentan una distribución no normal. A la vista de los histogramas, el problema es que existen muchos individuos sin defectos visuales (valores 0), lo que provoca que la distribución sea asimétrica y no normal.
+
+### Defectos visuales (sin individuos sin defectos visuales)
+
+```{r normalidad-dep-sin-cero}
+df |>
+  select(all_of(vars.dep)) |>
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |>
+  filter(Valor != 0) |>
+  group_by(Variable) |>
+  summarise(p.valor = shapiro.test(Valor)$p.value) |>
+  kable(caption = paste0("p-valores del contraste de normalidad de Shapiro-Wilks")) |>
+  kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
+```
+
+Aún eliminado los ceros, las variables presentan distribución no normal.
+
 ## Estadísticos descriptivos
 
 ```{r estadisticos-descriptivos}
-df %>%
-  select(all_of(vars)) %>%
-  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>%
-  group_by(Variable) %>%
-  summarise(Media = mean(Valor, na.rm = TRUE), "Desviación Típica" = sd(Valor, na.rm = TRUE), Mínimo = min(Valor, na.rm = TRUE), Máximo = max(Valor, na.rm = TRUE)) %>%
-  kable(caption = paste0("Estadísticos descriptivos.")) %>%
+df |>
+  select(all_of(vars)) |>
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |>
+  group_by(Variable) |>
+  summarise(Media = mean(Valor, na.rm = TRUE), "Desviación Típica" = sd(Valor, na.rm = TRUE), Mínimo = min(Valor, na.rm = TRUE), Máximo = max(Valor, na.rm = TRUE)) |>
+  kable(caption = paste0("Estadísticos descriptivos.")) |>
   kable_styling(bootstrap_options = "hover", full_width = F)
 ```
 
@@ -257,15 +288,15 @@ vars.dep <- vars.dep[!vars.dep %in% c("EME.D", "EME.I")]
 #| fig-cap: "Distribuciones de los defectos visuales."
 #| fig-width: 10
 #| fig-height: 8
-df.dep <- df %>% 
-  filter(ID %in% ids) %>% 
-  select(c(ID, REVISION, vars.dep)) %>% 
+df.dep <- df |> 
+  filter(ID %in% ids) |> 
+  select(c(ID, REVISION, vars.dep)) |> 
   pivot_longer(-c(ID, REVISION), names_to = "Variable")
 
-p <- df %>% 
-  filter(ID %in% ids) %>% 
-  select(c(ID, REVISION, vars.ind)) %>% 
-  pivot_longer(-c(ID, REVISION), names_to = "Variable") %>% 
+p <- df |> 
+  filter(ID %in% ids) |> 
+  select(c(ID, REVISION, vars.ind)) |> 
+  pivot_longer(-c(ID, REVISION), names_to = "Variable") |> 
   ggplot(aes(x = REVISION, y = value , group = Variable, col = Variable)) +
   geom_line() +
   geom_line(data = df.dep, aes(y = value, group = Variable, col = Variable)) +
@@ -298,9 +329,9 @@ vars.evol <- c(vars.ind.evol, vars.dep.evol)
 #| fig-cap: "Distribuciones de las evoluciones de las vergencias y las forias."
 #| fig-width: 10
 #| fig-height: 8
-df2 %>% 
-  select(all_of(vars.ind.evol)) %>% 
-  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>% 
+df2 |> 
+  select(all_of(vars.ind.evol)) |> 
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |> 
   ggplot(aes(x = Valor)) +
   geom_histogram(fill = color1, bins = 15, col = "white") +
   facet_wrap(vars(Variable), scales = "free")+
@@ -312,9 +343,9 @@ df2 %>%
 #| fig-cap: "Distribuciones de las evoluciones de los defectos visuales."
 #| fig-width: 10
 #| fig-height: 8
-df2 %>% 
-  select(all_of(vars.dep.evol)) %>% 
-  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>% 
+df2 |> 
+  select(all_of(vars.dep.evol)) |> 
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |> 
   ggplot(aes(x = Valor)) +
   geom_histogram(fill = color1, bins = 15, col = "white")  +
   facet_wrap(vars(Variable), scales = "free") +
@@ -325,25 +356,25 @@ df2 %>%
 ### Prueba de normalidad (Shapiro-Wilks)
 
 ```{r normalidad-evol}
-df2 %>%
-  select(all_of(vars.evol)) %>%
-  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>%
-  group_by(Variable) %>%
-  summarise(p.valor = shapiro.test(Valor)$p.value) %>%
-  kable(caption = paste0("p-valores del contraste de normalidad de Shapiro-Wilks")) %>%
+df2 |>
+  select(all_of(vars.evol)) |>
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |>
+  group_by(Variable) |>
+  summarise(p.valor = shapiro.test(Valor)$p.value) |>
+  kable(caption = paste0("p-valores del contraste de normalidad de Shapiro-Wilks")) |>
   kable_styling(bootstrap_options = c("hover", "stripped"), full_width = F)
 ```
 
-Todas las variables excepto FLC, VHC.BN3, VHC.BT2, VHC.BT3, VHL.BT1 y VHL.BT2, tienen una evolución no normal.
+Todas las variables excepto VHC.BT3 y VHL.BT2, tienen una evolución no normal.
 
 ### Resumen estadístico
 
 ```{r estadisticos-descriptivos-evol}
-df2 %>%
-  select(all_of(vars.evol)) %>%
-  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>%
-  group_by(Variable) %>%
-  summarise(Media = mean(Valor, na.rm = TRUE), "Desviación Típica" = sd(Valor, na.rm = TRUE), Mínimo = min(Valor, na.rm = TRUE), Máximo = max(Valor, na.rm = TRUE)) %>%
-  kable(caption = paste0("Estadísticos descriptivos.")) %>%
+df2 |>
+  select(all_of(vars.evol)) |>
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") |>
+  group_by(Variable) |>
+  summarise(Media = mean(Valor, na.rm = TRUE), "Desviación Típica" = sd(Valor, na.rm = TRUE), Mínimo = min(Valor, na.rm = TRUE), Máximo = max(Valor, na.rm = TRUE)) |>
+  kable(caption = paste0("Estadísticos descriptivos.")) |>
   kable_styling(bootstrap_options = "hover", full_width = F)
 ```
