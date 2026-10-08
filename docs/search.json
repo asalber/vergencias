@@ -137,7 +137,7 @@
     "href": "index.html",
     "title": "Introducción",
     "section": "",
-    "text": "Estudio sobre las vergencias oculares."
+    "text": "Explorar la asociación entre las deficiencias en la visión (miopía, hipermetropía, astigmatismo o presbicia) y las variantes de las vergencias y la acomodación durante los diferentes exámenes optométricos que se han hecho a un grupo de pacientes durante varios años."
   },
   {
     "objectID": "index.html#resumen",
@@ -150,15 +150,15 @@
     "objectID": "index.html#objetivos",
     "href": "index.html#objetivos",
     "title": "Introducción",
-    "section": "Objetivos",
-    "text": "Objetivos\nDeterminar el mecanismo por el que ciertos factores pueden afectar al aumento del valor dióptrico de la miopía en las diferentes pruebas de un examen optométrico, para poder actuar contra ellos. Con este objetivo, vamos a revisar las variantes de las vergencias y la acomodación durante los diferentes exámenes optométricos que se han hecho a un grupo de pacientes durante varios años."
+    "section": "",
+    "text": "Explorar la asociación entre las deficiencias en la visión (miopía, hipermetropía, astigmatismo o presbicia) y las variantes de las vergencias y la acomodación durante los diferentes exámenes optométricos que se han hecho a un grupo de pacientes durante varios años."
   },
   {
     "objectID": "index.html#variables",
     "href": "index.html#variables",
     "title": "Introducción",
     "section": "Variables",
-    "text": "Variables"
+    "text": "Variables\nSe han recogido datos de los pacientes que han acudido a la clínica para realizarse un examen optométrico completo, incluyendo la medición de la agudeza visual, la refracción, la acomodación y las vergencias."
   },
   {
     "objectID": "index.html#tamaño-muestral",
@@ -215,5 +215,12 @@
     "title": "Correlación con medidas repetidas",
     "section": "Consideraciones",
     "text": "Consideraciones\n\nEdad y tiempo de seguimiento: dentro de un paciente, las revisiones sucesivas coinciden con un aumento de la edad, que afecta a la vez a la presbicia, a la amplitud de acomodación (AAOD, AAOI) y a su diferencia respecto a la fórmula de Hofstetter. La sección de análisis ajustado por edad controla este factor. Aun así, Dif.AAOD.hofstetter y Dif.AAOI.hofstetter se definen a partir de la edad esperada, por lo que su asociación con la presbicia debe interpretarse con cautela incluso después del ajuste.\nError de medida: la fiabilidad de varias vergencias y del AC/A es baja, lo que atenúa las asociaciones hacia cero. Los resultados no significativos no deben interpretarse como ausencia de relación, sino como falta de potencia para detectarla, sobre todo en los efectos intra paciente.\nOjo derecho e izquierdo: los defectos de ambos ojos están muy correlacionados, por lo que los resultados de D e I son prácticamente redundantes y no deben interpretarse como evidencia independiente.\nComparaciones múltiples: con 152 contrastes por análisis cabe esperar unos 8 resultados significativos al 5% por azar, por lo que conviene basar las conclusiones en los p-valores ajustados por Benjamini-Hochberg."
+  },
+  {
+    "objectID": "index.html#tipo-de-estudio",
+    "href": "index.html#tipo-de-estudio",
+    "title": "Introducción",
+    "section": "Tipo de estudio",
+    "text": "Tipo de estudio\nEstudio observacional, analítico y retrospectivo. Cohorte clínica construida con historiales clínicos de pacientes que han acudido a una misma clínica oftalmológica durante varios años."
   }
 ]

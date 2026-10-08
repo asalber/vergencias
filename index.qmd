@@ -18,14 +18,17 @@ var <- read_csv("data/variables.csv")
 df <- read_csv("data/datos.csv")
 ```
 
-## Resumen
-Estudio sobre las vergencias oculares.
-
 ## Objetivos
 
-Determinar el mecanismo por el que ciertos factores pueden afectar al aumento del valor dióptrico de la miopía en las diferentes pruebas de un examen optométrico, para poder actuar contra ellos. Con este objetivo, vamos a revisar las variantes de las vergencias y la acomodación durante los diferentes exámenes optométricos que se han hecho a un grupo de pacientes durante varios años.
+Explorar la asociación entre las deficiencias en la visión (miopía, hipermetropía, astigmatismo o presbicia) y las variantes de las vergencias y la acomodación durante los diferentes exámenes optométricos que se han hecho a un grupo de pacientes durante varios años.
+
+## Tipo de estudio
+
+Estudio observacional, analítico y retrospectivo. Cohorte clínica construida con historiales clínicos de pacientes que han acudido a una misma clínica oftalmológica durante varios años.
 
 ## Variables
+
+Se han recogido datos de los pacientes que han acudido a la clínica para realizarse un examen optométrico completo, incluyendo la medición de la agudeza visual, la refracción, la acomodación y las vergencias.
 
 ```{r variables}
 datatable(var, rownames = F, escape=F, class = 'display', options = list(pageLength = 10, dom="ltip", language = list(url = 'http://cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')))
